@@ -18,8 +18,8 @@ To try out:
  * Compile all targets using XCode
 
  * IMPORTANT: Unmount all existing external drives. The driver will
-create duplicates of the drives and having the drive mounted twice
-will POSITIVELY CORRUPT the file system.
+   create duplicates of the drives and having the drive mounted twice
+   will POSITIVELY CORRUPT the file system.
 
  * Load the kernel extension. Open a terminal.
     sudo tail -f /private/var/log/kernel.log &
