@@ -22,8 +22,8 @@ create duplicates of the drives and having the drive mounted twice
 will POSITIVELY CORRUPT the file system.
 
  * Load the kernel extension. Open a terminal.
-    sudo tail -f /var...*kernel.log &
-    cd ...Build
+    sudo tail -f /private/var/log/kernel.log &
+    cd SATSMARTDriver/build/Debug/
     sudo cp -R IOSATDriver.kext /tmp
     sudo kextutil -t /tmp/IOSATDriver.kext
 
