@@ -1,0 +1,42 @@
+OS X SAT SMART Driver
+#####################
+
+This is a kernel driver for Mac OS X external USB or FireWire drives.
+It extends the standard driver behaviour by providing access to drive
+SMART data. The interface to SMART data is same as with ATA family
+driver, so most existing applications should work. The driver requires
+a SAT (SCSI ATA Translation) capable external drive enclosure.
+
+The driver consists of a kernel extension and a user client interface
+library.
+
+The code is mostly derived from opensource.apple.com, so that license
+should apply.
+
+To try out: 
+
+ * Compile all targets using XCode
+
+ * IMPORTANT: Unmount all existing external drives. The driver will
+create duplicates of the drives and having the drive mounted twice
+will POSITIVELY CORRUPT the file system.
+
+ * Load the kernel extension. Open a terminal.
+    sudo tail -f /var...*kernel.log &
+    cd ...Build
+    sudo cp -R IOSATDriver.kext /tmp
+    sudo kextutil -t /tmp/IOSATDriver.kext
+
+ * The external drives should mount automatically. Check them briefly
+   and unmount them.
+
+ * Test
+    ./smart_status
+
+    ./smart_sample
+
+ * Check DiskUtility. The disk should show as "SMART capable: verified"
+
+ * Unload the driver and copy it to system permanently
+    sudo kextunload /tmp/IOSATDriver.kext
+    sudo kextload /tmp/IOSATDriver.kext
