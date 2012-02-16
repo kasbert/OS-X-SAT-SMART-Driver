@@ -1,0 +1,705 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 45;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		32D94FC60562CBF700B6AF17 /* IOSATDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A224C3EFF42367911CA2CB7 /* IOSATDriver.h */; };
+		32D94FC80562CBF700B6AF17 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
+		32D94FCA0562CBF700B6AF17 /* IOSATDriver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 1A224C3FFF42367911CA2CB7 /* IOSATDriver.cpp */; settings = {ATTRIBUTES = (); }; };
+		A813773214E6F9DD005EAAE7 /* ATASMARTSample.c in Sources */ = {isa = PBXBuildFile; fileRef = A813773114E6F9DD005EAAE7 /* ATASMARTSample.c */; };
+		A813773414E6F9F6005EAAE7 /* smart_status.c in Sources */ = {isa = PBXBuildFile; fileRef = A813773314E6F9F6005EAAE7 /* smart_status.c */; };
+		A81377E314E6FA10005EAAE7 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CDB8B614E52EB500881848 /* IOKit.framework */; };
+		A81377E414E6FA1A005EAAE7 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CDB8B614E52EB500881848 /* IOKit.framework */; };
+		A875924214DC7B55001E6C26 /* IOSATServices.h in Headers */ = {isa = PBXBuildFile; fileRef = A875924114DC7B55001E6C26 /* IOSATServices.h */; };
+		A875926114DC8069001E6C26 /* IOSATServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A875926014DC8069001E6C26 /* IOSATServices.cpp */; };
+		A87AE8BE14E19AC6000D2D60 /* SetPropertiesTestTool.h in Headers */ = {isa = PBXBuildFile; fileRef = A87AE8BC14E19AC6000D2D60 /* SetPropertiesTestTool.h */; };
+		A89ED6C514DF1D6000F82BEA /* SATSMARTUserClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A89ED6C114DF1D6000F82BEA /* SATSMARTUserClient.cpp */; };
+		A89ED6C614DF1D6000F82BEA /* SATSMARTUserClient.h in Headers */ = {isa = PBXBuildFile; fileRef = A89ED6C214DF1D6000F82BEA /* SATSMARTUserClient.h */; };
+		A8CDBAEE14E53F3E00881848 /* SATSMARTClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8CDB9BB14E5395800881848 /* SATSMARTClient.cpp */; };
+		A8CDBB0414E5407100881848 /* SetPropertiesTestTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A87AE8BD14E19AC6000D2D60 /* SetPropertiesTestTool.cpp */; };
+		A8CDBB0814E5409E00881848 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CDB8B614E52EB500881848 /* IOKit.framework */; };
+		A8CDBB3014E540C300881848 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CDB8B614E52EB500881848 /* IOKit.framework */; };
+		A8CDBB3114E540CF00881848 /* IOKit.framework in Headers */ = {isa = PBXBuildFile; fileRef = A8CDB8B614E52EB500881848 /* IOKit.framework */; };
+		A8D7730514E9B23000195DA7 /* IOSATBusCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8D7730414E9B23000195DA7 /* IOSATBusCommand.cpp */; };
+		A8D7732814E9B2DB00195DA7 /* IOSATCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8D7732714E9B2DB00195DA7 /* IOSATCommand.cpp */; };
+		A8D7732D14EABA9400195DA7 /* IOSATCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D7732C14EABA9400195DA7 /* IOSATCommand.h */; };
+		A8D7732F14EABAC600195DA7 /* IOSATBusCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D7732E14EABAC600195DA7 /* IOSATBusCommand.h */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1A224C3EFF42367911CA2CB7 /* IOSATDriver.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATDriver.h; sourceTree = "<group>"; };
+		1A224C3FFF42367911CA2CB7 /* IOSATDriver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATDriver.cpp; sourceTree = "<group>"; };
+		32D94FCF0562CBF700B6AF17 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		32D94FD00562CBF700B6AF17 /* ExternalSATDriver.kext */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExternalSATDriver.kext; sourceTree = BUILT_PRODUCTS_DIR; };
+		8DA8362C06AD9B9200E5AC22 /* Kernel.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Kernel.framework; path = /System/Library/Frameworks/Kernel.framework; sourceTree = "<absolute>"; };
+		A813771514E6F99B005EAAE7 /* smart_status */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smart_status; sourceTree = BUILT_PRODUCTS_DIR; };
+		A813772C14E6F9BC005EAAE7 /* smart_sample */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = smart_sample; sourceTree = BUILT_PRODUCTS_DIR; };
+		A813773114E6F9DD005EAAE7 /* ATASMARTSample.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = ATASMARTSample.c; path = TestTools/ATASMARTSample.c; sourceTree = "<group>"; };
+		A813773314E6F9F6005EAAE7 /* smart_status.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = smart_status.c; path = TestTools/smart_status.c; sourceTree = "<group>"; };
+		A875924114DC7B55001E6C26 /* IOSATServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATServices.h; sourceTree = "<group>"; };
+		A875926014DC8069001E6C26 /* IOSATServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATServices.cpp; sourceTree = "<group>"; };
+		A87AE8BC14E19AC6000D2D60 /* SetPropertiesTestTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SetPropertiesTestTool.h; path = TestTools/SetPropertiesTestTool.h; sourceTree = "<group>"; };
+		A87AE8BD14E19AC6000D2D60 /* SetPropertiesTestTool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SetPropertiesTestTool.cpp; path = TestTools/SetPropertiesTestTool.cpp; sourceTree = "<group>"; };
+		A89ED6C114DF1D6000F82BEA /* SATSMARTUserClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SATSMARTUserClient.cpp; sourceTree = "<group>"; };
+		A89ED6C214DF1D6000F82BEA /* SATSMARTUserClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SATSMARTUserClient.h; sourceTree = "<group>"; };
+		A8CDB8B614E52EB500881848 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
+		A8CDB9BB14E5395800881848 /* SATSMARTClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SATSMARTClient.cpp; sourceTree = "<group>"; };
+		A8CDB9BC14E5395800881848 /* SATSMARTClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SATSMARTClient.h; sourceTree = "<group>"; };
+		A8CDB9BD14E5395800881848 /* xATASMARTLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xATASMARTLib.h; sourceTree = "<group>"; };
+		A8CDB9BE14E5395800881848 /* SATSMARTLibPriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SATSMARTLibPriv.h; sourceTree = "<group>"; };
+		A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SATSMARTLib.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SATSMARTLib-Info.plist"; sourceTree = "<group>"; };
+		A8CDBAE514E53EA000881848 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A8CDBAFE14E5405F00881848 /* set_properties */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = set_properties; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8D7730414E9B23000195DA7 /* IOSATBusCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATBusCommand.cpp; sourceTree = "<group>"; };
+		A8D7732714E9B2DB00195DA7 /* IOSATCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATCommand.cpp; sourceTree = "<group>"; };
+		A8D7732C14EABA9400195DA7 /* IOSATCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATCommand.h; sourceTree = "<group>"; };
+		A8D7732E14EABAC600195DA7 /* IOSATBusCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATBusCommand.h; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		32D94FCB0562CBF700B6AF17 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A813771314E6F99B005EAAE7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A81377E314E6FA10005EAAE7 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A813772A14E6F9BC005EAAE7 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A81377E414E6FA1A005EAAE7 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8CDBA1014E53D3E00881848 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8CDBB3014E540C300881848 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8CDBAFC14E5405F00881848 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8CDBB0814E5409E00881848 /* IOKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		089C166AFE841209C02AAC07 /* ExternalSATDriver */ = {
+			isa = PBXGroup;
+			children = (
+				247142CAFF3F8F9811CA285C /* Source */,
+				8DA8362C06AD9B9200E5AC22 /* Kernel.framework */,
+				A8CDB8B614E52EB500881848 /* IOKit.framework */,
+				089C167CFE841241C02AAC07 /* Resources */,
+				19C28FB6FE9D52B211CA2CBB /* Products */,
+				A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */,
+			);
+			name = ExternalSATDriver;
+			sourceTree = "<group>";
+		};
+		089C167CFE841241C02AAC07 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				32D94FCF0562CBF700B6AF17 /* Info.plist */,
+				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		19C28FB6FE9D52B211CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				32D94FD00562CBF700B6AF17 /* ExternalSATDriver.kext */,
+				A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */,
+				A8CDBAFE14E5405F00881848 /* set_properties */,
+				A813771514E6F99B005EAAE7 /* smart_status */,
+				A813772C14E6F9BC005EAAE7 /* smart_sample */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		247142CAFF3F8F9811CA285C /* Source */ = {
+			isa = PBXGroup;
+			children = (
+				A8CDB9BA14E5395800881848 /* UserClientLib */,
+				A87AE8BB14E19A89000D2D60 /* TestTools */,
+				A89ED6BE14DF1D6000F82BEA /* UserClient */,
+				1A224C3EFF42367911CA2CB7 /* IOSATDriver.h */,
+				1A224C3FFF42367911CA2CB7 /* IOSATDriver.cpp */,
+				A8D7732E14EABAC600195DA7 /* IOSATBusCommand.h */,
+				A8D7730414E9B23000195DA7 /* IOSATBusCommand.cpp */,
+				A8D7732C14EABA9400195DA7 /* IOSATCommand.h */,
+				A8D7732714E9B2DB00195DA7 /* IOSATCommand.cpp */,
+				A875924114DC7B55001E6C26 /* IOSATServices.h */,
+				A875926014DC8069001E6C26 /* IOSATServices.cpp */,
+			);
+			name = Source;
+			sourceTree = "<group>";
+		};
+		A87AE8BB14E19A89000D2D60 /* TestTools */ = {
+			isa = PBXGroup;
+			children = (
+				A813773314E6F9F6005EAAE7 /* smart_status.c */,
+				A813773114E6F9DD005EAAE7 /* ATASMARTSample.c */,
+				A87AE8BC14E19AC6000D2D60 /* SetPropertiesTestTool.h */,
+				A87AE8BD14E19AC6000D2D60 /* SetPropertiesTestTool.cpp */,
+			);
+			name = TestTools;
+			sourceTree = "<group>";
+		};
+		A89ED6BE14DF1D6000F82BEA /* UserClient */ = {
+			isa = PBXGroup;
+			children = (
+				A89ED6C114DF1D6000F82BEA /* SATSMARTUserClient.cpp */,
+				A89ED6C214DF1D6000F82BEA /* SATSMARTUserClient.h */,
+			);
+			path = UserClient;
+			sourceTree = "<group>";
+		};
+		A8CDB9BA14E5395800881848 /* UserClientLib */ = {
+			isa = PBXGroup;
+			children = (
+				A8CDBAE514E53EA000881848 /* Info.plist */,
+				A8CDB9BB14E5395800881848 /* SATSMARTClient.cpp */,
+				A8CDB9BC14E5395800881848 /* SATSMARTClient.h */,
+				A8CDB9BD14E5395800881848 /* xATASMARTLib.h */,
+				A8CDB9BE14E5395800881848 /* SATSMARTLibPriv.h */,
+			);
+			path = UserClientLib;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		32D94FC50562CBF700B6AF17 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8CDBB3114E540CF00881848 /* IOKit.framework in Headers */,
+				32D94FC60562CBF700B6AF17 /* IOSATDriver.h in Headers */,
+				A875924214DC7B55001E6C26 /* IOSATServices.h in Headers */,
+				A89ED6C614DF1D6000F82BEA /* SATSMARTUserClient.h in Headers */,
+				A87AE8BE14E19AC6000D2D60 /* SetPropertiesTestTool.h in Headers */,
+				A8D7732D14EABA9400195DA7 /* IOSATCommand.h in Headers */,
+				A8D7732F14EABAC600195DA7 /* IOSATBusCommand.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		32D94FC30562CBF700B6AF17 /* ExternalSATDriver */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1DEB91D908733DB10010E9CD /* Build configuration list for PBXNativeTarget "ExternalSATDriver" */;
+			buildPhases = (
+				32D94FC50562CBF700B6AF17 /* Headers */,
+				32D94FC70562CBF700B6AF17 /* Resources */,
+				32D94FC90562CBF700B6AF17 /* Sources */,
+				32D94FCB0562CBF700B6AF17 /* Frameworks */,
+				32D94FCC0562CBF700B6AF17 /* Rez */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ExternalSATDriver;
+			productInstallPath = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+			productName = ExternalSATDriver;
+			productReference = 32D94FD00562CBF700B6AF17 /* ExternalSATDriver.kext */;
+			productType = "com.apple.product-type.kernel-extension.iokit";
+		};
+		A813771414E6F99B005EAAE7 /* smart_status */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A813772814E6F9A0005EAAE7 /* Build configuration list for PBXNativeTarget "smart_status" */;
+			buildPhases = (
+				A813771214E6F99B005EAAE7 /* Sources */,
+				A813771314E6F99B005EAAE7 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = smart_status;
+			productName = smart_status;
+			productReference = A813771514E6F99B005EAAE7 /* smart_status */;
+			productType = "com.apple.product-type.tool";
+		};
+		A813772B14E6F9BC005EAAE7 /* smart_sample */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A813773014E6F9DA005EAAE7 /* Build configuration list for PBXNativeTarget "smart_sample" */;
+			buildPhases = (
+				A813772914E6F9BC005EAAE7 /* Sources */,
+				A813772A14E6F9BC005EAAE7 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = smart_sample;
+			productName = smart_sample;
+			productReference = A813772C14E6F9BC005EAAE7 /* smart_sample */;
+			productType = "com.apple.product-type.tool";
+		};
+		A8CDBA1114E53D3E00881848 /* SATSMARTLib */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A8CDBA1614E53D3F00881848 /* Build configuration list for PBXNativeTarget "SATSMARTLib" */;
+			buildPhases = (
+				A8CDBA0E14E53D3E00881848 /* Resources */,
+				A8CDBA0F14E53D3E00881848 /* Sources */,
+				A8CDBA1014E53D3E00881848 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SATSMARTLib;
+			productName = SATSMARTLib;
+			productReference = A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */;
+			productType = "com.apple.product-type.bundle";
+		};
+		A8CDBAFD14E5405F00881848 /* TestTool */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A8CDBB0714E5408F00881848 /* Build configuration list for PBXNativeTarget "TestTool" */;
+			buildPhases = (
+				A8CDBAFB14E5405F00881848 /* Sources */,
+				A8CDBAFC14E5405F00881848 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestTool;
+			productName = TestTool;
+			productReference = A8CDBAFE14E5405F00881848 /* set_properties */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		089C1669FE841209C02AAC07 /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 1DEB91DD08733DB10010E9CD /* Build configuration list for PBXProject "ExternalSATDriver" */;
+			compatibilityVersion = "Xcode 3.1";
+			developmentRegion = English;
+			hasScannedForEncodings = 1;
+			knownRegions = (
+				English,
+				Japanese,
+				French,
+				German,
+			);
+			mainGroup = 089C166AFE841209C02AAC07 /* ExternalSATDriver */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A8CDBA1114E53D3E00881848 /* SATSMARTLib */,
+				32D94FC30562CBF700B6AF17 /* ExternalSATDriver */,
+				A8CDBAFD14E5405F00881848 /* TestTool */,
+				A813771414E6F99B005EAAE7 /* smart_status */,
+				A813772B14E6F9BC005EAAE7 /* smart_sample */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		32D94FC70562CBF700B6AF17 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32D94FC80562CBF700B6AF17 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8CDBA0E14E53D3E00881848 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXRezBuildPhase section */
+		32D94FCC0562CBF700B6AF17 /* Rez */ = {
+			isa = PBXRezBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXRezBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		32D94FC90562CBF700B6AF17 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				32D94FCA0562CBF700B6AF17 /* IOSATDriver.cpp in Sources */,
+				A875926114DC8069001E6C26 /* IOSATServices.cpp in Sources */,
+				A89ED6C514DF1D6000F82BEA /* SATSMARTUserClient.cpp in Sources */,
+				A8D7730514E9B23000195DA7 /* IOSATBusCommand.cpp in Sources */,
+				A8D7732814E9B2DB00195DA7 /* IOSATCommand.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A813771214E6F99B005EAAE7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A813773414E6F9F6005EAAE7 /* smart_status.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A813772914E6F9BC005EAAE7 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A813773214E6F9DD005EAAE7 /* ATASMARTSample.c in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8CDBA0F14E53D3E00881848 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8CDBAEE14E53F3E00881848 /* SATSMARTClient.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A8CDBAFB14E5405F00881848 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A8CDBB0414E5407100881848 /* SetPropertiesTestTool.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C167EFE841241C02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		1DEB91DA08733DB10010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1.0.0d1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				MODULE_NAME = com.yourcompany.driver.ExternalSATDriver;
+				MODULE_VERSION = 1.0.0d1;
+				PRODUCT_NAME = ExternalSATDriver;
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Debug;
+		};
+		1DEB91DB08733DB10010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CURRENT_PROJECT_VERSION = 1.0.0d1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_MODEL_TUNING = G5;
+				INFOPLIST_FILE = Info.plist;
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
+				MODULE_NAME = com.yourcompany.driver.ExternalSATDriver;
+				MODULE_VERSION = 1.0.0d1;
+				PRODUCT_NAME = ExternalSATDriver;
+				WRAPPER_EXTENSION = kext;
+			};
+			name = Release;
+		};
+		1DEB91DE08733DB10010E9CD /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Debug;
+		};
+		1DEB91DF08733DB10010E9CD /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				PREBINDING = NO;
+				SDKROOT = macosx10.6;
+			};
+			name = Release;
+		};
+		A813771714E6F99C005EAAE7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = smart_status;
+			};
+			name = Debug;
+		};
+		A813771814E6F99C005EAAE7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = smart_status;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		A813772E14E6F9BC005EAAE7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = smart_sample;
+			};
+			name = Debug;
+		};
+		A813772F14E6F9BC005EAAE7 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = smart_sample;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		A8CDBA1414E53D3F00881848 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = "SATSMARTLib-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = SATSMARTLib;
+				WRAPPER_EXTENSION = plugin;
+			};
+			name = Debug;
+		};
+		A8CDBA1514E53D3F00881848 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INFOPLIST_FILE = "SATSMARTLib-Info.plist";
+				INSTALL_PATH = "$(HOME)/Library/Bundles";
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = SATSMARTLib;
+				WRAPPER_EXTENSION = bundle;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		A8CDBB0014E5406000881848 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = set_properties;
+			};
+			name = Debug;
+		};
+		A8CDBB0114E5406000881848 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
+				INSTALL_PATH = /usr/local/bin;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Carbon,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = TestTool;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1DEB91D908733DB10010E9CD /* Build configuration list for PBXNativeTarget "ExternalSATDriver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91DA08733DB10010E9CD /* Debug */,
+				1DEB91DB08733DB10010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1DEB91DD08733DB10010E9CD /* Build configuration list for PBXProject "ExternalSATDriver" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1DEB91DE08733DB10010E9CD /* Debug */,
+				1DEB91DF08733DB10010E9CD /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A813772814E6F9A0005EAAE7 /* Build configuration list for PBXNativeTarget "smart_status" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A813771714E6F99C005EAAE7 /* Debug */,
+				A813771814E6F99C005EAAE7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A813773014E6F9DA005EAAE7 /* Build configuration list for PBXNativeTarget "smart_sample" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A813772E14E6F9BC005EAAE7 /* Debug */,
+				A813772F14E6F9BC005EAAE7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A8CDBA1614E53D3F00881848 /* Build configuration list for PBXNativeTarget "SATSMARTLib" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8CDBA1414E53D3F00881848 /* Debug */,
+				A8CDBA1514E53D3F00881848 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A8CDBB0714E5408F00881848 /* Build configuration list for PBXNativeTarget "TestTool" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A8CDBB0014E5406000881848 /* Debug */,
+				A8CDBB0114E5406000881848 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 089C1669FE841209C02AAC07 /* Project object */;
+}
