@@ -24,6 +24,7 @@ To try out:
  * Load the kernel extension. Open a terminal.
     sudo tail -f /private/var/log/kernel.log &
     cd SATSMARTDriver/build/Debug/
+    sudo cp -R SATSMARTLib.plugin /System/Library/Extensions
     sudo cp -R IOSATDriver.kext /tmp
     sudo kextutil -t /tmp/IOSATDriver.kext
 
