@@ -466,9 +466,7 @@ PrintSMARTData ( io_service_t service )
         &cfPlugInInterface,
         &score );
 
-    printf("pah1 %x\n", err);
     require_string ( ( err == kIOReturnSuccess ), ErrorExit, "IOCreatePlugInInterfaceForService" );
-    printf("pah2\n");
     herr = ( *cfPlugInInterface )->QueryInterface (
         cfPlugInInterface,
         CFUUIDGetUUIDBytes ( kIOATASMARTInterfaceID ),
@@ -489,7 +487,7 @@ PrintSMARTData ( io_service_t service )
     require ( ( err == kIOReturnSuccess ), ReleaseInterface );
 
     description = GetDriveDescription ( service );
-    printf ( "ATA Drive: " );
+    printf ( "SAT Drive: " );
     fflush ( stdout );
     CFShow ( description );
     CFRelease ( description );
