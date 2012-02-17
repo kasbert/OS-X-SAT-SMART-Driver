@@ -2,16 +2,16 @@
  * Copyright (c) 2002 Apple Computer, Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
- * 
+ *
  * Copyright (c) 1999-2003 Apple Computer, Inc.  All Rights Reserved.
- * 
+ *
  * This file contains Original Code and/or Modifications of Original Code
  * as defined in and that are subject to the Apple Public Source License
  * Version 2.0 (the 'License'). You may not use this file except in
  * compliance with the License. Please obtain a copy of the License at
  * http://www.opensource.apple.com/apsl/ and read it before using this
  * file.
- * 
+ *
  * The Original Code and all software distributed under the License are
  * distributed on an 'AS IS' basis, WITHOUT WARRANTY OF ANY KIND, EITHER
  * EXPRESS OR IMPLIED, AND APPLE HEREBY DISCLAIMS ALL SUCH WARRANTIES,
@@ -19,8 +19,8 @@
  * FITNESS FOR A PARTICULAR PURPOSE, QUIET ENJOYMENT OR NON-INFRINGEMENT.
  * Please see the License for the specific language governing rights and
  * limitations under the License.
- * 
- * @APPLE_LICENSE_HEADER_END@		
+ *
+ * @APPLE_LICENSE_HEADER_END@
  */
 
 
@@ -44,12 +44,12 @@
 
 enum
 {
-	kATASMARTLogDirectoryEntry	= 0x00
+    kATASMARTLogDirectoryEntry      = 0x00
 };
 
 enum
 {
-	kATADefaultSectorSize = 512
+    kATADefaultSectorSize = 512
 };
 
 
@@ -57,10 +57,10 @@ enum
 //	Macros
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-#define SAT_SMART_DEBUGGING_LEVEL 5
+#define SAT_SMART_DEBUGGING_LEVEL 0
 
 #if ( SAT_SMART_DEBUGGING_LEVEL > 0 )
-#define PRINT(x)	printf x
+#define PRINT(x)        printf x
 #else
 #define PRINT(x)
 #endif
@@ -70,41 +70,41 @@ enum
 //	Static variable initialization
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-UInt32	SATSMARTClient::sFactoryRefCount = 0;
+UInt32 SATSMARTClient::sFactoryRefCount = 0;
 
 
 IOCFPlugInInterface
-SATSMARTClient::sIOCFPlugInInterface = 
+SATSMARTClient::sIOCFPlugInInterface =
 {
-	0,
-	&SATSMARTClient::sQueryInterface,
-	&SATSMARTClient::sAddRef,
-	&SATSMARTClient::sRelease,
-	1, 0, // version/revision
-	&SATSMARTClient::sProbe,
-	&SATSMARTClient::sStart,
-	&SATSMARTClient::sStop
+    0,
+    &SATSMARTClient::sQueryInterface,
+    &SATSMARTClient::sAddRef,
+    &SATSMARTClient::sRelease,
+    1, 0,     // version/revision
+    &SATSMARTClient::sProbe,
+    &SATSMARTClient::sStart,
+    &SATSMARTClient::sStop
 };
 
 IOATASMARTInterface
 SATSMARTClient::sATASMARTInterface =
 {
-	0,
-	&SATSMARTClient::sQueryInterface,
-	&SATSMARTClient::sAddRef,
-	&SATSMARTClient::sRelease,
-	1, 0, // version/revision
-	&SATSMARTClient::sSMARTEnableDisableOperations,
-	&SATSMARTClient::sSMARTEnableDisableAutosave,
-	&SATSMARTClient::sSMARTReturnStatus,
-	&SATSMARTClient::sSMARTExecuteOffLineImmediate,
-	&SATSMARTClient::sSMARTReadData,
-	&SATSMARTClient::sSMARTValidateReadData,
-	&SATSMARTClient::sSMARTReadDataThresholds,
-	&SATSMARTClient::sSMARTReadLogDirectory,
-	&SATSMARTClient::sSMARTReadLogAtAddress,
-	&SATSMARTClient::sSMARTWriteLogAtAddress,
-	&SATSMARTClient::sGetATAIdentifyData
+    0,
+    &SATSMARTClient::sQueryInterface,
+    &SATSMARTClient::sAddRef,
+    &SATSMARTClient::sRelease,
+    1, 0,     // version/revision
+    &SATSMARTClient::sSMARTEnableDisableOperations,
+    &SATSMARTClient::sSMARTEnableDisableAutosave,
+    &SATSMARTClient::sSMARTReturnStatus,
+    &SATSMARTClient::sSMARTExecuteOffLineImmediate,
+    &SATSMARTClient::sSMARTReadData,
+    &SATSMARTClient::sSMARTValidateReadData,
+    &SATSMARTClient::sSMARTReadDataThresholds,
+    &SATSMARTClient::sSMARTReadLogDirectory,
+    &SATSMARTClient::sSMARTReadLogAtAddress,
+    &SATSMARTClient::sSMARTWriteLogAtAddress,
+    &SATSMARTClient::sGetATAIdentifyData
 };
 
 
@@ -122,15 +122,15 @@ SATSMARTClient::sATASMARTInterface =
 void *
 SATSMARTLibFactory ( CFAllocatorRef allocator, CFUUIDRef typeID )
 {
-	
-	PRINT ( ( "SATSMARTLibFactory called\n" ) );
-	
-	if ( CFEqual ( typeID, kIOATASMARTUserClientTypeID ) )
-		return ( void * ) SATSMARTClient::alloc ( );
-		
-	else
-		return NULL;
-	
+
+    PRINT ( ( "SATSMARTLibFactory called\n" ) );
+
+    if ( CFEqual ( typeID, kIOATASMARTUserClientTypeID ) )
+        return ( void * ) SATSMARTClient::alloc ( );
+
+    else
+        return NULL;
+
 }
 
 
@@ -142,27 +142,27 @@ SATSMARTLibFactory ( CFAllocatorRef allocator, CFUUIDRef typeID )
 IOCFPlugInInterface **
 SATSMARTClient::alloc ( void )
 {
-	
-	SATSMARTClient * 			userClient;
-	IOCFPlugInInterface ** 		interface = NULL;
-	
-	PRINT ( ( "SATSMARTClient::alloc called\n" ) );
-	
-	userClient = new SATSMARTClient;
-	if ( userClient != NULL )
-	{
-		
-		interface = ( IOCFPlugInInterface ** ) &userClient->fCFPlugInInterfaceMap.pseudoVTable;
-		
-	}
-	
-	return interface;
-	
+
+    SATSMARTClient *                        userClient;
+    IOCFPlugInInterface **          interface = NULL;
+
+    PRINT ( ( "SATSMARTClient::alloc called\n" ) );
+
+    userClient = new SATSMARTClient;
+    if ( userClient != NULL )
+    {
+
+        interface = ( IOCFPlugInInterface ** ) &userClient->fCFPlugInInterfaceMap.pseudoVTable;
+
+    }
+
+    return interface;
+
 }
 
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	¥ sFactoryAddRef - 	Static method to increment the refcount associated with
+//	¥ sFactoryAddRef -      Static method to increment the refcount associated with
 //						the CFPlugIn factory
 //																	[PUBLIC]
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -170,17 +170,17 @@ SATSMARTClient::alloc ( void )
 void
 SATSMARTClient::sFactoryAddRef ( void )
 {
-	
-	if ( sFactoryRefCount++ == 0 )
-	{
-		
-		CFUUIDRef	factoryID = kIOATASMARTLibFactoryID;
-		
-		CFRetain ( factoryID );
-		CFPlugInAddInstanceForFactory ( factoryID );
-		
-	}
-	
+
+    if ( sFactoryRefCount++ == 0 )
+    {
+
+        CFUUIDRef factoryID = kIOATASMARTLibFactoryID;
+
+        CFRetain ( factoryID );
+        CFPlugInAddInstanceForFactory ( factoryID );
+
+    }
+
 }
 
 
@@ -193,22 +193,22 @@ SATSMARTClient::sFactoryAddRef ( void )
 void
 SATSMARTClient::sFactoryRelease ( void )
 {
-	
-	if ( sFactoryRefCount-- == 1 )
-	{
-		
-		CFUUIDRef	factoryID = kIOATASMARTLibFactoryID;
-		
-		CFPlugInRemoveInstanceForFactory ( factoryID );
-		CFRelease ( factoryID );
-		
-	}
-	
-	else if ( sFactoryRefCount < 0 )
-	{
-		sFactoryRefCount = 0;
-	}
-	
+
+    if ( sFactoryRefCount-- == 1 )
+    {
+
+        CFUUIDRef factoryID = kIOATASMARTLibFactoryID;
+
+        CFPlugInRemoveInstanceForFactory ( factoryID );
+        CFRelease ( factoryID );
+
+    }
+
+    else if ( sFactoryRefCount < 0 )
+    {
+        sFactoryRefCount = 0;
+    }
+
 }
 
 
@@ -225,15 +225,15 @@ SATSMARTClient::sFactoryRelease ( void )
 
 SATSMARTClient::SATSMARTClient ( void ) : fRefCount ( 1 )
 {
-	
-	fCFPlugInInterfaceMap.pseudoVTable 	= ( IUnknownVTbl * ) &sIOCFPlugInInterface;
-	fCFPlugInInterfaceMap.obj 			= this;
-	
-	fATASMARTInterfaceMap.pseudoVTable	= ( IUnknownVTbl * ) &sATASMARTInterface;
-	fATASMARTInterfaceMap.obj			= this;
-	
-	sFactoryAddRef ( );
-	
+
+    fCFPlugInInterfaceMap.pseudoVTable      = ( IUnknownVTbl * ) &sIOCFPlugInInterface;
+    fCFPlugInInterfaceMap.obj                       = this;
+
+    fATASMARTInterfaceMap.pseudoVTable      = ( IUnknownVTbl * ) &sATASMARTInterface;
+    fATASMARTInterfaceMap.obj                       = this;
+
+    sFactoryAddRef ( );
+
 }
 
 
@@ -243,7 +243,7 @@ SATSMARTClient::SATSMARTClient ( void ) : fRefCount ( 1 )
 
 SATSMARTClient::~SATSMARTClient ( void )
 {
-	sFactoryRelease ( );
+    sFactoryRelease ( );
 }
 
 
@@ -260,55 +260,55 @@ SATSMARTClient::~SATSMARTClient ( void )
 HRESULT
 SATSMARTClient::QueryInterface ( REFIID iid, void ** ppv )
 {
-	
-	CFUUIDRef 	uuid 	= CFUUIDCreateFromUUIDBytes ( NULL, iid );
-	HRESULT 	result 	= S_OK;
-	
-	PRINT ( ( "SATSMARTClient : QueryInterface called\n" ) );
-	
-	if ( CFEqual ( uuid, IUnknownUUID ) ) 
-	{
-        
-		PRINT ( ( "IUnknownUUID requested\n" ) );
-		
-		*ppv = &fCFPlugInInterfaceMap;
+
+    CFUUIDRef uuid    = CFUUIDCreateFromUUIDBytes ( NULL, iid );
+    HRESULT result  = S_OK;
+
+    PRINT ( ( "SATSMARTClient : QueryInterface called\n" ) );
+
+    if ( CFEqual ( uuid, IUnknownUUID ) )
+    {
+
+        PRINT ( ( "IUnknownUUID requested\n" ) );
+
+        *ppv = &fCFPlugInInterfaceMap;
         AddRef ( );
-		
+
     }
-	
-	else if (CFEqual ( uuid, kIOCFPlugInInterfaceID ) ) 
-	{
-        
-		PRINT ( ( "kIOCFPlugInInterfaceID requested\n" ) );
-		
-		*ppv = &fCFPlugInInterfaceMap;
+
+    else if (CFEqual ( uuid, kIOCFPlugInInterfaceID ) )
+    {
+
+        PRINT ( ( "kIOCFPlugInInterfaceID requested\n" ) );
+
+        *ppv = &fCFPlugInInterfaceMap;
         AddRef ( );
-		
+
     }
-	
-	else if ( CFEqual ( uuid, kIOATASMARTInterfaceID ) ) 
-	{
-		
-		PRINT ( ( "kIOATASMARTInterfaceID requested\n" ) );
-		
-		*ppv = &fATASMARTInterfaceMap;
+
+    else if ( CFEqual ( uuid, kIOATASMARTInterfaceID ) )
+    {
+
+        PRINT ( ( "kIOATASMARTInterfaceID requested\n" ) );
+
+        *ppv = &fATASMARTInterfaceMap;
         AddRef ( );
-		
+
     }
-	
+
     else
-	{
-		
-		PRINT ( ( "unknown interface requested\n" ) );
-		*ppv = 0;
-		result = E_NOINTERFACE;
-		
-	}
-	
-	CFRelease ( uuid );
-	
-	return result;
-	
+    {
+
+        PRINT ( ( "unknown interface requested\n" ) );
+        *ppv = 0;
+        result = E_NOINTERFACE;
+
+    }
+
+    CFRelease ( uuid );
+
+    return result;
+
 }
 
 
@@ -319,10 +319,10 @@ SATSMARTClient::QueryInterface ( REFIID iid, void ** ppv )
 UInt32
 SATSMARTClient::AddRef ( void )
 {
-	
-	fRefCount += 1;
-	return fRefCount;
-	
+
+    fRefCount += 1;
+    return fRefCount;
+
 }
 
 
@@ -334,86 +334,86 @@ SATSMARTClient::AddRef ( void )
 UInt32
 SATSMARTClient::Release ( void )
 {
-	
-	UInt32 returnValue = fRefCount - 1;
-	
-	if ( returnValue > 0 )
-	{
-		fRefCount = returnValue;
-	}
-	
-	else if ( returnValue == 0 )
-	{
-		
-		fRefCount = returnValue;
-		delete this;
-		
-	}
-	
-	else
-	{
-		returnValue = 0;
-	}
-	
-	return returnValue;
-	
+
+    UInt32 returnValue = fRefCount - 1;
+
+    if ( returnValue > 0 )
+    {
+        fRefCount = returnValue;
+    }
+
+    else if ( returnValue == 0 )
+    {
+
+        fRefCount = returnValue;
+        delete this;
+
+    }
+
+    else
+    {
+        returnValue = 0;
+    }
+
+    return returnValue;
+
 }
 
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	¥ Probe - 	Called by IOKit to ascertain whether we can drive the provided
+//	¥ Probe -       Called by IOKit to ascertain whether we can drive the provided
 //				io_service_t										[PROTECTED]
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
 SATSMARTClient::Probe ( CFDictionaryRef propertyTable,
-						io_service_t 	inService,
-						SInt32 * 		order )
+                        io_service_t inService,
+                        SInt32 *                order )
 {
-	
-	CFMutableDictionaryRef	dict	= 0;
-	IOReturn				status 	= kIOReturnBadArgument;
-	
-	PRINT ( ( "SATSMARTClient::Probe called\n" ) );
-	
-	// Sanity check
-	if ( inService == 0 )
-	{
-		goto Exit;
-	}
-	
-	status = IORegistryEntryCreateCFProperties ( inService, &dict, NULL, 0 );
-	if ( status != kIOReturnSuccess )
-	{
-		goto Exit;
-	}
-	
-	if ( !CFDictionaryContainsKey ( dict, CFSTR ( "IOCFPlugInTypes" ) ) )
-	{
-		goto Exit;
-	}
-	
-	
-	status = kIOReturnSuccess;
-	
-	
+
+    CFMutableDictionaryRef dict    = 0;
+    IOReturn status  = kIOReturnBadArgument;
+
+    PRINT ( ( "SATSMARTClient::Probe called\n" ) );
+
+    // Sanity check
+    if ( inService == 0 )
+    {
+        goto Exit;
+    }
+
+    status = IORegistryEntryCreateCFProperties ( inService, &dict, NULL, 0 );
+    if ( status != kIOReturnSuccess )
+    {
+        goto Exit;
+    }
+
+    if ( !CFDictionaryContainsKey ( dict, CFSTR ( "IOCFPlugInTypes" ) ) )
+    {
+        goto Exit;
+    }
+
+
+    status = kIOReturnSuccess;
+
+
 Exit:
-	
-	
-	if ( dict != 0 )
-	{
-		
-		CFRelease ( dict );
-		dict = 0;
-		
-	}
-	
-	
-	PRINT ( ( "SATSMARTClient::Probe called %x\n",status ) );
-	return status;
-	
+
+
+    if ( dict != 0 )
+    {
+
+        CFRelease ( dict );
+        dict = 0;
+
+    }
+
+
+    PRINT ( ( "SATSMARTClient::Probe called %x\n",status ) );
+    return status;
+
 }
-	
+
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 //	¥ Start - Called to start providing our services.				[PROTECTED]
@@ -422,25 +422,25 @@ Exit:
 IOReturn
 SATSMARTClient::Start ( CFDictionaryRef propertyTable, io_service_t service )
 {
-	
-	IOReturn 	status = kIOReturnSuccess;
-	
-	PRINT ( ( "SATSMARTClient : Start\n" ) );
-	
-	fService = service;
-	status = IOServiceOpen ( fService,
-							 mach_task_self ( ), 
-							 kIOATASMARTLibConnection,
-							 &fConnection );
-	
-	if ( !fConnection )
-		status = kIOReturnNoDevice;
-	
-	PRINT ( ( "SATSMARTClient : IOServiceOpen status = 0x%08lx, connection = %d\n",
-			( UInt32 ) status, fConnection ) );
-	
-	return status;
-	
+
+    IOReturn status = kIOReturnSuccess;
+
+    PRINT ( ( "SATSMARTClient : Start\n" ) );
+
+    fService = service;
+    status = IOServiceOpen ( fService,
+        mach_task_self ( ),
+        kIOATASMARTLibConnection,
+        &fConnection );
+
+    if ( !fConnection )
+        status = kIOReturnNoDevice;
+
+    PRINT ( ( "SATSMARTClient : IOServiceOpen status = 0x%08lx, connection = %d\n",
+              ( UInt32 ) status, fConnection ) );
+
+    return status;
+
 }
 
 
@@ -451,20 +451,20 @@ SATSMARTClient::Start ( CFDictionaryRef propertyTable, io_service_t service )
 IOReturn
 SATSMARTClient::Stop ( void )
 {
-	
-	PRINT ( ( "SATSMARTClient : Stop\n" ) );
-		
-	if ( fConnection )
-	{
-		
-		PRINT ( ( "SATSMARTClient : IOServiceClose connection = %d\n", fConnection ) );
+
+    PRINT ( ( "SATSMARTClient : Stop\n" ) );
+
+    if ( fConnection )
+    {
+
+        PRINT ( ( "SATSMARTClient : IOServiceClose connection = %d\n", fConnection ) );
         IOServiceClose ( fConnection );
         fConnection = MACH_PORT_NULL;
-		
-	}
-	
-	return kIOReturnSuccess;
-	
+
+    }
+
+    return kIOReturnSuccess;
+
 }
 
 
@@ -483,22 +483,22 @@ SATSMARTClient::Stop ( void )
 IOReturn
 SATSMARTClient::SMARTEnableDisableOperations ( Boolean enable )
 {
-	
-	IOReturn	status 		= kIOReturnSuccess;
-	int			selection 	= ( enable == true ) ? 1 : 0;
 
-	PRINT ( ( "SATSMARTClient::SMARTEnableDisableOperations called\n" ) );
-	
-	status = IOConnectMethodScalarIScalarO ( fConnection,
-											 kIOATASMARTEnableDisableOperations,
-											 1,
-											 0,
-											 &selection );
+    IOReturn status          = kIOReturnSuccess;
+    int selection       = ( enable == true ) ? 1 : 0;
 
-	PRINT ( ( "SATSMARTClient::SMARTEnableDisableOperations status = %d\n", status ) );		
+    PRINT ( ( "SATSMARTClient::SMARTEnableDisableOperations called\n" ) );
 
-	return status;
-	
+    status = IOConnectMethodScalarIScalarO ( fConnection,
+        kIOATASMARTEnableDisableOperations,
+        1,
+        0,
+        &selection );
+
+    PRINT ( ( "SATSMARTClient::SMARTEnableDisableOperations status = %d\n", status ) );
+
+    return status;
+
 }
 
 
@@ -510,22 +510,22 @@ SATSMARTClient::SMARTEnableDisableOperations ( Boolean enable )
 IOReturn
 SATSMARTClient::SMARTEnableDisableAutosave ( Boolean enable )
 {
-	
-	IOReturn	status 		= kIOReturnSuccess;
-	int			selection 	= ( enable == true ) ? 1 : 0;
-	
-	PRINT ( ( "SATSMARTClient::SMARTEnableDisableAutosave called\n" ) );
-	
-	status = IOConnectMethodScalarIScalarO ( fConnection,
-											 kIOATASMARTEnableDisableAutoSave,
-											 1,
-											 0,
-											 &selection );
-	
-	PRINT ( ( "SATSMARTClient::SMARTEnableDisableAutosave status = %d\n", status ) );		
-	
-	return status;
-	
+
+    IOReturn status          = kIOReturnSuccess;
+    int selection       = ( enable == true ) ? 1 : 0;
+
+    PRINT ( ( "SATSMARTClient::SMARTEnableDisableAutosave called\n" ) );
+
+    status = IOConnectMethodScalarIScalarO ( fConnection,
+        kIOATASMARTEnableDisableAutoSave,
+        1,
+        0,
+        &selection );
+
+    PRINT ( ( "SATSMARTClient::SMARTEnableDisableAutosave status = %d\n", status ) );
+
+    return status;
+
 }
 
 
@@ -537,30 +537,30 @@ SATSMARTClient::SMARTEnableDisableAutosave ( Boolean enable )
 IOReturn
 SATSMARTClient::SMARTReturnStatus ( Boolean * exceededCondition )
 {
-	
-	IOReturn	status 		= kIOReturnSuccess;
-	int			condition 	= 0;
-	
-	PRINT ( ( "SATSMARTClient::SMARTReturnStatus called\n" ) );
-	
-	status = IOConnectMethodScalarIScalarO ( fConnection,
-											 kIOATASMARTReturnStatus,
-											 0,
-											 1,
-											 &condition );
-	
-	if ( status == kIOReturnSuccess )
-	{
-		
-		*exceededCondition = ( condition != 0 ) ? true : false;
-		PRINT ( ( "exceededCondition = %d\n", condition ) );
-		
-	}
-	
-	PRINT ( ( "SATSMARTClient::SMARTReturnStatus status = %d\n", status ) );		
-	
-	return status;
-	
+
+    IOReturn status          = kIOReturnSuccess;
+    int condition       = 0;
+
+    PRINT ( ( "SATSMARTClient::SMARTReturnStatus called\n" ) );
+
+    status = IOConnectMethodScalarIScalarO ( fConnection,
+        kIOATASMARTReturnStatus,
+        0,
+        1,
+        &condition );
+
+    if ( status == kIOReturnSuccess )
+    {
+
+        *exceededCondition = ( condition != 0 ) ? true : false;
+        PRINT ( ( "exceededCondition = %d\n", condition ) );
+
+    }
+
+    PRINT ( ( "SATSMARTClient::SMARTReturnStatus status = %d\n", status ) );
+
+    return status;
+
 }
 
 
@@ -572,22 +572,22 @@ SATSMARTClient::SMARTReturnStatus ( Boolean * exceededCondition )
 IOReturn
 SATSMARTClient::SMARTExecuteOffLineImmediate ( Boolean extendedTest )
 {
-	
-	IOReturn	status 		= kIOReturnSuccess;
-	int			selection 	= ( extendedTest == true ) ? 1 : 0;;
-	
-	PRINT ( ( "SATSMARTClient::SMARTExecuteOffLineImmediate called\n" ) );
-	
-	status = IOConnectMethodScalarIScalarO ( fConnection,
-											 kIOATASMARTExecuteOffLineImmediate,
-											 1,
-											 0,
-											 &selection );
-	
-	PRINT ( ( "SATSMARTClient::SMARTExecuteOffLineImmediate status = %d\n", status ) );		
-	
-	return status;
-	
+
+    IOReturn status          = kIOReturnSuccess;
+    int selection       = ( extendedTest == true ) ? 1 : 0;;
+
+    PRINT ( ( "SATSMARTClient::SMARTExecuteOffLineImmediate called\n" ) );
+
+    status = IOConnectMethodScalarIScalarO ( fConnection,
+        kIOATASMARTExecuteOffLineImmediate,
+        1,
+        0,
+        &selection );
+
+    PRINT ( ( "SATSMARTClient::SMARTExecuteOffLineImmediate status = %d\n", status ) );
+
+    return status;
+
 }
 
 
@@ -599,41 +599,41 @@ SATSMARTClient::SMARTExecuteOffLineImmediate ( Boolean extendedTest )
 IOReturn
 SATSMARTClient::SMARTReadData ( ATASMARTData * data )
 {
-	
-	IOReturn		status;
-	
-	PRINT ( ( "SATSMARTClient::SMARTReadData called\n" ) );
-	
-	status = IOConnectMethodScalarIScalarO (	fConnection, 	
-												kIOATASMARTReadData, 
-												1,
-												0,
-												( int * ) data );
-	
-	PRINT ( ( "SATSMARTClient::SMARTReadData status = %d\n", status ) );		
-	
-	#if 0
-	if ( status == kIOReturnSuccess )
-	{
-		
-		UInt8 *		ptr = ( UInt8 * ) data;
-		
-		printf ( "ATA SMART DATA\n" );
-		
-		for ( UInt8	index = 0; ( index < sizeof ( ATASMARTData ) ); index += 8 )
-		{
-			
-			printf ( "0x%02x 0x%02x 0x%02x 0x%02x | 0x%02x 0x%02x 0x%02x 0x%02x\n",
-					 ptr[index + 0], ptr[index + 1], ptr[index + 2], ptr[index + 3],
-					 ptr[index + 4], ptr[index + 5], ptr[index + 6], ptr[index + 7] );
-			
-		}
-		
-	}
-	#endif
-	
-	return status;
-	
+
+    IOReturn status;
+
+    PRINT ( ( "SATSMARTClient::SMARTReadData called\n" ) );
+
+    status = IOConnectMethodScalarIScalarO (        fConnection,
+        kIOATASMARTReadData,
+        1,
+        0,
+        ( int * ) data );
+
+    PRINT ( ( "SATSMARTClient::SMARTReadData status = %d\n", status ) );
+
+        #if 0
+    if ( status == kIOReturnSuccess )
+    {
+
+        UInt8 *         ptr = ( UInt8 * ) data;
+
+        printf ( "ATA SMART DATA\n" );
+
+        for ( UInt8 index = 0; ( index < sizeof ( ATASMARTData ) ); index += 8 )
+        {
+
+            printf ( "0x%02x 0x%02x 0x%02x 0x%02x | 0x%02x 0x%02x 0x%02x 0x%02x\n",
+                ptr[index + 0], ptr[index + 1], ptr[index + 2], ptr[index + 3],
+                ptr[index + 4], ptr[index + 5], ptr[index + 6], ptr[index + 7] );
+
+        }
+
+    }
+        #endif
+
+    return status;
+
 }
 
 
@@ -645,41 +645,41 @@ SATSMARTClient::SMARTReadData ( ATASMARTData * data )
 IOReturn
 SATSMARTClient::SMARTReadDataThresholds ( ATASMARTDataThresholds * data )
 {
-	
-	IOReturn		status;
-	
-	PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds called\n" ) );
-	
-	status = IOConnectMethodScalarIScalarO (	fConnection, 	
-												kIOATASMARTReadDataThresholds, 
-												1,
-												0,
-												( int * ) data );
-	
-	PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds status = %d\n", status ) );		
-	
-	#if 0
-	if ( status == kIOReturnSuccess )
-	{
-		
-		UInt8 *		ptr = ( UInt8 * ) data;
-		
-		printf ( "ATA SMART DATA THRESHOLDS\n" );
-		
-		for ( UInt8	index = 0; ( index < sizeof ( ATASMARTDataThresholds ) ); index += 8 )
-		{
-			
-			printf ( "0x%02x 0x%02x 0x%02x 0x%02x | 0x%02x 0x%02x 0x%02x 0x%02x\n",
-					 ptr[index + 0], ptr[index + 1], ptr[index + 2], ptr[index + 3],
-					 ptr[index + 4], ptr[index + 5], ptr[index + 6], ptr[index + 7] );
-			
-		}
-		
-	}
-	#endif
-	
-	return status;
-	
+
+    IOReturn status;
+
+    PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds called\n" ) );
+
+    status = IOConnectMethodScalarIScalarO (        fConnection,
+        kIOATASMARTReadDataThresholds,
+        1,
+        0,
+        ( int * ) data );
+
+    PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds status = %d\n", status ) );
+
+        #if 0
+    if ( status == kIOReturnSuccess )
+    {
+
+        UInt8 *         ptr = ( UInt8 * ) data;
+
+        printf ( "ATA SMART DATA THRESHOLDS\n" );
+
+        for ( UInt8 index = 0; ( index < sizeof ( ATASMARTDataThresholds ) ); index += 8 )
+        {
+
+            printf ( "0x%02x 0x%02x 0x%02x 0x%02x | 0x%02x 0x%02x 0x%02x 0x%02x\n",
+                ptr[index + 0], ptr[index + 1], ptr[index + 2], ptr[index + 3],
+                ptr[index + 4], ptr[index + 5], ptr[index + 6], ptr[index + 7] );
+
+        }
+
+    }
+        #endif
+
+    return status;
+
 }
 
 
@@ -691,97 +691,97 @@ SATSMARTClient::SMARTReadDataThresholds ( ATASMARTDataThresholds * data )
 IOReturn
 SATSMARTClient::SMARTReadLogDirectory ( ATASMARTLogDirectory * log )
 {
-	
-	IOReturn		status;
-	
-	status = SMARTReadLogAtAddress ( kATASMARTLogDirectoryEntry,
-									 ( void * ) log,
-									 sizeof ( ATASMARTLogDirectory ) );
-	
-	PRINT ( ( "SATSMARTClient::SMARTReadLogDirectory status = %d\n", status ) );		
-	
-	#if 0
-	if ( status == kIOReturnSuccess )
-	{
-		
-		UInt8 *		ptr = ( UInt8 * ) log;
 
-		printf ( "ATA SMART Log Directory\n" );
-		
-		for ( UInt8	index = 0; ( index < sizeof ( ATASMARTLogDirectory ) ); index += 8 )
-		{
-			
-			printf ( "0x%02x 0x%02x 0x%02x 0x%02x | 0x%02x 0x%02x 0x%02x 0x%02x\n",
-					 ptr[index + 0], ptr[index + 1], ptr[index + 2], ptr[index + 3],
-					 ptr[index + 4], ptr[index + 5], ptr[index + 6], ptr[index + 7] );
-			
-		}
-		
-	}
-	#endif
-	
-	return status;
-	
+    IOReturn status;
+
+    status = SMARTReadLogAtAddress ( kATASMARTLogDirectoryEntry,
+        ( void * ) log,
+        sizeof ( ATASMARTLogDirectory ) );
+
+    PRINT ( ( "SATSMARTClient::SMARTReadLogDirectory status = %d\n", status ) );
+
+        #if 0
+    if ( status == kIOReturnSuccess )
+    {
+
+        UInt8 *         ptr = ( UInt8 * ) log;
+
+        printf ( "ATA SMART Log Directory\n" );
+
+        for ( UInt8 index = 0; ( index < sizeof ( ATASMARTLogDirectory ) ); index += 8 )
+        {
+
+            printf ( "0x%02x 0x%02x 0x%02x 0x%02x | 0x%02x 0x%02x 0x%02x 0x%02x\n",
+                ptr[index + 0], ptr[index + 1], ptr[index + 2], ptr[index + 3],
+                ptr[index + 4], ptr[index + 5], ptr[index + 6], ptr[index + 7] );
+
+        }
+
+    }
+        #endif
+
+    return status;
+
 }
 
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	¥ SMARTReadLogAtAddress - 	Reads from the SMART Log at specified address
+//	¥ SMARTReadLogAtAddress -       Reads from the SMART Log at specified address
 //																	[PROTECTED]
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTClient::SMARTReadLogAtAddress ( UInt32		address,
-										void *		buffer,
-										UInt32		bufferSize )
+SATSMARTClient::SMARTReadLogAtAddress ( UInt32 address,
+                                        void *          buffer,
+                                        UInt32 bufferSize )
 {
-	
-	IOReturn				status;
-	IOByteCount				byteCount;
-	ATASMARTReadLogStruct	params;
-	
-	PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress called\n" ) );
-		
-	if ( ( address > 0xFF ) || ( buffer == NULL ) )
-	{
-		
-		status = kIOReturnBadArgument;
-		goto Exit;
-		
-	}
-	
-	byteCount = sizeof ( ATASMARTReadLogStruct );
-	
-	params.numSectors	= bufferSize / kATADefaultSectorSize;
-	params.logAddress	= address & 0xFF;
-	params.buffer		= buffer;
-	params.bufferSize	= bufferSize;
-	
-	// Can't read or write more than 16 sectors
-	if ( params.numSectors > 16 )
-	{
-		
-		status = kIOReturnBadArgument;
-		goto Exit;
-		
-	}
-	
-	PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress address = %ld\n", address ) );		
-	
-	status = IOConnectMethodScalarIStructureI (  fConnection, 	
-												 kIOATASMARTReadLogAtAddress, 
-												 0,
-												 byteCount,
-												 ( void * ) &params );
-	
-	
+
+    IOReturn status;
+    IOByteCount byteCount;
+    ATASMARTReadLogStruct params;
+
+    PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress called\n" ) );
+
+    if ( ( address > 0xFF ) || ( buffer == NULL ) )
+    {
+
+        status = kIOReturnBadArgument;
+        goto Exit;
+
+    }
+
+    byteCount = sizeof ( ATASMARTReadLogStruct );
+
+    params.numSectors       = bufferSize / kATADefaultSectorSize;
+    params.logAddress       = address & 0xFF;
+    params.buffer           = buffer;
+    params.bufferSize       = bufferSize;
+
+    // Can't read or write more than 16 sectors
+    if ( params.numSectors > 16 )
+    {
+
+        status = kIOReturnBadArgument;
+        goto Exit;
+
+    }
+
+    PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress address = %ld\n", address ) );
+
+    status = IOConnectMethodScalarIStructureI (  fConnection,
+        kIOATASMARTReadLogAtAddress,
+        0,
+        byteCount,
+        ( void * ) &params );
+
+
 Exit:
-	
-	
-	PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress status = %d\n", status ) );		
-	
-	return status;
-	
+
+
+    PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress status = %d\n", status ) );
+
+    return status;
+
 }
 
 
@@ -791,57 +791,57 @@ Exit:
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTClient::SMARTWriteLogAtAddress ( UInt32			address,
-										 const void *	buffer,
-										 UInt32			bufferSize )
+SATSMARTClient::SMARTWriteLogAtAddress ( UInt32 address,
+                                         const void *   buffer,
+                                         UInt32 bufferSize )
 {
-	
-	IOReturn				status;
-	IOByteCount				byteCount;
-	ATASMARTWriteLogStruct	params;
-	
-	PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress called\n" ) );
-		
-	if ( ( address > 0xFF ) || ( buffer == NULL ) )
-	{
-		
-		status = kIOReturnBadArgument;
-		goto Exit;
-		
-	}
-	
-	byteCount = sizeof ( ATASMARTWriteLogStruct );
-	
-	params.numSectors	= bufferSize / kATADefaultSectorSize;
-	params.logAddress	= address & 0xFF;
-	params.buffer		= buffer;
-	params.bufferSize	= bufferSize;
-	
-	// Can't read or write more than 16 sectors
-	if ( params.numSectors > 16 )
-	{
-		
-		status = kIOReturnBadArgument;
-		goto Exit;
-		
-	}
-	
-	PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress address = %ld\n", address ) );		
-	
-	status = IOConnectMethodScalarIStructureI (  fConnection, 	
-												 kIOATASMARTWriteLogAtAddress, 
-												 0,
-												 byteCount,
-												 ( void * ) &params );
-	
-	
+
+    IOReturn status;
+    IOByteCount byteCount;
+    ATASMARTWriteLogStruct params;
+
+    PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress called\n" ) );
+
+    if ( ( address > 0xFF ) || ( buffer == NULL ) )
+    {
+
+        status = kIOReturnBadArgument;
+        goto Exit;
+
+    }
+
+    byteCount = sizeof ( ATASMARTWriteLogStruct );
+
+    params.numSectors       = bufferSize / kATADefaultSectorSize;
+    params.logAddress       = address & 0xFF;
+    params.buffer           = buffer;
+    params.bufferSize       = bufferSize;
+
+    // Can't read or write more than 16 sectors
+    if ( params.numSectors > 16 )
+    {
+
+        status = kIOReturnBadArgument;
+        goto Exit;
+
+    }
+
+    PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress address = %ld\n", address ) );
+
+    status = IOConnectMethodScalarIStructureI (  fConnection,
+        kIOATASMARTWriteLogAtAddress,
+        0,
+        byteCount,
+        ( void * ) &params );
+
+
 Exit:
-	
-	
-	PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress status = %d\n", status ) );		
-	
-	return status;
-	
+
+
+    PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress status = %d\n", status ) );
+
+    return status;
+
 }
 
 
@@ -859,47 +859,47 @@ Exit:
 IOReturn
 SATSMARTClient::GetATAIdentifyData ( void * buffer, UInt32 inSize, UInt32 * outSize )
 {
-	
-	IOReturn					status				= kIOReturnBadArgument;
-	IOByteCount					byteCount			= 0;
-	ATAGetIdentifyDataStruct	params				= { 0 };
-	UInt32						bytesTransferred 	= 0;
-	
-	if ( ( buffer == NULL ) || ( inSize > 512 ) || ( inSize == 0 ) )
-	{
-		
-		status = kIOReturnBadArgument;
-		goto Exit;
-		
-	}
-	
-	byteCount = sizeof ( UInt32 );
-	
-	params.buffer		= buffer;
-	params.bufferSize	= inSize;
-	
-	PRINT ( ( "SATSMARTClient::GetATAIdentifyData\n" ) );		
-	
-	status = IOConnectMethodStructureIStructureO ( fConnection,
-												   kIOATASMARTGetIdentifyData,
-												   sizeof ( ATAGetIdentifyDataStruct ),
-												   &byteCount,
-												   ( void * ) &params,
-												   ( void * ) &bytesTransferred );
-	
-	if ( outSize != NULL )
-	{
-		*outSize = bytesTransferred;
-	}
-	
-	
+
+    IOReturn status                          = kIOReturnBadArgument;
+    IOByteCount byteCount                       = 0;
+    ATAGetIdentifyDataStruct params                          = { 0 };
+    UInt32 bytesTransferred        = 0;
+
+    if ( ( buffer == NULL ) || ( inSize > 512 ) || ( inSize == 0 ) )
+    {
+
+        status = kIOReturnBadArgument;
+        goto Exit;
+
+    }
+
+    byteCount = sizeof ( UInt32 );
+
+    params.buffer           = buffer;
+    params.bufferSize       = inSize;
+
+    PRINT ( ( "SATSMARTClient::GetATAIdentifyData\n" ) );
+
+    status = IOConnectMethodStructureIStructureO ( fConnection,
+        kIOATASMARTGetIdentifyData,
+        sizeof ( ATAGetIdentifyDataStruct ),
+        &byteCount,
+        ( void * ) &params,
+        ( void * ) &bytesTransferred );
+
+    if ( outSize != NULL )
+    {
+        *outSize = bytesTransferred;
+    }
+
+
 Exit:
-	
-	
-	PRINT ( ( "SATSMARTClient::GetATAIdentifyData status = %d\n", status ) );		
-	
-	return status;
-	
+
+
+    PRINT ( ( "SATSMARTClient::GetATAIdentifyData status = %d\n", status ) );
+
+    return status;
+
 }
 
 
@@ -918,10 +918,10 @@ Exit:
 HRESULT
 SATSMARTClient::sQueryInterface ( void * self, REFIID iid, void ** ppv )
 {
-	
-	SATSMARTClient *	obj = ( ( InterfaceMap * ) self )->obj;
-	return obj->QueryInterface ( iid, ppv );
-	
+
+    SATSMARTClient *        obj = ( ( InterfaceMap * ) self )->obj;
+    return obj->QueryInterface ( iid, ppv );
+
 }
 
 
@@ -933,10 +933,10 @@ SATSMARTClient::sQueryInterface ( void * self, REFIID iid, void ** ppv )
 UInt32
 SATSMARTClient::sAddRef ( void * self )
 {
-	
-	SATSMARTClient *	obj = ( ( InterfaceMap * ) self )->obj;
-	return obj->AddRef ( );
-	
+
+    SATSMARTClient *        obj = ( ( InterfaceMap * ) self )->obj;
+    return obj->AddRef ( );
+
 }
 
 
@@ -948,10 +948,10 @@ SATSMARTClient::sAddRef ( void * self )
 UInt32
 SATSMARTClient::sRelease ( void * self )
 {
-	
-	SATSMARTClient *	obj = ( ( InterfaceMap * ) self )->obj;
-	return obj->Release ( );
-	
+
+    SATSMARTClient *        obj = ( ( InterfaceMap * ) self )->obj;
+    return obj->Release ( );
+
 }
 
 
@@ -961,12 +961,12 @@ SATSMARTClient::sRelease ( void * self )
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTClient::sProbe ( void *				self,
-						 CFDictionaryRef	propertyTable, 
-						 io_service_t		service,
-						 SInt32 *			order )
+SATSMARTClient::sProbe ( void *                         self,
+                         CFDictionaryRef propertyTable,
+                         io_service_t service,
+                         SInt32 *                       order )
 {
-	return getThis ( self )->Probe ( propertyTable, service, order );
+    return getThis ( self )->Probe ( propertyTable, service, order );
 }
 
 
@@ -976,11 +976,11 @@ SATSMARTClient::sProbe ( void *				self,
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTClient::sStart ( void *				self,
-						 CFDictionaryRef	propertyTable,
-						 io_service_t		service )
+SATSMARTClient::sStart ( void *                         self,
+                         CFDictionaryRef propertyTable,
+                         io_service_t service )
 {
-	return getThis ( self )->Start ( propertyTable, service );
+    return getThis ( self )->Start ( propertyTable, service );
 }
 
 
@@ -992,7 +992,7 @@ SATSMARTClient::sStart ( void *				self,
 IOReturn
 SATSMARTClient::sStop ( void * self )
 {
-	return getThis ( self )->Stop ( );
+    return getThis ( self )->Stop ( );
 }
 
 
@@ -1004,7 +1004,7 @@ SATSMARTClient::sStop ( void * self )
 IOReturn
 SATSMARTClient::sSMARTEnableDisableOperations ( void * self, Boolean enable )
 {
-	return getThis ( self )->SMARTEnableDisableOperations ( enable );
+    return getThis ( self )->SMARTEnableDisableOperations ( enable );
 }
 
 
@@ -1016,7 +1016,7 @@ SATSMARTClient::sSMARTEnableDisableOperations ( void * self, Boolean enable )
 IOReturn
 SATSMARTClient::sSMARTEnableDisableAutosave ( void * self, Boolean enable )
 {
-	return getThis ( self )->SMARTEnableDisableAutosave ( enable );
+    return getThis ( self )->SMARTEnableDisableAutosave ( enable );
 }
 
 
@@ -1028,7 +1028,7 @@ SATSMARTClient::sSMARTEnableDisableAutosave ( void * self, Boolean enable )
 IOReturn
 SATSMARTClient::sSMARTReturnStatus ( void * self, Boolean * exceededCondition )
 {
-	return getThis ( self )->SMARTReturnStatus ( exceededCondition );
+    return getThis ( self )->SMARTReturnStatus ( exceededCondition );
 }
 
 
@@ -1040,7 +1040,7 @@ SATSMARTClient::sSMARTReturnStatus ( void * self, Boolean * exceededCondition )
 IOReturn
 SATSMARTClient::sSMARTExecuteOffLineImmediate ( void * self, Boolean extendedTest )
 {
-	return getThis ( self )->SMARTExecuteOffLineImmediate ( extendedTest );
+    return getThis ( self )->SMARTExecuteOffLineImmediate ( extendedTest );
 }
 
 
@@ -1052,7 +1052,7 @@ SATSMARTClient::sSMARTExecuteOffLineImmediate ( void * self, Boolean extendedTes
 IOReturn
 SATSMARTClient::sSMARTReadData ( void * self, ATASMARTData * data )
 {
-	return getThis ( self )->SMARTReadData ( data );
+    return getThis ( self )->SMARTReadData ( data );
 }
 
 
@@ -1064,35 +1064,35 @@ SATSMARTClient::sSMARTReadData ( void * self, ATASMARTData * data )
 IOReturn
 SATSMARTClient::sSMARTValidateReadData ( void * self, const ATASMARTData * data )
 {
-	
-	SInt8		checksum 	= 0;
-	UInt32		index 		= 0;
-	SInt8 *		ptr			= ( SInt8 * ) data;
-	IOReturn	status		= kIOReturnError;
-	
-	PRINT ( ( "sSMARTValidateReadData called\n" ) );
 
-	// Checksum the 511 bytes of the structure;
-	for ( index = 0; index < ( sizeof ( ATASMARTData ) - 1 ); index++ )
-	{
-		
-		checksum += ptr[index];
-		
-	}
-	
-	PRINT ( ( "Checksum = %d\n", checksum ) );
-	PRINT ( ( "ptr[511] = %d\n", ptr[511] ) );
-	
-	if ( ( checksum + ptr[511] ) == 0 )
-	{
-		
-		PRINT ( ( "Checksum is valid\n" ) );
-		status = kIOReturnSuccess;
-		
-	}
-	
-	return status;
-	
+    SInt8 checksum        = 0;
+    UInt32 index           = 0;
+    SInt8 *         ptr                     = ( SInt8 * ) data;
+    IOReturn status          = kIOReturnError;
+
+    PRINT ( ( "sSMARTValidateReadData called\n" ) );
+
+    // Checksum the 511 bytes of the structure;
+    for ( index = 0; index < ( sizeof ( ATASMARTData ) - 1 ); index++ )
+    {
+
+        checksum += ptr[index];
+
+    }
+
+    PRINT ( ( "Checksum = %d\n", checksum ) );
+    PRINT ( ( "ptr[511] = %d\n", ptr[511] ) );
+
+    if ( ( checksum + ptr[511] ) == 0 )
+    {
+
+        PRINT ( ( "Checksum is valid\n" ) );
+        status = kIOReturnSuccess;
+
+    }
+
+    return status;
+
 }
 
 
@@ -1103,10 +1103,10 @@ SATSMARTClient::sSMARTValidateReadData ( void * self, const ATASMARTData * data 
 
 IOReturn
 SATSMARTClient::sSMARTReadDataThresholds (
-							void *						self,
-							ATASMARTDataThresholds * 	data )
+    void *                                          self,
+    ATASMARTDataThresholds *        data )
 {
-	return getThis ( self )->SMARTReadDataThresholds ( data );
+    return getThis ( self )->SMARTReadDataThresholds ( data );
 }
 
 
@@ -1118,7 +1118,7 @@ SATSMARTClient::sSMARTReadDataThresholds (
 IOReturn
 SATSMARTClient::sSMARTReadLogDirectory ( void * self, ATASMARTLogDirectory * log )
 {
-	return getThis ( self )->SMARTReadLogDirectory ( log );
+    return getThis ( self )->SMARTReadLogDirectory ( log );
 }
 
 
@@ -1128,12 +1128,12 @@ SATSMARTClient::sSMARTReadLogDirectory ( void * self, ATASMARTLogDirectory * log
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTClient::sSMARTReadLogAtAddress ( void *		self,
-										 UInt32		address,
-										 void *		buffer,
-										 UInt32		size )
+SATSMARTClient::sSMARTReadLogAtAddress ( void *         self,
+                                         UInt32 address,
+                                         void *         buffer,
+                                         UInt32 size )
 {
-	return getThis ( self )->SMARTReadLogAtAddress ( address, buffer, size );
+    return getThis ( self )->SMARTReadLogAtAddress ( address, buffer, size );
 }
 
 
@@ -1143,12 +1143,12 @@ SATSMARTClient::sSMARTReadLogAtAddress ( void *		self,
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTClient::sSMARTWriteLogAtAddress ( void *		self,
-										  UInt32		address,
-										  const void *	buffer,
-										  UInt32		size )
+SATSMARTClient::sSMARTWriteLogAtAddress ( void *                self,
+                                          UInt32 address,
+                                          const void *  buffer,
+                                          UInt32 size )
 {
-	return getThis ( self )->SMARTWriteLogAtAddress ( address, buffer, size );
+    return getThis ( self )->SMARTWriteLogAtAddress ( address, buffer, size );
 }
 
 
@@ -1160,5 +1160,5 @@ SATSMARTClient::sSMARTWriteLogAtAddress ( void *		self,
 IOReturn
 SATSMARTClient::sGetATAIdentifyData ( void * self, void * buffer, UInt32 inSize, UInt32 * outSize )
 {
-	return getThis ( self )->GetATAIdentifyData ( buffer, inSize, outSize );
+    return getThis ( self )->GetATAIdentifyData ( buffer, inSize, outSize );
 }
