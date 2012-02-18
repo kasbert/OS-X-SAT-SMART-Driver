@@ -1,4 +1,8 @@
 /*
+ * Modified by Jarkko Sonninen 2012
+ */
+
+/*
  * smart_status.c
  * SMARTStatus
  *

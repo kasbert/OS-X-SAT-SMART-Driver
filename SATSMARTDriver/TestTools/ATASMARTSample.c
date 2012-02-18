@@ -1,4 +1,6 @@
-// Old sample. Does not work with current drivers. Should use "SMART Capable" key
+/*
+ * Modified by Jarkko Sonninen 2012
+ */
 
 /*
  * © Copyright 2003 Apple Computer, Inc. All rights reserved.
@@ -518,8 +520,6 @@ ReleasePlugIn:
 
 
 ErrorExit:
-    printf("err %x\n", err);
-
     return err;
 
 }

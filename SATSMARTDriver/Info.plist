@@ -11,7 +11,7 @@
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>dungeon.driver.${PRODUCT_NAME:rfc1034Identifier}</string>
+	<string>org.dungeon.driver.${PRODUCT_NAME:rfc1034Identifier}</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -22,6 +22,8 @@
 	<string>1</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
+	<key>OSBundleRequired</key>
+	<string>Local-Root</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>IOSATDriver</key>
@@ -35,17 +37,17 @@
 			<key>IOClass</key>
 			<string>org_dungeon_driver_IOSATDriver</string>
 			<key>CFBundleIdentifier</key>
-			<string>dungeon.driver.${PRODUCT_NAME:rfc1034Identifier}</string>
+			<string>org.dungeon.driver.${PRODUCT_NAME:rfc1034Identifier}</string>
 			<key>Vendor Name</key>
 			<string>Ext Hard</string>
 			<key>Product Name</key>
 			<string> Disk</string>
 			<key>Peripheral Device Type</key>
 			<integer>0</integer>
-			<key>idProduct</key>
-			<integer>5117</integer>
-			<key>idVendor</key>
-			<integer>4672</integer>
+			<key>xProduct Identification</key>
+			<string>My Book</string>
+			<key>xVendor Identification</key>
+			<string>WD</string>
 			<key>IOProbeScore</key>
 			<integer>4000</integer>
 		</dict>

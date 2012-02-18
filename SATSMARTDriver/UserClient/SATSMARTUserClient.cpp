@@ -1,4 +1,8 @@
 /*
+ * Modified by Jarkko Sonninen 2012
+ */
+
+/*
  * Copyright (c) 2002-2003 Apple Computer, Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@
@@ -22,7 +26,6 @@
  *
  * @APPLE_LICENSE_HEADER_END@
  */
-
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 //	Includes
@@ -49,39 +52,8 @@
 
 #include "IOSATServices.h"
 
-
-//ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-//	Macros
-//ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
-
-// For debugging, set ATA_SMART_USER_CLIENT_DEBUGGING_LEVEL to one
-// of the following values:
-//		0	No debugging    (GM release level)
-//              1       PANIC_NOW only
-//		2	PANIC_NOW and ERROR_LOG
-//		3	PANIC_NOW, ERROR_LOG and STATUS_LOG
-#define ATA_SMART_USER_CLIENT_DEBUGGING_LEVEL 5
-
-#if ( ATA_SMART_USER_CLIENT_DEBUGGING_LEVEL >= 1 )
-#define PANIC_NOW(x)            IOPanic x
-#else
-#define PANIC_NOW(x)
-#endif
-
-#if ( ATA_SMART_USER_CLIENT_DEBUGGING_LEVEL >= 2 )
-#define xERROR_LOG(x)            IOLog x
-#else
-#define xERROR_LOG(x)
-#endif
-
-#if ( ATA_SMART_USER_CLIENT_DEBUGGING_LEVEL >= 3 )
-#define xSTATUS_LOG(x)           IOLog x
-#else
-#define xSTATUS_LOG(x)
-#endif
-
-
 #define DEBUG 1
+#undef DEBUG
 
 #ifdef DEBUG
 #define DEBUG_LOG IOLog
@@ -417,8 +389,7 @@ SATSMARTUserClient::message ( UInt32 type, IOService * provider, void * arg )
 {
     IOReturn status = kIOReturnSuccess;
 
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
-    DEBUG_LOG ("type = %ld, provider = %p\n", type, provider );
+    DEBUG_LOG("[%p]::%s type = %ld, provider = %p\n", this, __FUNCTION__, type, provider );
 
     switch ( type )
     {
@@ -1556,11 +1527,9 @@ SATSMARTUserClient::HandleTerminate ( IOService * provider )
     // Check if we have our provider open.
     if ( provider->isOpen ( this ) )
     {
-
         // Yes we do, so close the connection
-        DEBUG_LOG ( "Closing provider\n" );
+        DEBUG_LOG("[%p]::%s closing provider\n", this, __FUNCTION__);
         provider->close ( this, kIOATASMARTUserClientAccessMask );
-
     }
 
     // Decouple us from the IORegistry.
@@ -1737,16 +1706,14 @@ SATSMARTUserClient::sCommandCallback ( IOSATCommand * command )
 {
 
     SATSMARTRefCon *                refCon  = NULL;
-    DEBUG_LOG("%s\n", __FUNCTION__);
+    DEBUG_LOG("%s command %p\n", __FUNCTION__, command);
 
     refCon = ( SATSMARTRefCon * ) command->refCon;
     if ( refCon == NULL )
     {
-
         ERROR_LOG ( "SATSMARTUserClient::sCommandCallback refCon == NULL.\n" );
-        PANIC_NOW ( ( "SATSMARTUserClient::sCommandCallback refCon == NULL." ) );
+        //IOPanic ( "SATSMARTUserClient::sCommandCallback refCon == NULL." );
         return;
-
     }
 
     refCon->isDone = true;

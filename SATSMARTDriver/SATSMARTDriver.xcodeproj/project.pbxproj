@@ -16,7 +16,6 @@
 		A81377E414E6FA1A005EAAE7 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CDB8B614E52EB500881848 /* IOKit.framework */; };
 		A875924214DC7B55001E6C26 /* IOSATServices.h in Headers */ = {isa = PBXBuildFile; fileRef = A875924114DC7B55001E6C26 /* IOSATServices.h */; };
 		A875926114DC8069001E6C26 /* IOSATServices.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A875926014DC8069001E6C26 /* IOSATServices.cpp */; };
-		A87AE8BE14E19AC6000D2D60 /* SetPropertiesTestTool.h in Headers */ = {isa = PBXBuildFile; fileRef = A87AE8BC14E19AC6000D2D60 /* SetPropertiesTestTool.h */; };
 		A89ED6C514DF1D6000F82BEA /* SATSMARTUserClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A89ED6C114DF1D6000F82BEA /* SATSMARTUserClient.cpp */; };
 		A89ED6C614DF1D6000F82BEA /* SATSMARTUserClient.h in Headers */ = {isa = PBXBuildFile; fileRef = A89ED6C214DF1D6000F82BEA /* SATSMARTUserClient.h */; };
 		A8CDBAEE14E53F3E00881848 /* SATSMARTClient.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8CDB9BB14E5395800881848 /* SATSMARTClient.cpp */; };
@@ -29,6 +28,49 @@
 		A8D7732D14EABA9400195DA7 /* IOSATCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D7732C14EABA9400195DA7 /* IOSATCommand.h */; };
 		A8D7732F14EABAC600195DA7 /* IOSATBusCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D7732E14EABAC600195DA7 /* IOSATBusCommand.h */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		A8B9A88E14EE2E5A00E6B6F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A8CDBAFD14E5405F00881848;
+			remoteInfo = TestTool;
+		};
+		A8B9A95D14EE2F2F00E6B6F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A8CDBA1114E53D3E00881848;
+			remoteInfo = SATSMARTLib;
+		};
+		A8B9A95F14EE2F3700E6B6F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A813772B14E6F9BC005EAAE7;
+			remoteInfo = smart_sample;
+		};
+		A8B9A96114EE2F3700E6B6F4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A813771414E6F99B005EAAE7;
+			remoteInfo = smart_status;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		A8DEE19C14EE9359006F2D8E /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = humppa;
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		089C167EFE841241C02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -43,18 +85,15 @@
 		A813773314E6F9F6005EAAE7 /* smart_status.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; name = smart_status.c; path = TestTools/smart_status.c; sourceTree = "<group>"; };
 		A875924114DC7B55001E6C26 /* IOSATServices.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATServices.h; sourceTree = "<group>"; };
 		A875926014DC8069001E6C26 /* IOSATServices.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATServices.cpp; sourceTree = "<group>"; };
-		A87AE8BC14E19AC6000D2D60 /* SetPropertiesTestTool.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SetPropertiesTestTool.h; path = TestTools/SetPropertiesTestTool.h; sourceTree = "<group>"; };
 		A87AE8BD14E19AC6000D2D60 /* SetPropertiesTestTool.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SetPropertiesTestTool.cpp; path = TestTools/SetPropertiesTestTool.cpp; sourceTree = "<group>"; };
 		A89ED6C114DF1D6000F82BEA /* SATSMARTUserClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SATSMARTUserClient.cpp; sourceTree = "<group>"; };
 		A89ED6C214DF1D6000F82BEA /* SATSMARTUserClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SATSMARTUserClient.h; sourceTree = "<group>"; };
 		A8CDB8B614E52EB500881848 /* IOKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = IOKit.framework; path = /System/Library/Frameworks/IOKit.framework; sourceTree = "<absolute>"; };
 		A8CDB9BB14E5395800881848 /* SATSMARTClient.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = SATSMARTClient.cpp; sourceTree = "<group>"; };
 		A8CDB9BC14E5395800881848 /* SATSMARTClient.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SATSMARTClient.h; sourceTree = "<group>"; };
-		A8CDB9BD14E5395800881848 /* xATASMARTLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = xATASMARTLib.h; sourceTree = "<group>"; };
 		A8CDB9BE14E5395800881848 /* SATSMARTLibPriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SATSMARTLibPriv.h; sourceTree = "<group>"; };
 		A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SATSMARTLib.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
-		A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "SATSMARTLib-Info.plist"; sourceTree = "<group>"; };
-		A8CDBAE514E53EA000881848 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "SATSMARTLib-Info.plist"; path = "UserClientLib/SATSMARTLib-Info.plist"; sourceTree = "<group>"; };
 		A8CDBAFE14E5405F00881848 /* set_properties */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = set_properties; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8D7730414E9B23000195DA7 /* IOSATBusCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATBusCommand.cpp; sourceTree = "<group>"; };
 		A8D7732714E9B2DB00195DA7 /* IOSATCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATCommand.cpp; sourceTree = "<group>"; };
@@ -113,7 +152,6 @@
 				A8CDB8B614E52EB500881848 /* IOKit.framework */,
 				089C167CFE841241C02AAC07 /* Resources */,
 				19C28FB6FE9D52B211CA2CBB /* Products */,
-				A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */,
 			);
 			name = SATSMARTDriver;
 			sourceTree = "<group>";
@@ -121,6 +159,7 @@
 		089C167CFE841241C02AAC07 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */,
 				32D94FCF0562CBF700B6AF17 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
 			);
@@ -162,7 +201,6 @@
 			children = (
 				A813773314E6F9F6005EAAE7 /* smart_status.c */,
 				A813773114E6F9DD005EAAE7 /* ATASMARTSample.c */,
-				A87AE8BC14E19AC6000D2D60 /* SetPropertiesTestTool.h */,
 				A87AE8BD14E19AC6000D2D60 /* SetPropertiesTestTool.cpp */,
 			);
 			name = TestTools;
@@ -180,10 +218,8 @@
 		A8CDB9BA14E5395800881848 /* UserClientLib */ = {
 			isa = PBXGroup;
 			children = (
-				A8CDBAE514E53EA000881848 /* Info.plist */,
 				A8CDB9BB14E5395800881848 /* SATSMARTClient.cpp */,
 				A8CDB9BC14E5395800881848 /* SATSMARTClient.h */,
-				A8CDB9BD14E5395800881848 /* xATASMARTLib.h */,
 				A8CDB9BE14E5395800881848 /* SATSMARTLibPriv.h */,
 			);
 			path = UserClientLib;
@@ -200,7 +236,6 @@
 				32D94FC60562CBF700B6AF17 /* IOSATDriver.h in Headers */,
 				A875924214DC7B55001E6C26 /* IOSATServices.h in Headers */,
 				A89ED6C614DF1D6000F82BEA /* SATSMARTUserClient.h in Headers */,
-				A87AE8BE14E19AC6000D2D60 /* SetPropertiesTestTool.h in Headers */,
 				A8D7732D14EABA9400195DA7 /* IOSATCommand.h in Headers */,
 				A8D7732F14EABAC600195DA7 /* IOSATBusCommand.h in Headers */,
 			);
@@ -215,6 +250,7 @@
 			buildPhases = (
 				32D94FC50562CBF700B6AF17 /* Headers */,
 				32D94FC70562CBF700B6AF17 /* Resources */,
+				A8DEE19C14EE9359006F2D8E /* CopyFiles */,
 				32D94FC90562CBF700B6AF17 /* Sources */,
 				32D94FCB0562CBF700B6AF17 /* Frameworks */,
 				32D94FCC0562CBF700B6AF17 /* Rez */,
@@ -222,6 +258,10 @@
 			buildRules = (
 			);
 			dependencies = (
+				A8B9A95E14EE2F2F00E6B6F4 /* PBXTargetDependency */,
+				A8B9A96214EE2F3700E6B6F4 /* PBXTargetDependency */,
+				A8B9A96014EE2F3700E6B6F4 /* PBXTargetDependency */,
+				A8B9A88F14EE2E5A00E6B6F4 /* PBXTargetDependency */,
 			);
 			name = SATSMARTDriver;
 			productInstallPath = "$(SYSTEM_LIBRARY_DIR)/Extensions";
@@ -313,8 +353,8 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A8CDBA1114E53D3E00881848 /* SATSMARTLib */,
 				32D94FC30562CBF700B6AF17 /* SATSMARTDriver */,
+				A8CDBA1114E53D3E00881848 /* SATSMARTLib */,
 				A8CDBAFD14E5405F00881848 /* TestTool */,
 				A813771414E6F99B005EAAE7 /* smart_status */,
 				A813772B14E6F9BC005EAAE7 /* smart_sample */,
@@ -396,6 +436,29 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A8B9A88F14EE2E5A00E6B6F4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A8CDBAFD14E5405F00881848 /* TestTool */;
+			targetProxy = A8B9A88E14EE2E5A00E6B6F4 /* PBXContainerItemProxy */;
+		};
+		A8B9A95E14EE2F2F00E6B6F4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A8CDBA1114E53D3E00881848 /* SATSMARTLib */;
+			targetProxy = A8B9A95D14EE2F2F00E6B6F4 /* PBXContainerItemProxy */;
+		};
+		A8B9A96014EE2F3700E6B6F4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A813772B14E6F9BC005EAAE7 /* smart_sample */;
+			targetProxy = A8B9A95F14EE2F3700E6B6F4 /* PBXContainerItemProxy */;
+		};
+		A8B9A96214EE2F3700E6B6F4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A813771414E6F99B005EAAE7 /* smart_status */;
+			targetProxy = A8B9A96114EE2F3700E6B6F4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C167DFE841241C02AAC07 /* InfoPlist.strings */ = {
@@ -559,13 +622,14 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				COPY_PHASE_STRIP = NO;
+				EXECUTABLE_PREFIX = "";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
 				GCC_MODEL_TUNING = G5;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				INFOPLIST_FILE = "SATSMARTLib-Info.plist";
+				INFOPLIST_FILE = "UserClientLib/SATSMARTLib-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -573,6 +637,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = SATSMARTLib;
+				SYMROOT = build;
 				WRAPPER_EXTENSION = plugin;
 			};
 			name = Debug;

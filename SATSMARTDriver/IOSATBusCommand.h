@@ -1,4 +1,8 @@
 /*
+ * Modified by Jarkko Sonninen 2012
+ */
+
+/*
  * Copyright (c) 1998-2008 Apple Inc. All rights reserved.
  *
  * @APPLE_LICENSE_HEADER_START@

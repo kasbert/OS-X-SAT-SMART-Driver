@@ -1,4 +1,8 @@
 /*
+ * Modified by Jarkko Sonninen 2012
+ */
+
+/*
    g++ -framework CoreFoundation -framework IOKit -o SetPropertiesTestTool SetPropertiesTestTool.cpp
  */
 

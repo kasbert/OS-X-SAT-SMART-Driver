@@ -1,10 +1,5 @@
 /*
- *  IOSATServices.cpp
- *  IOSATDriver
- *
- *  Created by Vieras on 3.2.2012.
- *  Copyright 2012 __MyCompanyName__. All rights reserved.
- *
+ * Modified by Jarkko Sonninen 2012
  */
 
 /*
@@ -52,6 +47,7 @@ OSDefineMetaClassAndStructors ( IOSATServices, IOBlockStorageServices );
 
 
 #define DEBUG 1
+#undef DEBUG
 
 #ifdef DEBUG
 #define DEBUG_LOG IOLog
@@ -127,11 +123,10 @@ IOSATServices::attach ( IOService * provider )
             }
         }
 
-        setProperty ( "kIOPropertyDeviceCharacteristicsKey", dictionary );
-
-        dictionary->release ( );
     }
 
+    setProperty ( "kIOPropertyDeviceCharacteristicsKey", dictionary );
+    dictionary->release ( );
     result = true;
 
 ErrorExit:
@@ -167,7 +162,7 @@ IOReturn IOSATServices::newUserClient (
     IOReturn err;
 
     //IOReturn err = super::newUserClient(owningTask, securityID, type, properties, handler);
-    //IOLog("newUserClient super %x %s\n", err, stringFromReturn(err));
+    //DEBUG_LOG("newUserClient super %x %s\n", err, stringFromReturn(err));
 
 
     const OSSymbol *userClientClass = 0;
@@ -185,45 +180,55 @@ IOReturn IOSATServices::newUserClient (
     }
 
     // Didn't find one so lets just bomb out now without further ado.
-    if (!userClientClass)
-        return kIOReturnUnsupported;
+    if (!userClientClass) {
+        err = kIOReturnUnsupported;
+	goto ErrorExit;
+    }
+    DEBUG_LOG("[%p]::%s client class %p\n", this, __FUNCTION__, userClientClass);
 
     // This reference is consumed by the IOServiceOpen call
     temp = OSMetaClass::allocClassWithName(userClientClass);
-    IOLog ("alloc %p\n", temp);
-    if (!temp)
-        return kIOReturnNoMemory;
-
-    if (OSDynamicCast(IOUserClient, temp))
-        client = (IOUserClient *) temp;
-    else {
-        temp->release();
-        IOLog ("client not\n");
-        return kIOReturnUnsupported;
+    if (!temp) {
+        err = kIOReturnNoMemory;
+	goto ErrorExit;
     }
-    IOLog ("client %p\n", client);
+    DEBUG_LOG("[%p]::%s client %p\n", this, __FUNCTION__, client);
+
+    client = OSDynamicCast(IOUserClient, temp);
+    if (!client) {
+        temp->release();
+	ERROR_LOG("Client class is not a IOUserClient\n");
+        err =  kIOReturnUnsupported;
+	goto ReleaseClient;
+    }
 
     if ( !client->initWithTask(owningTask, securityID, type, properties) ) {
         client->release();
-        return kIOReturnBadArgument;
+        err = kIOReturnBadArgument;
+	goto ReleaseClient;
     }
 
     if ( !client->attach(this) ) {
-        client->release();
-        return kIOReturnUnsupported;
+        err = kIOReturnUnsupported;
+	goto ReleaseClient;
     }
 
     if ( !client->start(this) ) {
-        client->detach(this);
-        client->release();
-        return kIOReturnUnsupported;
+        err = kIOReturnUnsupported;
+	goto DetachClient;
     }
 
     *handler = client;
 
     err = kIOReturnSuccess;
+    goto Exit;
 
+ DetachClient:
+    client->detach(this);
+ ReleaseClient:
+    client->release();
 ErrorExit:
+Exit:
     DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, err);
     return err;
 }
@@ -256,7 +261,7 @@ IOSATServices::handleOpen ( IOService * client, IOOptionBits options, void * acc
     // Check if we already have a user client open
     if ( fClients->getCount ( ) != 0 )
     {
-        ERROR_LOG ( ( "User client already open\n" ) );
+        ERROR_LOG ( "User client already open\n" );
         return false;
     }
 
@@ -277,12 +282,10 @@ IOSATServices::handleClose ( IOService * client, IOOptionBits options )
     DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
 
     // If this isn't a user client, pass through to superclass.
-    if ( ( options & kIOATASMARTUserClientAccessMask ) == 0 )
+    if ( ( options & kIOATASMARTUserClientAccessMask ) == 0 ) {
         super::handleClose ( client, options );
 
-    else
-    {
-        DEBUG_LOG ("Removing user client\n" );
+    } else {
         fClients->removeObject ( client );
         if ( fClients->getCount ( ) != 0 )
         {
@@ -299,32 +302,17 @@ IOSATServices::handleClose ( IOService * client, IOOptionBits options )
 bool
 IOSATServices::handleIsOpen ( const IOService * client ) const
 {
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
-
+    DEBUG_LOG("[%p]::%s client %p\n", this, __FUNCTION__, client );
     // General case (is anybody open)
-    if ( client == NULL )
-    {
-
-        DEBUG_LOG ("IOSATServices::handleIsOpen, client is NULL\n" );
-
+    if ( client == NULL ) {
         if ( ( fClients != NULL ) && ( fClients->getCount ( ) > 0 ) )
             return true;
-
-        DEBUG_LOG ( "calling super\n" );
-
-        return super::handleIsOpen ( client );
+    } else {
+        // specific case (is this client open)
+        if ( ( fClients != NULL ) && ( fClients->containsObject ( client ) ) )
+            return true;
     }
-
-    DEBUG_LOG ( "IOSATServices::handleIsOpen, client = %p\n", client );
-
-    // specific case (is this client open)
-    if ( ( fClients != NULL ) && ( fClients->containsObject ( client ) ) )
-        return true;
-
-    DEBUG_LOG ( "calling super\n" );
-
     return super::handleIsOpen ( client );
-
 }
 
 

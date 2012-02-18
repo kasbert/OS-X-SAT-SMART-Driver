@@ -1,3 +1,10 @@
+/*
+ *  IOSATDriver.h
+ *
+ *  Created by Jarkko Sonninen on 3.2.2012.
+ *  Copyright 2012 Jarkko Sonninen. All rights reserved.
+ *
+ */
 
 #ifndef _EXTERNAL_SAT_DRIVER_H_
 #define _EXTERNAL_SAT_DRIVER_H_
