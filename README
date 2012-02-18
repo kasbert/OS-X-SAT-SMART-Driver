@@ -10,8 +10,9 @@ a SAT (SCSI ATA Translation) capable external drive enclosure.
 The driver consists of a kernel extension and a user client interface
 library.
 
-The code is mostly derived from opensource.apple.com, so that license
-should apply.
+The code is based on Apple opensource files and is therefore published
+under Apple Public Source License. For details see
+http://www.opensource.apple.com/license/apsl/
 
 To try out: 
 
@@ -19,7 +20,7 @@ To try out:
 
  * IMPORTANT: Unmount all existing external drives. The driver will
    create duplicates of the drives and having the drive mounted twice
-   will POSITIVELY CORRUPT the file system.
+   will CORRUPT the file system.
 
  * Load the kernel extension. Open a terminal.
     sudo tail -f /private/var/log/kernel.log &
@@ -40,4 +41,4 @@ To try out:
 
  * Unload the driver and copy it to system permanently
     sudo kextunload /tmp/IOSATDriver.kext
-    sudo kextload /tmp/IOSATDriver.kext
+    #not yet sudo kextload /tmp/IOSATDriver.kext
