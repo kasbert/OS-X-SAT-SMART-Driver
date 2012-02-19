@@ -57,6 +57,7 @@ OSDefineMetaClassAndStructors ( IOSATServices, IOBlockStorageServices );
 
 #define ERROR_LOG IOLog
 
+#define getClassName() "IOSATServices"
 
 
 //---------------------------------------------------------------------------
@@ -65,10 +66,10 @@ OSDefineMetaClassAndStructors ( IOSATServices, IOBlockStorageServices );
 bool
 IOSATServices::attach ( IOService * provider )
 {
-    DEBUG_LOG("[%p]::%s %p\n", this, __FUNCTION__, provider);
+    DEBUG_LOG("%s[%p]::%s %p\n", getClassName(), this, __FUNCTION__, provider);
 
     bool result = false;
-    OSDictionary *      dictionary = NULL;
+    //OSDictionary *      dictionary = NULL;
 
     require_string ( super::attach ( provider ), ErrorExit,
         "Superclass didn't attach" );
@@ -82,15 +83,15 @@ IOSATServices::attach ( IOService * provider )
     //setProperty ( kIOPropertyDeviceCharacteristicsKey,
     //			 fProvider->GetDeviceCharacteristicsDictionary ( ) );
 
-    setProperty ( "Humppa", "hei!" );
+    setProperty ( "Hola", "Mundo!" );
 
-    dictionary = OSDictionary::withDictionary(fProvider->GetDeviceCharacteristicsDictionary ( ),0);
-    require_string ( dictionary, ErrorExit, "No device characteristics\n" );
+    //dictionary = OSDictionary::withDictionary(fProvider->GetDeviceCharacteristicsDictionary ( ),0);
+    //require_string ( dictionary, ErrorExit, "No device characteristics\n" );
 
     OSNumber *  value;
     UInt32 features;
 
-    dictionary->setObject ( kIOATASupportedFeaturesKey, fProvider->getProperty ( kIOATASupportedFeaturesKey ) );
+    //dictionary->setObject ( kIOATASupportedFeaturesKey, fProvider->getProperty ( kIOATASupportedFeaturesKey ) );
     value = OSDynamicCast ( OSNumber, fProvider->getProperty ( kIOATASupportedFeaturesKey ) );
     if ( value != NULL )
     {
@@ -125,12 +126,12 @@ IOSATServices::attach ( IOService * provider )
 
     }
 
-    setProperty ( "kIOPropertyDeviceCharacteristicsKey", dictionary );
-    dictionary->release ( );
+    //setProperty ( "kIOPropertyDeviceCharacteristicsKey", dictionary );
+    //dictionary->release ( );
     result = true;
 
 ErrorExit:
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, result);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
 }
 
@@ -141,7 +142,7 @@ ErrorExit:
 void
 IOSATServices::detach ( IOService * provider )
 {
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__, provider);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__, provider);
 
     if ( fClients != NULL )
     {
@@ -158,7 +159,7 @@ IOReturn IOSATServices::newUserClient (
     UInt32 type,
     OSDictionary *    properties,
     IOUserClient **   handler ) {
-    DEBUG_LOG("[%p]::%s type %d\n", this, __FUNCTION__, (int)type);
+    DEBUG_LOG("%s[%p]::%s type %d\n", getClassName(), this, __FUNCTION__, (int)type);
     IOReturn err;
 
     //IOReturn err = super::newUserClient(owningTask, securityID, type, properties, handler);
@@ -184,7 +185,7 @@ IOReturn IOSATServices::newUserClient (
         err = kIOReturnUnsupported;
 	goto ErrorExit;
     }
-    DEBUG_LOG("[%p]::%s client class %p\n", this, __FUNCTION__, userClientClass);
+    DEBUG_LOG("%s[%p]::%s client class %p\n", getClassName(), this, __FUNCTION__, userClientClass);
 
     // This reference is consumed by the IOServiceOpen call
     temp = OSMetaClass::allocClassWithName(userClientClass);
@@ -192,7 +193,7 @@ IOReturn IOSATServices::newUserClient (
         err = kIOReturnNoMemory;
 	goto ErrorExit;
     }
-    DEBUG_LOG("[%p]::%s client %p\n", this, __FUNCTION__, client);
+    DEBUG_LOG("%s[%p]::%s client %p\n", getClassName(), this, __FUNCTION__, client);
 
     client = OSDynamicCast(IOUserClient, temp);
     if (!client) {
@@ -229,7 +230,7 @@ IOReturn IOSATServices::newUserClient (
     client->release();
 ErrorExit:
 Exit:
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, err);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, err);
     return err;
 }
 
@@ -241,7 +242,7 @@ Exit:
 bool
 IOSATServices::handleOpen ( IOService * client, IOOptionBits options, void * access )
 {
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     bool result = true;
     // If this isn't a user client, pass through to superclass.
@@ -268,7 +269,7 @@ IOSATServices::handleOpen ( IOService * client, IOOptionBits options, void * acc
     fClients->setObject ( client );
 
 ErrorExit:
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, result);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
 }
 
@@ -279,7 +280,7 @@ ErrorExit:
 void
 IOSATServices::handleClose ( IOService * client, IOOptionBits options )
 {
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     // If this isn't a user client, pass through to superclass.
     if ( ( options & kIOATASMARTUserClientAccessMask ) == 0 ) {
@@ -302,7 +303,7 @@ IOSATServices::handleClose ( IOService * client, IOOptionBits options )
 bool
 IOSATServices::handleIsOpen ( const IOService * client ) const
 {
-    DEBUG_LOG("[%p]::%s client %p\n", this, __FUNCTION__, client );
+    DEBUG_LOG("%s[%p]::%s client %p\n", getClassName(), this, __FUNCTION__, client );
     // General case (is anybody open)
     if ( client == NULL ) {
         if ( ( fClients != NULL ) && ( fClients->getCount ( ) > 0 ) )
@@ -321,7 +322,7 @@ IOSATServices::handleIsOpen ( const IOService * client ) const
 IOReturn
 IOSATServices::sendSMARTCommand ( IOSATCommand * command )
 {
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     IOReturn result;
 
     // Block incoming I/O if we have been terminated
@@ -339,14 +340,14 @@ IOSATServices::sendSMARTCommand ( IOSATCommand * command )
     fSATProvider = OSDynamicCast ( org_dungeon_driver_IOSATDriver, fProvider );
     if ( fSATProvider == NULL )
     {
-        ERROR_LOG ( ( "IOSATServices: attach; wrong provider type!\n" ) );
+        ERROR_LOG ( "%s::%s: attach; wrong provider type!\n", getClassName(), __FUNCTION__  );
         return kIOReturnInvalid;
     }
 
     result = fSATProvider->sendSMARTCommand ( command );
 
 ErrorExit:
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, result);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
 }
 

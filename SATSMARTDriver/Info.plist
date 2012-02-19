@@ -11,7 +11,7 @@
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>org.dungeon.driver.${PRODUCT_NAME:rfc1034Identifier}</string>
+	<string>org.dungeon.driver.IOSATDriver</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -22,26 +22,18 @@
 	<string>1</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
-	<key>OSBundleRequired</key>
-	<string>Local-Root</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>IOSATDriver</key>
 		<dict>
-			<key>IOProviderClass</key>
-			<string>IOSCSIPeripheralDeviceNub</string>
-			<key>IOMatchCategory</key>
-			<string>org_dungeon_driver_IOSATDriver</string>
-			<key>IOKitDebug</key>
-			<integer>65535</integer>
+			<key>CFBundleIdentifier</key>
+			<string>org.dungeon.driver.IOSATDriver</string>
 			<key>IOClass</key>
 			<string>org_dungeon_driver_IOSATDriver</string>
-			<key>CFBundleIdentifier</key>
-			<string>org.dungeon.driver.${PRODUCT_NAME:rfc1034Identifier}</string>
-			<key>Vendor Name</key>
-			<string>Ext Hard</string>
-			<key>Product Name</key>
-			<string> Disk</string>
+			<key>IOProviderClass</key>
+			<string>IOSCSIPeripheralDeviceNub</string>
+			<key>IOKitDebug</key>
+			<integer>65535</integer>
 			<key>Peripheral Device Type</key>
 			<integer>0</integer>
 			<key>xProduct Identification</key>
@@ -49,7 +41,7 @@
 			<key>xVendor Identification</key>
 			<string>WD</string>
 			<key>IOProbeScore</key>
-			<integer>4000</integer>
+			<integer>1000</integer>
 		</dict>
 	</dict>
 	<key>OSBundleLibraries</key>
@@ -65,5 +57,7 @@
 		<key>com.apple.iokit.IOStorageFamily</key>
 		<string>1.6.3</string>
 	</dict>
+	<key>OSBundleRequired</key>
+	<string>Local-Root</string>
 </dict>
 </plist>

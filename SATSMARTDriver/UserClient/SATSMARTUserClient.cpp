@@ -63,6 +63,7 @@
 
 #define ERROR_LOG IOLog
 
+#define getClassName() "SATSMARTUserClient"
 
 #define super IOUserClient
 OSDefineMetaClassAndStructors ( SATSMARTUserClient, IOUserClient );
@@ -225,7 +226,7 @@ SATSMARTUserClient::sMethods[kIOATASMARTMethodCount] =
 bool
 SATSMARTUserClient::init ( OSDictionary * dictionary )
 {
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     if ( !super::init ( dictionary ) )
         return false;
@@ -246,7 +247,7 @@ bool
 SATSMARTUserClient::start ( IOService * provider )
 {
     IOWorkLoop *    workLoop = NULL;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     if ( fProvider != NULL )
     {
@@ -322,7 +323,7 @@ SATSMARTUserClient::initWithTask ( task_t owningTask,
                                    void *       securityToken,
                                    UInt32 type )
 {
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     if ( type != kIOATASMARTLibConnection )
         return false;
@@ -340,7 +341,7 @@ SATSMARTUserClient::initWithTask ( task_t owningTask,
 IOReturn
 SATSMARTUserClient::clientClose ( void )
 {
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     if ( fProvider != NULL )
         HandleTerminate ( fProvider );
@@ -389,7 +390,7 @@ SATSMARTUserClient::message ( UInt32 type, IOService * provider, void * arg )
 {
     IOReturn status = kIOReturnSuccess;
 
-    DEBUG_LOG("[%p]::%s type = %ld, provider = %p\n", this, __FUNCTION__, type, provider );
+    DEBUG_LOG("%s[%p]::%s type = %ld, provider = %p\n", getClassName(), this, __FUNCTION__, type, provider );
 
     switch ( type )
     {
@@ -406,7 +407,7 @@ SATSMARTUserClient::message ( UInt32 type, IOService * provider, void * arg )
         break;
     }
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -422,7 +423,7 @@ SATSMARTUserClient::EnableDisableOperations ( UInt32 enable )
 
     IOReturn status = kIOReturnSuccess;
     IOSATCommand *  command;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     fOutstandingCommands++;
 
@@ -496,7 +497,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -512,7 +513,7 @@ SATSMARTUserClient::EnableDisableAutoSave ( UInt32 enable )
 
     IOReturn status = kIOReturnSuccess;
     IOSATCommand *  command;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     fOutstandingCommands++;
 
@@ -587,7 +588,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -605,7 +606,7 @@ SATSMARTUserClient::ReturnStatus ( UInt32 * exceededCondition )
     IOSATCommand *  command = NULL;
     UInt8 lbaMid  = kSMARTMagicCylinderLoValue;
     UInt8 lbaHigh = kSMARTMagicCylinderHiValue;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     fOutstandingCommands++;
 
@@ -687,7 +688,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -703,7 +704,7 @@ SATSMARTUserClient::ExecuteOfflineImmediate ( UInt32 extendedTest )
 
     IOReturn status  = kIOReturnSuccess;
     IOSATCommand *  command = NULL;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     fOutstandingCommands++;
 
@@ -763,7 +764,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -780,7 +781,7 @@ SATSMARTUserClient::ReadData ( vm_address_t data )
     IOReturn status  = kIOReturnSuccess;
     IOSATCommand *                  command = NULL;
     IOMemoryDescriptor *    buffer  = NULL;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     fOutstandingCommands++;
 
@@ -882,7 +883,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -899,7 +900,7 @@ SATSMARTUserClient::ReadDataThresholds ( vm_address_t data )
     IOReturn status  = kIOReturnSuccess;
     IOSATCommand *                  command = NULL;
     IOMemoryDescriptor *    buffer  = NULL;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     fOutstandingCommands++;
 
@@ -1003,7 +1004,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -1021,7 +1022,7 @@ SATSMARTUserClient::ReadLogAtAddress (  ATASMARTReadLogStruct * readLogData,
     IOReturn status                  = kIOReturnSuccess;
     IOSATCommand *                  command                 = NULL;
     IOMemoryDescriptor *    buffer                  = NULL;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     if ( inStructSize != sizeof ( ATASMARTReadLogStruct ) )
         return kIOReturnBadArgument;
@@ -1130,7 +1131,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -1148,7 +1149,7 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
     IOReturn status                  = kIOReturnSuccess;
     IOSATCommand *                  command                 = NULL;
     IOMemoryDescriptor *    buffer                  = NULL;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     if ( inStructSize != sizeof ( ATASMARTWriteLogStruct ) )
         return kIOReturnBadArgument;
@@ -1257,7 +1258,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -1279,7 +1280,7 @@ SATSMARTUserClient::GetIdentifyData ( ATAGetIdentifyDataStruct *        identify
     IOMemoryDescriptor *            userBuffer              = NULL;
     IOBufferMemoryDescriptor *      buffer                  = NULL;
     UInt8 *                                         identifyDataPtr = NULL;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     if ( inStructSize != sizeof ( ATAGetIdentifyDataStruct ) )
         return kIOReturnBadArgument;
@@ -1437,7 +1438,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -1485,7 +1486,7 @@ SATSMARTUserClient::GatedWaitForCommand ( IOSATCommand * command )
 
     IOReturn status = kIOReturnSuccess;
     SATSMARTRefCon *        refCon;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     refCon = ( SATSMARTRefCon * ) command->refCon;
 
@@ -1501,7 +1502,7 @@ SATSMARTUserClient::GatedWaitForCommand ( IOSATCommand * command )
 
     }
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -1517,7 +1518,7 @@ SATSMARTUserClient::HandleTerminate ( IOService * provider )
 {
 
     IOReturn status = kIOReturnSuccess;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     while ( fOutstandingCommands != 0 )
     {
@@ -1528,7 +1529,7 @@ SATSMARTUserClient::HandleTerminate ( IOService * provider )
     if ( provider->isOpen ( this ) )
     {
         // Yes we do, so close the connection
-        DEBUG_LOG("[%p]::%s closing provider\n", this, __FUNCTION__);
+        DEBUG_LOG("%s[%p]::%s closing provider\n", getClassName(), this, __FUNCTION__);
         provider->close ( this, kIOATASMARTUserClientAccessMask );
     }
 
@@ -1536,7 +1537,7 @@ SATSMARTUserClient::HandleTerminate ( IOService * provider )
     detach ( provider );
     fProvider = NULL;
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -1559,7 +1560,7 @@ SATSMARTUserClient::SendSMARTCommand ( IOSATCommand * command )
 
     refCon.isDone   = false;
     refCon.self             = this;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     command->setCallbackPtr ( &SATSMARTUserClient::sCommandCallback );
     command->refCon = ( void * ) &refCon;
@@ -1601,7 +1602,7 @@ SATSMARTUserClient::SendSMARTCommand ( IOSATCommand * command )
 
     }
 
-    DEBUG_LOG("[%p]::%s result %d\n", this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
     return status;
 
 }
@@ -1637,7 +1638,7 @@ SATSMARTUserClient::AllocateCommand ( void )
 
     //IOSATCommand *	command = NULL;
     //IOATADevice *	device	= NULL;
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     IOSATBusCommand64* cmd = IOSATBusCommand64::allocateCmd32();
 
@@ -1659,7 +1660,7 @@ SATSMARTUserClient::AllocateCommand ( void )
 void
 SATSMARTUserClient::DeallocateCommand ( IOSATCommand * command )
 {
-    DEBUG_LOG("[%p]::%s\n", this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     if ( command != NULL )
     {
@@ -1706,7 +1707,7 @@ SATSMARTUserClient::sCommandCallback ( IOSATCommand * command )
 {
 
     SATSMARTRefCon *                refCon  = NULL;
-    DEBUG_LOG("%s command %p\n", __FUNCTION__, command);
+    DEBUG_LOG("%s::%s command %p\n", getClassName(), __FUNCTION__, command);
 
     refCon = ( SATSMARTRefCon * ) command->refCon;
     if ( refCon == NULL )

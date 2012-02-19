@@ -66,16 +66,18 @@ char serial[21];
 char revision[9];
 char model[41];
 
-bool smartOk;
+bool fSATSMARTCapable;
 int capabilities;
 
 protected:
 IOReturn        setPowerState ( UInt32 powerStateOrdinal,
                                 IOService *  whatDevice );
 bool    InitializeDeviceSupport ( void );
-void    Send_ATA_IDENTIFY ( void );
-void    Send_ATA_SMART_READ_DATA(void);
-void    Send_ATA_SEND_SOFT_RESET(void);
+bool    Send_ATA_IDENTIFY ( void );
+bool    Send_ATA_SMART_READ_DATA(void);
+bool    Send_ATA_IDLE(UInt8 value);
+bool    Send_ATA_STANDBY(UInt8 value);
+bool    Send_ATA_SEND_SOFT_RESET(void);
 
 bool    PASS_THROUGH_12 (
     SCSITaskIdentifier request,
