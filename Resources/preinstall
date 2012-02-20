@@ -1,0 +1,22 @@
+#!/bin/sh
+
+pax -z -r -f "$1"/Contents/Archive.pax.gz  ./System/Library/Extensions/SATSMARTDriver.kext
+chown -R root:wheel System
+
+ioreg -r -c IOSCSIPeripheralDeviceType00 -l | grep "BSD Name" | cut -d'"' -f4 | while read a 
+do
+    diskutil unmountDisk "$a" || exit 1
+done
+
+kextunload -c  IOSCSIPeripheralDeviceType00
+
+kextutil -t System/Library/Extensions/SATSMARTDriver.kext
+
+if kextstat | grep org.dungeon.driver.IOSATDriver
+then
+    echo "Driver is loaded"
+else
+    exit 1
+fi
+
+exit 0
