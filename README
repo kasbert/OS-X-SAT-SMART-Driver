@@ -27,8 +27,8 @@ Install
     sudo tail -f /private/var/log/kernel.log &
     cd SATSMARTDriver/build/Debug/
     sudo cp -R SATSMARTLib.plugin /System/Library/Extensions
-    sudo cp -R IOSATDriver.kext /tmp
-    sudo kextutil -t /tmp/IOSATDriver.kext
+    sudo cp -R SATSMARTDriver.kext /tmp
+    sudo kextutil -t /tmp/SATSMARTDriver.kext
 
  * The external drives should mount automatically. Check them briefly
    and unmount them.
@@ -41,8 +41,9 @@ Install
  * Check DiskUtility. The disk should show as "SMART capable: verified"
 
  * Install the driver to system permanently
-    sudo kextunload /tmp/IOSATDriver.kext
-    sudo cp -R IOSATDriver.kext  /System/Library/Extensions
+    sudo cp -R SATSMARTDriver.kext  /System/Library/Extensions
+
+ * Reboot
 
 
 Uninstall
