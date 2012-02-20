@@ -83,7 +83,7 @@ IOSATServices::attach ( IOService * provider )
     //setProperty ( kIOPropertyDeviceCharacteristicsKey,
     //			 fProvider->GetDeviceCharacteristicsDictionary ( ) );
 
-    setProperty ( "Hola", "Mundo!" );
+    //setProperty ( "Hola", "Mundo!" );
 
     //dictionary = OSDictionary::withDictionary(fProvider->GetDeviceCharacteristicsDictionary ( ),0);
     //require_string ( dictionary, ErrorExit, "No device characteristics\n" );

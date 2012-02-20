@@ -652,7 +652,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
-				INFOPLIST_FILE = "SATSMARTLib-Info.plist";
+				INFOPLIST_FILE = "UserClientLib/SATSMARTLib-Info.plist";
 				INSTALL_PATH = "$(HOME)/Library/Bundles";
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -660,7 +660,7 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = SATSMARTLib;
-				WRAPPER_EXTENSION = bundle;
+				WRAPPER_EXTENSION = plugin;
 				ZERO_LINK = NO;
 			};
 			name = Release;

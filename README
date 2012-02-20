@@ -8,7 +8,7 @@ driver, so most existing applications should work. The driver requires
 a SAT (SCSI ATA Translation) capable external drive enclosure.
 
 The driver consists of a kernel extension and a user client interface
-library. A graphical installer would be nice.
+library.
 
 The code is based on Apple opensource files and is therefore published
 under Apple Public Source License. For details see
@@ -25,7 +25,7 @@ Install
 
  * Load the kernel extension.
     sudo tail -f /private/var/log/kernel.log &
-    cd SATSMARTDriver/build/Debug/
+    cd build/Debug/
     sudo cp -R SATSMARTLib.plugin /System/Library/Extensions
     sudo cp -R SATSMARTDriver.kext /tmp
     sudo kextutil -t /tmp/SATSMARTDriver.kext
@@ -49,6 +49,6 @@ Install
 Uninstall
 =========
 
- * Remove driver and plug in
+ * Remove driver and plugin
     sudo rm -r /System/Library/Extensions/SATSMARTDriver.kext
     sudo rm -r /System/Library/Extensions/SATSMARTLib.plugin
