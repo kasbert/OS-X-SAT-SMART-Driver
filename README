@@ -8,7 +8,7 @@ driver, so most existing applications should work. The driver requires
 a SAT (SCSI ATA Translation) capable external drive enclosure.
 
 The driver consists of a kernel extension and a user client interface
-library.
+library. A graphical installer would be nice.
 
 The code is based on Apple opensource files and is therefore published
 under Apple Public Source License. For details see
