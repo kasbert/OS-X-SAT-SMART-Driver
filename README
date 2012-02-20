@@ -14,15 +14,16 @@ The code is based on Apple opensource files and is therefore published
 under Apple Public Source License. For details see
 http://www.opensource.apple.com/license/apsl/
 
-To try out: 
+Install
+=======
 
- * Compile all targets using XCode
+ * Compile all targets using XCode.
+    cd SATSMARTDriver
+    xcodebuild -configuration Debug
 
- * IMPORTANT: Unmount all existing external drives. The driver will
-   create duplicates of the drives and having the drive mounted twice
-   will CORRUPT the file system.
+ * Unmount all existing external drives.
 
- * Load the kernel extension. Open a terminal.
+ * Load the kernel extension.
     sudo tail -f /private/var/log/kernel.log &
     cd SATSMARTDriver/build/Debug/
     sudo cp -R SATSMARTLib.plugin /System/Library/Extensions
@@ -35,10 +36,18 @@ To try out:
  * Test
     ./smart_status
 
-    ./smart_sample
+    ./smart_sample -a
 
  * Check DiskUtility. The disk should show as "SMART capable: verified"
 
- * Unload the driver and copy it to system permanently
+ * Install the driver to system permanently
     sudo kextunload /tmp/IOSATDriver.kext
-    #not yet sudo kextload /tmp/IOSATDriver.kext
+    sudo cp -R IOSATDriver.kext  /System/Library/Extensions
+
+
+Uninstall
+=========
+
+ * Remove driver and plug in
+    sudo rm -r /System/Library/Extensions/SATSMARTDriver.kext
+    sudo rm -r /System/Library/Extensions/SATSMARTLib.plugin
