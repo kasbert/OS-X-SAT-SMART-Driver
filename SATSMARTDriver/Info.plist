@@ -11,7 +11,7 @@
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>org.dungeon.driver.IOSATDriver</string>
+	<string>org.dungeon.driver.SATSMARTDriver</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundlePackageType</key>
@@ -24,10 +24,10 @@
 	<string>1.0</string>
 	<key>IOKitPersonalities</key>
 	<dict>
-		<key>IOSATDriver</key>
+		<key>SATSMARTDriver</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
-			<string>org.dungeon.driver.IOSATDriver</string>
+			<string>org.dungeon.driver.SATSMARTDriver</string>
 			<key>IOClass</key>
 			<string>org_dungeon_driver_IOSATDriver</string>
 			<key>IOProviderClass</key>

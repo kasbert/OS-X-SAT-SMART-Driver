@@ -16,6 +16,24 @@ http://www.opensource.apple.com/license/apsl/
 
 Install
 =======
+ 
+ * Unmount all external drives
+ * Use the dmg image and the installer
+ * Power cycle one external drive
+ * Check DiskUtility. The disk should have "S.M.A.R.T. Status: Verified"
+
+
+Uninstall
+=========
+
+ * Remove driver and plugin
+    sudo rm -r /System/Library/Extensions/SATSMARTDriver.kext
+    sudo rm -r /System/Library/Extensions/SATSMARTLib.plugin
+ * Reboot
+
+
+Compile
+=======
 
  * Compile all targets using XCode.
     cd SATSMARTDriver
@@ -38,7 +56,7 @@ Install
 
     ./smart_sample -a
 
- * Check DiskUtility. The disk should show as "SMART capable: verified"
+ * Check DiskUtility. The disk should have "S.M.A.R.T. Status: Verified"
 
  * Install the driver to system permanently
     sudo cp -R SATSMARTDriver.kext  /System/Library/Extensions
@@ -46,9 +64,3 @@ Install
  * Reboot
 
 
-Uninstall
-=========
-
- * Remove driver and plugin
-    sudo rm -r /System/Library/Extensions/SATSMARTDriver.kext
-    sudo rm -r /System/Library/Extensions/SATSMARTLib.plugin

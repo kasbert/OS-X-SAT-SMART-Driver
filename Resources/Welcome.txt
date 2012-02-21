@@ -8,7 +8,7 @@ The driver consists of a kernel extension and a user client interface
 library.
 
 Unmount all external drives. Reconnect the drives after installation.
-Check the disk SMART status after installation using DiskUtility.
+Check the disk SMART Status after installation using DiskUtility.
 
 To uninstall remove driver and plugin in a Terminal:
     sudo rm -r /System/Library/Extensions/SATSMARTDriver.kext
