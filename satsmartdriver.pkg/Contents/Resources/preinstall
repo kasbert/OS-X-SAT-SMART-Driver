@@ -1,0 +1,33 @@
+#!/bin/sh
+set -e
+pax -z -r -f "$1"/Contents/Archive.pax.gz  ./System/Library/Extensions/SATSMARTDriver.kext
+chown -R root:wheel System
+
+ioreg -r -c IOSCSIPeripheralDeviceType00 -l | grep "BSD Name" | cut -d'"' -f4 | while read a 
+do
+    echo "Unmounting $a"
+    diskutil unmountDisk "$a" || exit 1
+    #diskutil eject "$a" || exit 1
+done
+if [ $? != 0 ] 
+then
+    echo Unmount failed
+    exit 1
+fi
+
+kextunload -c  IOSCSIPeripheralDeviceType00
+kextunload -c  org_dungeon_driver_SATSMARTDriver
+
+kextutil -t System/Library/Extensions/SATSMARTDriver.kext 
+
+if kextstat | grep org.dungeon.driver.SATSMARTDriver
+then
+    echo "Driver is loaded"
+else
+    exit 1
+fi
+
+kextunload -c  IOSCSIPeripheralDeviceType00
+kextunload -c  org_dungeon_driver_SATSMARTDriver
+
+exit 0
