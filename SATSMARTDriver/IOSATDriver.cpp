@@ -18,13 +18,11 @@
 #include <IOKit/scsi/IOSCSIPeripheralDeviceNub.h>
 
 #include <IOKit/storage/ata/IOATAStorageDefines.h>
+#include <IOKit/storage/IOStorageDeviceCharacteristics.h>
 
 #include "IOSATBusCommand.h"
 #include "IOSATDriver.h"
 #include "IOSATServices.h"
-
-#define DEBUG 1
-#undef DEBUG
 
 #ifdef DEBUG
 #define DEBUG_LOG IOLog
@@ -370,22 +368,25 @@ org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
     require (result, ErrorExit);
     
     //SendBuiltInINQUIRY ( );
-    Send_ATA_IDENTIFY();
-    Send_ATA_SMART_READ_DATA();
-    
-    setProperty (kIOPropertyVendorNameKey, GetVendorString() );
-    setProperty (kIOPropertyProductNameKey, GetProductString() );
-    setProperty (kIOPropertyProductRevisionLevelKey, GetRevisionString());
-    
-    if (fSATSMARTCapable) {
-        unsigned long features = kIOATAFeatureSMART;
-        OSNumber *number;
-        number = OSNumber::withNumber(features, 32);
-        require_string(number, ErrorExit, "OSNumber::withNumber");
-        setProperty ( kIOATASupportedFeaturesKey, number );
-        number->release();
+    if (Send_ATA_IDENTIFY()) {
+        //setProperty (kIOPropertyVendorNameKey, GetVendorString() );
+        setProperty ("Model", model);
+        setProperty (kIOPropertyProductNameKey, model);
+        setProperty (kIOPropertyProductRevisionLevelKey, revision);
+        setProperty (kIOPropertyProductSerialNumberKey, serial);
+
+        Send_ATA_SMART_READ_DATA();
+
+        if (fSATSMARTCapable) {
+            unsigned long features = kIOATAFeatureSMART;
+            OSNumber *number;
+            number = OSNumber::withNumber(features, 32);
+            require_string(number, ErrorExit, "OSNumber::withNumber");
+            setProperty ( kIOATASupportedFeaturesKey, number );
+            number->release();
+        }
     }
-    
+        
 ErrorExit:
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
@@ -394,8 +395,8 @@ ErrorExit:
 
 char *
 org_dungeon_driver_IOSATDriver::GetVendorString ( void ) {
-    serial[sizeof(serial)-1]=0;
-    if (*serial) return serial;
+    //serial[sizeof(serial)-1]=0;
+    //if (*serial) return serial;
     return super::GetVendorString();
 }
 
@@ -488,7 +489,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
         trimcpy(revision, (char*)(ataIdentify+kATAIdentifyFirmwareRevision), sizeof(revision));
         trimcpy(model, (char*)(ataIdentify+kATAIdentifyModelNumber), sizeof(model));
         
-        IOLog("SAT adapter detected. Disk serial '%s', revision '%s', model '%s'\n",serial, revision, model);
+        IOLog("SATSMARTDriver disk serial '%s', revision '%s', model '%s'\n",serial, revision, model);
         //DEBUG_LOG("capabilities %04x %04x %04x\n",ataIdentify[kATAIdentifyDriveCapabilities],
         //    ataIdentify[kATAIdentifyDriveCapabilitiesExtended],
         //    ataIdentify[kATAIdentifyCommandSetSupported]);
@@ -577,6 +578,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
     else
     {
 	ERROR_LOG("%s::%s failed %d %d\n", getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ) );
+        fSATSMARTCapable = false;
     }
     
     buffer->complete ( );

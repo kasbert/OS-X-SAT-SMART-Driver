@@ -52,9 +52,6 @@
 
 #include "IOSATServices.h"
 
-#define DEBUG 1
-#undef DEBUG
-
 #ifdef DEBUG
 #define DEBUG_LOG IOLog
 #else

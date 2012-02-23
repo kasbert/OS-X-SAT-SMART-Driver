@@ -1,5 +1,6 @@
 #!/bin/sh
 set -e
+rm -r SATSMARTDriver/build
 (cd SATSMARTDriver; xcodebuild -configuration Release)
 rm -rf Root
 mkdir -p Root/System/Library/Extensions/

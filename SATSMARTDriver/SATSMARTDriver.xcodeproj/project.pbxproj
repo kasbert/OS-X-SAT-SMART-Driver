@@ -6,6 +6,24 @@
 	objectVersion = 45;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		A86A787514F57C900067035C /* Build All */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = A86A788A14F57D2A0067035C /* Build configuration list for PBXAggregateTarget "Build All" */;
+			buildPhases = (
+			);
+			dependencies = (
+				A86A787914F57CAD0067035C /* PBXTargetDependency */,
+				A86A787B14F57CB50067035C /* PBXTargetDependency */,
+				A86A787D14F57CBA0067035C /* PBXTargetDependency */,
+				A86A787F14F57CBF0067035C /* PBXTargetDependency */,
+				A86A788114F57CC50067035C /* PBXTargetDependency */,
+			);
+			name = "Build All";
+			productName = "Build All";
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		32D94FC60562CBF700B6AF17 /* IOSATDriver.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A224C3EFF42367911CA2CB7 /* IOSATDriver.h */; };
 		32D94FC80562CBF700B6AF17 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C167DFE841241C02AAC07 /* InfoPlist.strings */; };
@@ -22,7 +40,6 @@
 		A8CDBB0414E5407100881848 /* SetPropertiesTestTool.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A87AE8BD14E19AC6000D2D60 /* SetPropertiesTestTool.cpp */; };
 		A8CDBB0814E5409E00881848 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CDB8B614E52EB500881848 /* IOKit.framework */; };
 		A8CDBB3014E540C300881848 /* IOKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A8CDB8B614E52EB500881848 /* IOKit.framework */; };
-		A8CDBB3114E540CF00881848 /* IOKit.framework in Headers */ = {isa = PBXBuildFile; fileRef = A8CDB8B614E52EB500881848 /* IOKit.framework */; };
 		A8D7730514E9B23000195DA7 /* IOSATBusCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8D7730414E9B23000195DA7 /* IOSATBusCommand.cpp */; };
 		A8D7732814E9B2DB00195DA7 /* IOSATCommand.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A8D7732714E9B2DB00195DA7 /* IOSATCommand.cpp */; };
 		A8D7732D14EABA9400195DA7 /* IOSATCommand.h in Headers */ = {isa = PBXBuildFile; fileRef = A8D7732C14EABA9400195DA7 /* IOSATCommand.h */; };
@@ -30,33 +47,40 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		A8B9A88E14EE2E5A00E6B6F4 /* PBXContainerItemProxy */ = {
+		A86A787814F57CAD0067035C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = A8CDBAFD14E5405F00881848;
-			remoteInfo = TestTool;
+			remoteGlobalIDString = 32D94FC30562CBF700B6AF17;
+			remoteInfo = SATSMARTDriver;
 		};
-		A8B9A95D14EE2F2F00E6B6F4 /* PBXContainerItemProxy */ = {
+		A86A787A14F57CB50067035C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A8CDBA1114E53D3E00881848;
 			remoteInfo = SATSMARTLib;
 		};
-		A8B9A95F14EE2F3700E6B6F4 /* PBXContainerItemProxy */ = {
+		A86A787C14F57CBA0067035C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = A813772B14E6F9BC005EAAE7;
-			remoteInfo = smart_sample;
+			remoteGlobalIDString = A8CDBAFD14E5405F00881848;
+			remoteInfo = TestTool;
 		};
-		A8B9A96114EE2F3700E6B6F4 /* PBXContainerItemProxy */ = {
+		A86A787E14F57CBF0067035C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = A813771414E6F99B005EAAE7;
 			remoteInfo = smart_status;
+		};
+		A86A788014F57CC50067035C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A813772B14E6F9BC005EAAE7;
+			remoteInfo = smart_sample;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -232,7 +256,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A8CDBB3114E540CF00881848 /* IOKit.framework in Headers */,
 				32D94FC60562CBF700B6AF17 /* IOSATDriver.h in Headers */,
 				A875924214DC7B55001E6C26 /* IOSATServices.h in Headers */,
 				A89ED6C614DF1D6000F82BEA /* SATSMARTUserClient.h in Headers */,
@@ -258,10 +281,6 @@
 			buildRules = (
 			);
 			dependencies = (
-				A8B9A95E14EE2F2F00E6B6F4 /* PBXTargetDependency */,
-				A8B9A96214EE2F3700E6B6F4 /* PBXTargetDependency */,
-				A8B9A96014EE2F3700E6B6F4 /* PBXTargetDependency */,
-				A8B9A88F14EE2E5A00E6B6F4 /* PBXTargetDependency */,
 			);
 			name = SATSMARTDriver;
 			productInstallPath = "$(SYSTEM_LIBRARY_DIR)/Extensions";
@@ -353,6 +372,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				A86A787514F57C900067035C /* Build All */,
 				32D94FC30562CBF700B6AF17 /* SATSMARTDriver */,
 				A8CDBA1114E53D3E00881848 /* SATSMARTLib */,
 				A8CDBAFD14E5405F00881848 /* TestTool */,
@@ -438,25 +458,30 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		A8B9A88F14EE2E5A00E6B6F4 /* PBXTargetDependency */ = {
+		A86A787914F57CAD0067035C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A8CDBAFD14E5405F00881848 /* TestTool */;
-			targetProxy = A8B9A88E14EE2E5A00E6B6F4 /* PBXContainerItemProxy */;
+			target = 32D94FC30562CBF700B6AF17 /* SATSMARTDriver */;
+			targetProxy = A86A787814F57CAD0067035C /* PBXContainerItemProxy */;
 		};
-		A8B9A95E14EE2F2F00E6B6F4 /* PBXTargetDependency */ = {
+		A86A787B14F57CB50067035C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A8CDBA1114E53D3E00881848 /* SATSMARTLib */;
-			targetProxy = A8B9A95D14EE2F2F00E6B6F4 /* PBXContainerItemProxy */;
+			targetProxy = A86A787A14F57CB50067035C /* PBXContainerItemProxy */;
 		};
-		A8B9A96014EE2F3700E6B6F4 /* PBXTargetDependency */ = {
+		A86A787D14F57CBA0067035C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = A813772B14E6F9BC005EAAE7 /* smart_sample */;
-			targetProxy = A8B9A95F14EE2F3700E6B6F4 /* PBXContainerItemProxy */;
+			target = A8CDBAFD14E5405F00881848 /* TestTool */;
+			targetProxy = A86A787C14F57CBA0067035C /* PBXContainerItemProxy */;
 		};
-		A8B9A96214EE2F3700E6B6F4 /* PBXTargetDependency */ = {
+		A86A787F14F57CBF0067035C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = A813771414E6F99B005EAAE7 /* smart_status */;
-			targetProxy = A8B9A96114EE2F3700E6B6F4 /* PBXContainerItemProxy */;
+			targetProxy = A86A787E14F57CBF0067035C /* PBXContainerItemProxy */;
+		};
+		A86A788114F57CC50067035C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A813772B14E6F9BC005EAAE7 /* smart_sample */;
+			targetProxy = A86A788014F57CC50067035C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -513,6 +538,7 @@
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -613,6 +639,27 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = smart_sample;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		A86A787614F57C910067035C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = "Build All";
+			};
+			name = Debug;
+		};
+		A86A787714F57C910067035C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = "Build All";
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -742,6 +789,15 @@
 			buildConfigurations = (
 				A813772E14E6F9BC005EAAE7 /* Debug */,
 				A813772F14E6F9BC005EAAE7 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A86A788A14F57D2A0067035C /* Build configuration list for PBXAggregateTarget "Build All" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A86A787614F57C910067035C /* Debug */,
+				A86A787714F57C910067035C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

@@ -43,7 +43,7 @@
 #undef DLOG
 #endif
 
-#ifdef  ATA_DEBUG
+#ifdef  DEBUG
 #define DLOG(fmt, args ...)  IOLog(fmt, ## args)
 #else
 #define DLOG(fmt, args ...)
