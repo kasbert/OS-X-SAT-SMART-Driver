@@ -17,9 +17,8 @@ http://www.opensource.apple.com/license/apsl/
 Install
 =======
  
- * Unmount all external drives
  * Use the dmg image and the installer
- * Power cycle one external drive
+ * Power cycle the external drives
  * Check DiskUtility. The disk should have "S.M.A.R.T. Status: Verified"
 
 
@@ -63,4 +62,26 @@ Compile
 
  * Reboot
 
-
+ * If you want to limit the driver for certain hardware add product 
+   and vendor identification to SATSMARTDriver/Info.plist. For example:
+			<key>Product Identification</key>
+			<string>External</string>
+			<key>Vendor Identification</key>
+			<string>Generic</string>
+   You can find out the identification string from io registry:
+       ioreg -r -c IOSCSIPeripheralDeviceNub
+..
++-o IOSCSIPeripheralDeviceNub  <class IOSCSIPeripheralDeviceNub, id 0x100000256$
+  | {
+  |   "IOProviderClass" = "IOSCSIProtocolServices"
+  |   "Protocol Characteristics" = {"Physical Interconnect"="USB","Physical Int$
+  |   "IOMatchCategory" = "SCSITaskUserClientIniter"
+  |   "Product Revision Level" = "2.02"
+  |   "IOProbeScore" = 0
+  |   "Product Identification" = "External"
+  |   "CFBundleIdentifier" = "com.apple.iokit.IOSCSIArchitectureModelFamily"
+  |   "Vendor Identification" = "Generic"
+  |   "IOClass" = "IOSCSIPeripheralDeviceNub"
+  |   "Peripheral Device Type" = 0
+  | }
+..
