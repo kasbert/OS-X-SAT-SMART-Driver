@@ -8,7 +8,7 @@ mkdir -p Root/System/Library/Extensions/
 cp -v -r SATSMARTDriver/build/Release/SATSMARTDriver.kext Root/System/Library/Extensions/
 cp -v -r SATSMARTDriver/build/Release/SATSMARTLib.plugin Root/System/Library/Extensions/
 
-rm -r satsmartdriver.pkg
+rm -fr satsmartdriver.pkg
 
 /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc
 
