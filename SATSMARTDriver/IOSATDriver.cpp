@@ -159,7 +159,7 @@ IOReturn org_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
     } else {
         UInt32 value= number->unsigned32BitValue();
         
-        DEBUG_LOG("%s[%p]::%s(%p) got value %lu\n", getName(), this, __FUNCTION__, properties, value);
+        DEBUG_LOG("%s[%p]::%s(%p) got value %u\n", getName(), this, __FUNCTION__, properties, (unsigned int)value);
         
         // Some code to experiment the SAT commands
         switch (value) {
