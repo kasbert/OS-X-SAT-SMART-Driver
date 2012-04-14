@@ -61,7 +61,11 @@ enum
 //	Macros
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
+#ifdef DEBUG
+#define SAT_SMART_DEBUGGING_LEVEL 1
+#else
 #define SAT_SMART_DEBUGGING_LEVEL 0
+#endif
 
 #if ( SAT_SMART_DEBUGGING_LEVEL > 0 )
 #define PRINT(x)        printf x
@@ -555,11 +559,11 @@ SATSMARTClient::SMARTReturnStatus ( Boolean * exceededCondition )
     {
 
         *exceededCondition = ( condition != 0 ) ? true : false;
-        PRINT ( ( "exceededCondition = %d\n", condition ) );
+        PRINT ( ( "exceededCondition = %ld\n", (long)condition ) );
 
     }
 
-    PRINT ( ( "SATSMARTClient::SMARTReturnStatus status = %d outputCnt = %ld\n", status, outputCnt ) );
+    PRINT ( ( "SATSMARTClient::SMARTReturnStatus status = %d outputCnt = %d\n", status, (int)outputCnt ) );
 
     return status;
 
@@ -607,7 +611,7 @@ SATSMARTClient::SMARTReadData ( ATASMARTData * data )
 
     status = IOConnectCallScalarMethod (        fConnection,
         kIOATASMARTReadData,
-        ( uint64_t * ) data, 1,
+        ( uint64_t * ) &data, 1,
         0, 0);
 
     PRINT ( ( "SATSMARTClient::SMARTReadData status = %d\n", status ) );
@@ -652,7 +656,7 @@ SATSMARTClient::SMARTReadDataThresholds ( ATASMARTDataThresholds * data )
 
     status = IOConnectCallScalarMethod (        fConnection,
         kIOATASMARTReadDataThresholds,
-        ( uint64_t * ) data, 1,
+        ( uint64_t * ) &data, 1,
         0, 0);
 
     PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds status = %d\n", status ) );
