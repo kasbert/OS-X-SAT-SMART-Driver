@@ -320,7 +320,7 @@ SATSMARTUserClient::initWithTask ( task_t owningTask,
                                    void *       securityToken,
                                    UInt32 type )
 {
-    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s task = %p\n", getClassName(), this, __FUNCTION__, owningTask);
 
     if ( type != kIOATASMARTLibConnection )
         return false;
@@ -778,7 +778,7 @@ SATSMARTUserClient::ReadData ( vm_address_t data )
     IOReturn status  = kIOReturnSuccess;
     IOSATCommand *                  command = NULL;
     IOMemoryDescriptor *    buffer  = NULL;
-    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s data = %p\n", getClassName(), this, __FUNCTION__, (void*)data);
 
     fOutstandingCommands++;
 
@@ -813,6 +813,7 @@ SATSMARTUserClient::ReadData ( vm_address_t data )
     }
 
     status = buffer->prepare ( );
+    DEBUG_LOG("%s[%p]::%s prepare %p\n", getClassName(), this,  __FUNCTION__, (void*)status);
     if ( status != kIOReturnSuccess )
     {
 
