@@ -36,6 +36,9 @@
  * WHETHER UNDER THEORY OF CONTRACT, TORT (INCLUDING NEGLIGENCE), STRICT LIABILITY OR
  * OTHERWISE, EVEN IF APPLE HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+#ifdef DEBUG_ASSERT_PRODUCTION_CODE
+#undef DEBUG_ASSERT_PRODUCTION_CODE
+#endif
 
 #define DEBUG_ASSERT_PRODUCTION_CODE 1
 
@@ -65,6 +68,12 @@
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #define DEBUG 5
+#ifdef DEBUG_ASSERT_COMPONENT_NAME_STRING
+#undef DEBUG_ASSERT_COMPONENT_NAME_STRING
+#endif
+#ifdef DEBUG_ASSERT_MESSAGE
+#undef DEBUG_ASSERT_MESSAGE
+#endif
 #define DEBUG_ASSERT_COMPONENT_NAME_STRING "ATASMARTSample"
 #define DEBUG_ASSERT_MESSAGE(componentNameString,       \
                              assertionString,               \
@@ -116,7 +125,6 @@ _DebugAssert ( const char *     componentNameString,
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 #define kATADefaultSectorSize                   512
-#define kIOATABlockStorageDeviceClass   "IOATABlockStorageDevice"
 #define kIOATABlockStorageDeviceClass   "IOSATServices"
 
 enum
@@ -270,7 +278,7 @@ PrintSMARTDataForAllDrives ( void )
         }
 
         IOObjectRelease ( iter );
-        iter = NULL;
+        iter = 0;
 
     }
 
@@ -296,8 +304,10 @@ PrintSMARTDataForDevice ( io_object_t ataDevice )
 
     CFMutableDictionaryRef dict            = NULL;
     CFDictionaryRef deviceDict      = NULL;
+#if 0
     CFNumberRef features        = NULL;
     UInt32 value           = 0;
+#endif
     IOReturn err                     = kIOReturnNoResources;
     Boolean result          = false;
 
