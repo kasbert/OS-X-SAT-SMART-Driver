@@ -489,16 +489,15 @@ SATSMARTClient::SMARTEnableDisableOperations ( Boolean enable )
 {
 
     IOReturn status          = kIOReturnSuccess;
-    int selection       = ( enable == true ) ? 1 : 0;
+    uint64_t selection       = ( enable == true ) ? 1 : 0;
 
     PRINT ( ( "SATSMARTClient::SMARTEnableDisableOperations called\n" ) );
 
-    status = IOConnectMethodScalarIScalarO ( fConnection,
-        kIOATASMARTEnableDisableOperations,
-        1,
-        0,
-        &selection );
-
+    status = IOConnectCallScalarMethod ( fConnection,
+                                        kIOATASMARTEnableDisableOperations,
+                                        &selection, 1,
+                                        0, 0);
+    
     PRINT ( ( "SATSMARTClient::SMARTEnableDisableOperations status = %d\n", status ) );
 
     return status;
@@ -516,15 +515,14 @@ SATSMARTClient::SMARTEnableDisableAutosave ( Boolean enable )
 {
 
     IOReturn status          = kIOReturnSuccess;
-    int selection       = ( enable == true ) ? 1 : 0;
+    uint64_t selection       = ( enable == true ) ? 1 : 0;
 
     PRINT ( ( "SATSMARTClient::SMARTEnableDisableAutosave called\n" ) );
 
-    status = IOConnectMethodScalarIScalarO ( fConnection,
+    status = IOConnectCallScalarMethod ( fConnection,
         kIOATASMARTEnableDisableAutoSave,
-        1,
-        0,
-        &selection );
+        &selection, 1,
+        0, 0);
 
     PRINT ( ( "SATSMARTClient::SMARTEnableDisableAutosave status = %d\n", status ) );
 
@@ -543,15 +541,15 @@ SATSMARTClient::SMARTReturnStatus ( Boolean * exceededCondition )
 {
 
     IOReturn status          = kIOReturnSuccess;
-    int condition       = 0;
+    uint64_t condition       = 0;
+    uint32_t  outputCnt = 1;
 
     PRINT ( ( "SATSMARTClient::SMARTReturnStatus called\n" ) );
 
-    status = IOConnectMethodScalarIScalarO ( fConnection,
+    status = IOConnectCallScalarMethod ( fConnection,
         kIOATASMARTReturnStatus,
-        0,
-        1,
-        &condition );
+        0, 0, 
+        &condition, &outputCnt);
 
     if ( status == kIOReturnSuccess )
     {
@@ -561,7 +559,7 @@ SATSMARTClient::SMARTReturnStatus ( Boolean * exceededCondition )
 
     }
 
-    PRINT ( ( "SATSMARTClient::SMARTReturnStatus status = %d\n", status ) );
+    PRINT ( ( "SATSMARTClient::SMARTReturnStatus status = %d outputCnt = %ld\n", status, outputCnt ) );
 
     return status;
 
@@ -578,15 +576,14 @@ SATSMARTClient::SMARTExecuteOffLineImmediate ( Boolean extendedTest )
 {
 
     IOReturn status          = kIOReturnSuccess;
-    int selection       = ( extendedTest == true ) ? 1 : 0;;
+    uint64_t selection       = ( extendedTest == true ) ? 1 : 0;;
 
     PRINT ( ( "SATSMARTClient::SMARTExecuteOffLineImmediate called\n" ) );
 
-    status = IOConnectMethodScalarIScalarO ( fConnection,
+    status = IOConnectCallScalarMethod ( fConnection,
         kIOATASMARTExecuteOffLineImmediate,
-        1,
-        0,
-        &selection );
+        &selection, 1,
+        0, 0);
 
     PRINT ( ( "SATSMARTClient::SMARTExecuteOffLineImmediate status = %d\n", status ) );
 
@@ -608,11 +605,10 @@ SATSMARTClient::SMARTReadData ( ATASMARTData * data )
 
     PRINT ( ( "SATSMARTClient::SMARTReadData called\n" ) );
 
-    status = IOConnectMethodScalarIScalarO (        fConnection,
+    status = IOConnectCallScalarMethod (        fConnection,
         kIOATASMARTReadData,
-        1,
-        0,
-        ( int * ) data );
+        ( uint64_t * ) data, 1,
+        0, 0);
 
     PRINT ( ( "SATSMARTClient::SMARTReadData status = %d\n", status ) );
 
@@ -654,11 +650,10 @@ SATSMARTClient::SMARTReadDataThresholds ( ATASMARTDataThresholds * data )
 
     PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds called\n" ) );
 
-    status = IOConnectMethodScalarIScalarO (        fConnection,
+    status = IOConnectCallScalarMethod (        fConnection,
         kIOATASMARTReadDataThresholds,
-        1,
-        0,
-        ( int * ) data );
+        ( uint64_t * ) data, 1,
+        0, 0);
 
     PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds status = %d\n", status ) );
 
@@ -764,20 +759,16 @@ SATSMARTClient::SMARTReadLogAtAddress ( UInt32 address,
     // Can't read or write more than 16 sectors
     if ( params.numSectors > 16 )
     {
-
         status = kIOReturnBadArgument;
         goto Exit;
-
     }
 
     PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress address = %ld\n", address ) );
 
-    status = IOConnectMethodScalarIStructureI (  fConnection,
+    status = IOConnectCallStructMethod (  fConnection,
         kIOATASMARTReadLogAtAddress,
-        0,
-        byteCount,
-        ( void * ) &params );
-
+        ( void * ) &params,  byteCount,
+        0, 0);
 
 Exit:
 
@@ -808,10 +799,8 @@ SATSMARTClient::SMARTWriteLogAtAddress ( UInt32 address,
 
     if ( ( address > 0xFF ) || ( buffer == NULL ) )
     {
-
         status = kIOReturnBadArgument;
         goto Exit;
-
     }
 
     byteCount = sizeof ( ATASMARTWriteLogStruct );
@@ -832,12 +821,10 @@ SATSMARTClient::SMARTWriteLogAtAddress ( UInt32 address,
 
     PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress address = %ld\n", address ) );
 
-    status = IOConnectMethodScalarIStructureI (  fConnection,
-        kIOATASMARTWriteLogAtAddress,
-        0,
-        byteCount,
-        ( void * ) &params );
-
+    status = IOConnectCallStructMethod (  fConnection,
+                                         kIOATASMARTWriteLogAtAddress,
+                                        ( void * ) &params , byteCount,
+                                        0, 0);
 
 Exit:
 
@@ -865,7 +852,7 @@ SATSMARTClient::GetATAIdentifyData ( void * buffer, UInt32 inSize, UInt32 * outS
 {
 
     IOReturn status                          = kIOReturnBadArgument;
-    IOByteCount byteCount                       = 0;
+    size_t byteCount                       = 0;
     ATAGetIdentifyDataStruct params                          = { 0 };
     UInt32 bytesTransferred        = 0;
 
@@ -884,13 +871,14 @@ SATSMARTClient::GetATAIdentifyData ( void * buffer, UInt32 inSize, UInt32 * outS
 
     PRINT ( ( "SATSMARTClient::GetATAIdentifyData\n" ) );
 
-    status = IOConnectMethodStructureIStructureO ( fConnection,
-        kIOATASMARTGetIdentifyData,
-        sizeof ( ATAGetIdentifyDataStruct ),
-        &byteCount,
-        ( void * ) &params,
-        ( void * ) &bytesTransferred );
-
+    status = IOConnectCallStructMethod ( fConnection,
+                                        kIOATASMARTGetIdentifyData,
+                                        ( void * ) &params,
+                                        sizeof ( ATAGetIdentifyDataStruct ),
+                                        ( void * ) &bytesTransferred, 
+                                        &byteCount
+                                        );
+    
     if ( outSize != NULL )
     {
         *outSize = bytesTransferred;
