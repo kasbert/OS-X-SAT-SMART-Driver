@@ -387,7 +387,7 @@ SATSMARTUserClient::message ( UInt32 type, IOService * provider, void * arg )
 {
     IOReturn status = kIOReturnSuccess;
 
-    DEBUG_LOG("%s[%p]::%s type = %ld, provider = %p\n", getClassName(), this, __FUNCTION__, type, provider );
+    DEBUG_LOG("%s[%p]::%s type = %u, provider = %p\n", getClassName(), this, __FUNCTION__, (unsigned int)type, provider );
 
     switch ( type )
     {
@@ -799,11 +799,11 @@ SATSMARTUserClient::ReadData ( vm_address_t data )
         goto ReleaseProvider;
     }
 
-    buffer = IOMemoryDescriptor::withAddress (      data,
-        sizeof ( ATASMARTData ),
-        kIODirectionIn,
-        fTask );
-
+    buffer = IOMemoryDescriptor::withAddressRange (      data,
+                                              sizeof ( ATASMARTData ),
+                                              kIODirectionIn,
+                                              fTask );
+    
     if ( buffer == NULL )
     {
 
@@ -920,7 +920,7 @@ SATSMARTUserClient::ReadDataThresholds ( vm_address_t data )
 
     }
 
-    buffer = IOMemoryDescriptor::withAddress (      data,
+    buffer = IOMemoryDescriptor::withAddressRange (      data,
         sizeof ( ATASMARTDataThresholds ),
         kIODirectionIn,
         fTask );
@@ -1045,7 +1045,7 @@ SATSMARTUserClient::ReadLogAtAddress (  ATASMARTReadLogStruct * readLogData,
 
     }
 
-    buffer = IOMemoryDescriptor::withAddress (      ( vm_address_t ) readLogData->buffer,
+    buffer = IOMemoryDescriptor::withAddressRange (      ( vm_address_t ) readLogData->buffer,
         readLogData->bufferSize,
         kIODirectionIn,
         fTask );
@@ -1172,7 +1172,7 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
 
     }
 
-    buffer = IOMemoryDescriptor::withAddress (      ( vm_address_t ) writeLogData->buffer,
+    buffer = IOMemoryDescriptor::withAddressRange (      ( vm_address_t ) writeLogData->buffer,
         writeLogData->bufferSize,
         kIODirectionOut,
         fTask );
@@ -1328,7 +1328,7 @@ SATSMARTUserClient::GetIdentifyData ( ATAGetIdentifyDataStruct *        identify
 
     }
 
-    userBuffer = IOMemoryDescriptor::withAddress ( ( vm_address_t ) identifyData->buffer,
+    userBuffer = IOMemoryDescriptor::withAddressRange ( ( vm_address_t ) identifyData->buffer,
         identifyData->bufferSize,
         kIODirectionIn,
         fTask );

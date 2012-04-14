@@ -118,7 +118,7 @@
 		A8CDB9BE14E5395800881848 /* SATSMARTLibPriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SATSMARTLibPriv.h; sourceTree = "<group>"; };
 		A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SATSMARTLib.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "SATSMARTLib-Info.plist"; path = "UserClientLib/SATSMARTLib-Info.plist"; sourceTree = "<group>"; };
-		A8CDBAFE14E5405F00881848 /* TestTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestTool; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8CDBAFE14E5405F00881848 /* set_properties */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = set_properties; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8D7730414E9B23000195DA7 /* IOSATBusCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATBusCommand.cpp; sourceTree = "<group>"; };
 		A8D7732714E9B2DB00195DA7 /* IOSATCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATCommand.cpp; sourceTree = "<group>"; };
 		A8D7732C14EABA9400195DA7 /* IOSATCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATCommand.h; sourceTree = "<group>"; };
@@ -195,7 +195,7 @@
 			children = (
 				32D94FD00562CBF700B6AF17 /* SATSMARTDriver.kext */,
 				A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */,
-				A8CDBAFE14E5405F00881848 /* TestTool */,
+				A8CDBAFE14E5405F00881848 /* set_properties */,
 				A813771514E6F99B005EAAE7 /* smart_status */,
 				A813772C14E6F9BC005EAAE7 /* smart_sample */,
 			);
@@ -350,7 +350,7 @@
 			);
 			name = TestTool;
 			productName = TestTool;
-			productReference = A8CDBAFE14E5405F00881848 /* TestTool */;
+			productReference = A8CDBAFE14E5405F00881848 /* set_properties */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
