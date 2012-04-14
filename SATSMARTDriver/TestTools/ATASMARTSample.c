@@ -67,6 +67,9 @@
 //	Macros
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
+#ifdef DEBUG
+#undef DEBUG
+#endif
 #define DEBUG 5
 #ifdef DEBUG_ASSERT_COMPONENT_NAME_STRING
 #undef DEBUG_ASSERT_COMPONENT_NAME_STRING
