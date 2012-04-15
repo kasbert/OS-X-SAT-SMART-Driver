@@ -39,7 +39,8 @@
 #include "IOSATServices.h"
 #include "UserClientLib/SATSMARTLibPriv.h"
 #include "UserClient/SATSMARTUserClient.h"
-#include </Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/storage/ata/ATASMARTLib.h>
+// /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/
+#include <storage/ata/ATASMARTLib.h>
 
 
 #define super IOBlockStorageServices

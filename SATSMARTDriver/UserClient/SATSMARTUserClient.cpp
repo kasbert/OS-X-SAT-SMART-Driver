@@ -33,8 +33,8 @@
 
 // Private includes
 #include "SATSMARTUserClient.h"
-//#include "ATASMARTLib.h"
-#include </Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/storage/ata/ATASMARTLib.h>
+///Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/
+#include <storage/ata/ATASMARTLib.h>
 //#include <storage/ata/ATASMARTLib.h>
 #include "../UserClientLib/SATSMARTLibPriv.h"
 //#include "ATASMARTLibPriv.h"
