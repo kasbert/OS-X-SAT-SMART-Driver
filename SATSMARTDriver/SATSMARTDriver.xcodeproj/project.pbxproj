@@ -503,7 +503,7 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1.0.1;
+				CURRENT_PROJECT_VERSION = 1.0.3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_MODEL_TUNING = G5;
@@ -512,7 +512,7 @@
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
 				MODULE_NAME = com.yourcompany.driver.SATSMARTDriver;
-				MODULE_VERSION = 1.0.1;
+				MODULE_VERSION = 1.0.3;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SATSMARTDriver;
 				WRAPPER_EXTENSION = kext;
@@ -523,14 +523,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				CURRENT_PROJECT_VERSION = 1.0.1;
+				CURRENT_PROJECT_VERSION = 1.0.3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_MODEL_TUNING = G5;
 				HEADER_SEARCH_PATHS = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
 				MODULE_NAME = com.yourcompany.driver.SATSMARTDriver;
-				MODULE_VERSION = 1.0.1;
+				MODULE_VERSION = 1.0.3;
 				PRODUCT_NAME = SATSMARTDriver;
 				WRAPPER_EXTENSION = kext;
 			};
