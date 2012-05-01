@@ -36,28 +36,21 @@
 //	Structures
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
+#define kSATMaxDataSize                   (512 * 16)
+
 typedef struct ATASMARTReadLogStruct
 {
     UInt8 numSectors;
     UInt8 logAddress;
-    void *                  buffer;
-    UInt32 bufferSize;
 } ATASMARTReadLogStruct;
 
 typedef struct ATASMARTWriteLogStruct
 {
     UInt8 numSectors;
     UInt8 logAddress;
-    const void *    buffer;
     UInt32 bufferSize;
+    UInt8 buffer[kSATMaxDataSize];
 } ATASMARTWriteLogStruct;
-
-typedef struct ATAGetIdentifyDataStruct
-{
-    const void *    buffer;
-    UInt32 bufferSize;
-} ATAGetIdentifyDataStruct;
-
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 //	Constants

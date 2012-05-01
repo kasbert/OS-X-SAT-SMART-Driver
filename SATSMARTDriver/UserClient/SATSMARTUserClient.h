@@ -93,14 +93,13 @@ IOReturn        ReturnStatus                    ( UInt32 * exceedsCondition );
 IOReturn        ExecuteOfflineImmediate ( UInt32 extendedTest );
 IOReturn        ReadData                                ( vm_address_t data );
 IOReturn        ReadDataThresholds              ( vm_address_t data );
-IOReturn        ReadLogAtAddress                ( ATASMARTReadLogStruct *               readLogData,
-                                                  UInt32 inStructSize );
+    IOReturn        ReadLogAtAddress                ( ATASMARTReadLogStruct * structIn,
+                                                     void * structOut,
+                                                     IOByteCount inStructSize,
+                                                     IOByteCount *outStructSize );
 IOReturn        WriteLogAtAddress               ( ATASMARTWriteLogStruct *              writeLogData,
                                                   UInt32 inStructSize );
-IOReturn        GetIdentifyData                 ( ATAGetIdentifyDataStruct *    identifyData,
-                                                  UInt32 *                                              bytesTransferred,
-                                                  UInt32 inStructSize,
-                                                  UInt32 *                                              outStructSize );
+ IOReturn        GetIdentifyData                 (UInt32 * dataOut, IOByteCount * outputSize);
 
 protected:
 

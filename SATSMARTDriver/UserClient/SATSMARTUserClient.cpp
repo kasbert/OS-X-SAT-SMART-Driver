@@ -184,9 +184,9 @@ SATSMARTUserClient::sMethods[kIOATASMARTMethodCount] =
         // Method #6 ReadLogAtAddress
         0,
         ( IOMethod ) &SATSMARTUserClient::ReadLogAtAddress,
-        kIOUCScalarIStructI,
-        0,
-        sizeof ( ATASMARTReadLogStruct )
+        kIOUCStructIStructO,
+        sizeof ( ATASMARTReadLogStruct ),
+        kIOUCVariableStructureSize
     },
     {
         // Method #7 WriteLogAtAddress
@@ -201,8 +201,8 @@ SATSMARTUserClient::sMethods[kIOATASMARTMethodCount] =
         0,
         ( IOMethod ) &SATSMARTUserClient::GetIdentifyData,
         kIOUCStructIStructO,
-        sizeof ( ATAGetIdentifyDataStruct ),
-        sizeof ( UInt32 )
+        0,
+        kATADefaultSectorSize
     }
 
 };
@@ -1013,17 +1013,22 @@ ErrorExit:
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTUserClient::ReadLogAtAddress (  ATASMARTReadLogStruct * readLogData,
-                                        UInt32 inStructSize )
+SATSMARTUserClient::ReadLogAtAddress ( ATASMARTReadLogStruct * structIn,
+                                      void * structOut,
+                                      IOByteCount inStructSize,
+                                      IOByteCount *outStructSize)
 {
 
     IOReturn status                  = kIOReturnSuccess;
     IOSATCommand *                  command                 = NULL;
-    IOMemoryDescriptor *    buffer                  = NULL;
+    //IOMemoryDescriptor *    buffer                  = NULL;
+    IOBufferMemoryDescriptor * buffer =NULL;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s %p(%ld) %p(%ld)\n", getClassName(), this, __FUNCTION__, structIn, (long)inStructSize, structOut, (long)(outStructSize));
 
-    if ( inStructSize != sizeof ( ATASMARTReadLogStruct ) )
+    if ( inStructSize != sizeof ( ATASMARTReadLogStruct )  || !outStructSize || *outStructSize < 1) {
         return kIOReturnBadArgument;
+    }
 
     fOutstandingCommands++;
 
@@ -1046,11 +1051,7 @@ SATSMARTUserClient::ReadLogAtAddress (  ATASMARTReadLogStruct * readLogData,
 
     }
 
-    buffer = IOMemoryDescriptor::withAddressRange (      ( vm_address_t ) readLogData->buffer,
-        readLogData->bufferSize,
-        kIODirectionIn,
-        fTask );
-
+    buffer = IOBufferMemoryDescriptor::withCapacity ( *outStructSize, kIODirectionIn, false );
     if ( buffer == NULL )
     {
 
@@ -1060,20 +1061,21 @@ SATSMARTUserClient::ReadLogAtAddress (  ATASMARTReadLogStruct * readLogData,
     }
 
     status = buffer->prepare ( );
+    DEBUG_LOG("%s[%p]::%s status %p\n", getClassName(), this, __FUNCTION__, (void *)status);
     if ( status != kIOReturnSuccess )
     {
 
         goto ReleaseBuffer;
 
     }
-
+    
     command->setBuffer                      ( buffer );
-    command->setByteCount           ( readLogData->bufferSize );
+    command->setByteCount           ( buffer->getLength());
     command->setFeatures            ( kFeaturesRegisterReadLogAtAddress );
     command->setOpcode                      ( kATAFnExecIO );
     command->setTimeoutMS           ( kATAThirtySecondTimeoutInMS );
-    command->setSectorCount         ( readLogData->numSectors );
-    command->setSectorNumber        ( readLogData->logAddress );
+    command->setSectorCount         ( structIn->numSectors );
+    command->setSectorNumber        ( structIn->logAddress );
     command->setCylLo                       ( kSMARTMagicCylinderLoValue );
     command->setCylHi                       ( kSMARTMagicCylinderHiValue );
     command->setCommand                     ( kATAcmdSMART );
@@ -1086,7 +1088,7 @@ SATSMARTUserClient::ReadLogAtAddress (  ATASMARTReadLogStruct * readLogData,
         if ( command->getEndErrorReg ( ) & 0x04 )
         {
 
-            ERROR_LOG ( "ReadLogAtAddress %d unsupported\n", readLogData->logAddress );
+            ERROR_LOG ( "ReadLogAtAddress %d unsupported\n", structIn->logAddress );
             status = kIOReturnUnsupported;
 
         }
@@ -1094,14 +1096,18 @@ SATSMARTUserClient::ReadLogAtAddress (  ATASMARTReadLogStruct * readLogData,
         if ( command->getEndErrorReg ( ) & 0x10 )
         {
 
-            ERROR_LOG ( "ReadLogAtAddress %d unreadable\n", readLogData->logAddress );
+            ERROR_LOG ( "ReadLogAtAddress %d unreadable\n", structIn->logAddress );
             status = kIOReturnNotReadable;
 
         }
 
     }
 
+    memcpy(structOut, buffer->getBytesNoCopy ( ), buffer->getLength());
+    *outStructSize = buffer->getLength();
+    
     buffer->complete ( );
+    
 
 
 ReleaseBuffer:
@@ -1146,7 +1152,8 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
 
     IOReturn status                  = kIOReturnSuccess;
     IOSATCommand *                  command                 = NULL;
-    IOMemoryDescriptor *    buffer                  = NULL;
+    //IOMemoryDescriptor *    buffer                  = NULL;
+    IOBufferMemoryDescriptor * buffer = NULL;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
     if ( inStructSize != sizeof ( ATASMARTWriteLogStruct ) )
@@ -1173,11 +1180,8 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
 
     }
 
-    buffer = IOMemoryDescriptor::withAddressRange (      ( vm_address_t ) writeLogData->buffer,
-        writeLogData->bufferSize,
-        kIODirectionOut,
-        fTask );
-
+    buffer = IOBufferMemoryDescriptor::withBytes (writeLogData->buffer, writeLogData->bufferSize, kIODirectionOut, false );
+    
     if ( buffer == NULL )
     {
 
@@ -1213,7 +1217,7 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
         if ( command->getEndErrorReg ( ) & 0x04 )
         {
 
-            ERROR_LOG ( "ReadLogAtAddress %d unsupported\n", writeLogData->logAddress );
+            ERROR_LOG ( "WriteLogAtAddress %d unsupported\n", writeLogData->logAddress );
             status = kIOReturnUnsupported;
 
         }
@@ -1221,7 +1225,7 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
         if ( command->getEndErrorReg ( ) & 0x10 )
         {
 
-            ERROR_LOG ( "ReadLogAtAddress %d unwriteable\n", writeLogData->logAddress );
+            ERROR_LOG ( "WriteLogAtAddress %d unwriteable\n", writeLogData->logAddress );
             status = kIOReturnNotWritable;
 
         }
@@ -1267,28 +1271,20 @@ ErrorExit:
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTUserClient::GetIdentifyData ( ATAGetIdentifyDataStruct *        identifyData,
-                                      UInt32 *                                              bytesTransferred,
-                                      UInt32 inStructSize,
-                                      UInt32 *                                              outStructSize )
+SATSMARTUserClient::GetIdentifyData (UInt32 * dataOut,
+				     IOByteCount * outputSize)
 {
 
     IOReturn status                  = kIOReturnSuccess;
     IOSATCommand *                          command                 = NULL;
-    IOMemoryDescriptor *            userBuffer              = NULL;
     IOBufferMemoryDescriptor *      buffer                  = NULL;
     UInt8 *                                         identifyDataPtr = NULL;
-    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    DEBUG_LOG("%s[%p]::%s %p(%ld)\n", getClassName(), this, __FUNCTION__, dataOut, (long)(outputSize));
 
-    if ( inStructSize != sizeof ( ATAGetIdentifyDataStruct ) )
+    if (!outputSize || *outputSize < kATADefaultSectorSize ) {
         return kIOReturnBadArgument;
-
-    if ( *outStructSize != sizeof ( UInt32 ) )
-        return kIOReturnBadArgument;
-
-    *outStructSize          = 0;
-    *bytesTransferred       = 0;
-
+    }
+        
     fOutstandingCommands++;
 
     if ( isInactive ( ) )
@@ -1328,28 +1324,7 @@ SATSMARTUserClient::GetIdentifyData ( ATAGetIdentifyDataStruct *        identify
         goto ReleaseBuffer;
 
     }
-
-    userBuffer = IOMemoryDescriptor::withAddressRange ( ( vm_address_t ) identifyData->buffer,
-        identifyData->bufferSize,
-        kIODirectionIn,
-        fTask );
-
-    if ( userBuffer == NULL )
-    {
-
-        status = kIOReturnNoResources;
-        goto ReleaseBufferPrepared;
-
-    }
-
-    status = userBuffer->prepare ( );
-    if ( status != kIOReturnSuccess )
-    {
-
-        goto ReleaseUserBuffer;
-
-    }
-
+    
     command->setBuffer                              ( buffer );
     command->setByteCount                   ( kATADefaultSectorSize );
     command->setTransferChunkSize   ( kATADefaultSectorSize );
@@ -1377,8 +1352,6 @@ SATSMARTUserClient::GetIdentifyData ( ATAGetIdentifyDataStruct *        identify
         UInt8 temp;
         UInt8 *                 firstBytePtr;
 
-        *bytesTransferred = command->getActualTransfer ( );
-
         for ( index = 0; index < buffer->getLength ( ); index += 2 )
         {
 
@@ -1391,19 +1364,11 @@ SATSMARTUserClient::GetIdentifyData ( ATAGetIdentifyDataStruct *        identify
 
                 #endif
 
-        userBuffer->writeBytes ( 0, bufferToCopy, userBuffer->getLength ( ) );
-
-        *outStructSize = sizeof ( UInt32 );
-
+        // Write to user
+        *outputSize = buffer->getLength ( );
+        memcpy(dataOut, bufferToCopy, buffer->getLength ( ));
+        DEBUG_LOG("%s[%p]::%s cpy %p %p\n", getClassName(), this,  __FUNCTION__, (void*)*outputSize, (void*)buffer->getLength());
     }
-
-    userBuffer->complete ( );
-
-
-ReleaseUserBuffer:
-
-    userBuffer->release ( );
-    userBuffer = NULL;
 
 
 ReleaseBufferPrepared:
@@ -1436,7 +1401,7 @@ ErrorExit:
 
     fOutstandingCommands--;
 
-    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, status);
+    DEBUG_LOG("%s[%p]::%s result %p\n", getClassName(), this,  __FUNCTION__, (void*)status);
     return status;
 
 }
@@ -1459,6 +1424,7 @@ IOExternalMethod *
 SATSMARTUserClient::getTargetAndMethodForIndex ( IOService ** target, UInt32 index )
 {
 
+    DEBUG_LOG("%s[%p]::%s index %d\n", getClassName(), this, __FUNCTION__, (int)index);
     if ( index >= kIOATASMARTMethodCount )
         return NULL;
 
@@ -1470,7 +1436,6 @@ SATSMARTUserClient::getTargetAndMethodForIndex ( IOService ** target, UInt32 ind
     return &sMethods[index];
 
 }
-
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 //	¥ GatedWaitForCommand -	Waits for signal to wake up. It must hold the
