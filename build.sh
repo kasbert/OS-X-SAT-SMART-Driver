@@ -17,7 +17,7 @@ rm -fr satsmartdriver.pkg
 size=550
 title="SATSMARTDriver"
 source=SATSMARTDriver.pkg
-finalDMGName=SATSMARTDriver-0.3.dmg
+finalDMGName=SATSMARTDriver-0.4.dmg
 applicationName=applicationName
  
 #Create a R/W DMG. It must be larger than the result will be. In this example, the bash variable "size" contains the size in Kb and the contents of the folder in the "source" bash variable will be copied into the DMG:
@@ -74,7 +74,7 @@ exit 0
 
 # Create dmg
 VOL="SATSMARTDriver"
-VER="0.3"
+VER="0.4"
 FILES="SATSMARTDriver.pkg"
 
 DMG="tmp-$VOL.dmg"

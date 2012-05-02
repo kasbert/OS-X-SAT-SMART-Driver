@@ -446,7 +446,7 @@ SATSMARTClient::Start ( CFDictionaryRef propertyTable, io_service_t service )
         status = kIOReturnNoDevice;
 
     PRINT ( ( "SATSMARTClient : IOServiceOpen status = 0x%08lx, connection = %d\n",
-              ( UInt32 ) status, fConnection ) );
+              ( long ) status, fConnection ) );
 
     return status;
 
@@ -607,14 +607,16 @@ SATSMARTClient::SMARTReadData ( ATASMARTData * data )
 {
 
     IOReturn status;
+    size_t bytesTransferred        = sizeof ( ATASMARTData );
 
     PRINT ( ( "SATSMARTClient::SMARTReadData called\n" ) );
 
-    status = IOConnectCallScalarMethod (        fConnection,
-        kIOATASMARTReadData,
-        ( uint64_t * ) &data, 1,
-        0, 0);
-
+    status = IOConnectCallStructMethod ( fConnection,
+                                        kIOATASMARTReadData,
+                                        ( void * ) 0, 0, 
+                                        data, &bytesTransferred
+                                        );
+    
     PRINT ( ( "SATSMARTClient::SMARTReadData status = %d\n", status ) );
 
         #if 0
@@ -652,13 +654,15 @@ SATSMARTClient::SMARTReadDataThresholds ( ATASMARTDataThresholds * data )
 {
 
     IOReturn status;
+    size_t bytesTransferred        = sizeof ( ATASMARTDataThresholds );
 
     PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds called\n" ) );
 
-    status = IOConnectCallScalarMethod (        fConnection,
-        kIOATASMARTReadDataThresholds,
-        ( uint64_t * ) &data, 1,
-        0, 0);
+    status = IOConnectCallStructMethod ( fConnection,
+                                        kIOATASMARTReadDataThresholds,
+                                        ( void * ) 0, 0, 
+                                        data, &bytesTransferred
+                                        );
 
     PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds status = %d\n", status ) );
 
@@ -765,7 +769,7 @@ SATSMARTClient::SMARTReadLogAtAddress ( UInt32 address,
         goto Exit;
     }
 
-    PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress address = %ld\n", address));
+    PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress address = %ld\n",( long )address));
 
     status = IOConnectCallStructMethod (  fConnection,
         kIOATASMARTReadLogAtAddress,
@@ -818,7 +822,7 @@ SATSMARTClient::SMARTWriteLogAtAddress ( UInt32 address,
 
     }
 
-    PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress address = %ld\n", address ) );
+    PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress address = %ld\n",( long )address ) );
 
     status = IOConnectCallStructMethod (  fConnection,
                                          kIOATASMARTWriteLogAtAddress,
@@ -867,10 +871,8 @@ SATSMARTClient::GetATAIdentifyData ( void * buffer, UInt32 inSize, UInt32 * outS
 
     status = IOConnectCallStructMethod ( fConnection,
                                         kIOATASMARTGetIdentifyData,
-                                        ( void * ) 0,
-                                        0, 
-                                        buffer, 
-                                        &bytesTransferred
+                                        ( void * ) 0, 0, 
+                                        buffer, &bytesTransferred
                                         );
     
     if ( outSize != NULL )

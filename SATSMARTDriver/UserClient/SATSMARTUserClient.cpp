@@ -168,17 +168,17 @@ SATSMARTUserClient::sMethods[kIOATASMARTMethodCount] =
         // Method #4 ReadData
         0,
         ( IOMethod ) &SATSMARTUserClient::ReadData,
-        kIOUCScalarIScalarO,
-        1,
-        0
+        kIOUCStructIStructO,
+        0,
+        sizeof ( ATASMARTData )
     },
     {
         // Method #5 ReadDataThresholds
         0,
         ( IOMethod ) &SATSMARTUserClient::ReadDataThresholds,
-        kIOUCScalarIScalarO,
-        1,
-        0
+        kIOUCStructIStructO,
+        0,
+        sizeof ( ATASMARTDataThresholds )
     },
     {
         // Method #6 ReadLogAtAddress
@@ -192,9 +192,9 @@ SATSMARTUserClient::sMethods[kIOATASMARTMethodCount] =
         // Method #7 WriteLogAtAddress
         0,
         ( IOMethod ) &SATSMARTUserClient::WriteLogAtAddress,
-        kIOUCScalarIStructI,
-        0,
-        sizeof ( ATASMARTWriteLogStruct )
+        kIOUCStructIStructO,
+        sizeof ( ATASMARTWriteLogStruct ),
+        0
     },
     {
         // Method #8 GetIdentifyData
@@ -772,13 +772,18 @@ ErrorExit:
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTUserClient::ReadData ( vm_address_t data )
+SATSMARTUserClient::ReadData (UInt32 * dataOut,
+                              IOByteCount * outputSize)
 {
 
     IOReturn status  = kIOReturnSuccess;
     IOSATCommand *                  command = NULL;
-    IOMemoryDescriptor *    buffer  = NULL;
-    DEBUG_LOG("%s[%p]::%s data = %p\n", getClassName(), this, __FUNCTION__, (void*)data);
+    IOBufferMemoryDescriptor *    buffer  = NULL;
+    DEBUG_LOG("%s[%p]::%s data = %p\n", getClassName(), this, __FUNCTION__, (void*)dataOut);
+
+    if (!dataOut, !outputSize || *outputSize != sizeof ( ATASMARTData ) ) {
+        return kIOReturnBadArgument;
+    }
 
     fOutstandingCommands++;
 
@@ -799,10 +804,7 @@ SATSMARTUserClient::ReadData ( vm_address_t data )
         goto ReleaseProvider;
     }
 
-    buffer = IOMemoryDescriptor::withAddressRange (      data,
-                                              sizeof ( ATASMARTData ),
-                                              kIODirectionIn,
-                                              fTask );
+    buffer = IOBufferMemoryDescriptor::withCapacity ( sizeof ( ATASMARTData ), kIODirectionIn, false );
     
     if ( buffer == NULL )
     {
@@ -853,6 +855,9 @@ SATSMARTUserClient::ReadData ( vm_address_t data )
 
     }
 
+    memcpy(dataOut, buffer->getBytesNoCopy ( ), buffer->getLength());
+    *outputSize = buffer->getLength();
+
     buffer->complete ( );
 
 
@@ -892,13 +897,18 @@ ErrorExit:
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
 IOReturn
-SATSMARTUserClient::ReadDataThresholds ( vm_address_t data )
+SATSMARTUserClient::ReadDataThresholds (UInt32 * dataOut,
+                                        IOByteCount * outputSize)
 {
 
     IOReturn status  = kIOReturnSuccess;
     IOSATCommand *                  command = NULL;
-    IOMemoryDescriptor *    buffer  = NULL;
+    IOBufferMemoryDescriptor *    buffer  = NULL;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+
+    if (!dataOut, !outputSize || *outputSize != sizeof ( ATASMARTDataThresholds ) ) {
+        return kIOReturnBadArgument;
+    }
 
     fOutstandingCommands++;
 
@@ -921,11 +931,8 @@ SATSMARTUserClient::ReadDataThresholds ( vm_address_t data )
 
     }
 
-    buffer = IOMemoryDescriptor::withAddressRange (      data,
-        sizeof ( ATASMARTDataThresholds ),
-        kIODirectionIn,
-        fTask );
-
+    buffer = IOBufferMemoryDescriptor::withCapacity ( sizeof ( ATASMARTDataThresholds ), kIODirectionIn, false );
+    
     if ( buffer == NULL )
     {
 
@@ -973,6 +980,9 @@ SATSMARTUserClient::ReadDataThresholds ( vm_address_t data )
         }
 
     }
+
+    memcpy(dataOut, buffer->getBytesNoCopy ( ), buffer->getLength());
+    *outputSize = buffer->getLength();
 
     buffer->complete ( );
 

@@ -91,8 +91,10 @@ IOReturn        EnableDisableOperations ( UInt32 enable );
 IOReturn        EnableDisableAutoSave   ( UInt32 enable );
 IOReturn        ReturnStatus                    ( UInt32 * exceedsCondition );
 IOReturn        ExecuteOfflineImmediate ( UInt32 extendedTest );
-IOReturn        ReadData                                ( vm_address_t data );
-IOReturn        ReadDataThresholds              ( vm_address_t data );
+    IOReturn        ReadData                                ( UInt32 * dataOut,
+                                                             IOByteCount * outputSize );
+    IOReturn        ReadDataThresholds              ( UInt32 * dataOut,
+                                                     IOByteCount * outputSize );
     IOReturn        ReadLogAtAddress                ( ATASMARTReadLogStruct * structIn,
                                                      void * structOut,
                                                      IOByteCount inStructSize,
