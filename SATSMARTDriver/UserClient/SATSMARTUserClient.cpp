@@ -40,7 +40,7 @@
 //#include "ATASMARTLibPriv.h"
 
 // IOKit includes
-#include <IOKit/IOBufferMemoryDescriptor.h>
+#include <IOKit/IOMemoryDescriptor.h>
 #include <IOKit/IOCommandGate.h>
 #include <IOKit/IOWorkLoop.h>
 
@@ -778,10 +778,10 @@ SATSMARTUserClient::ReadData (UInt32 * dataOut,
 
     IOReturn status  = kIOReturnSuccess;
     IOSATCommand *                  command = NULL;
-    IOBufferMemoryDescriptor *    buffer  = NULL;
+    IOMemoryDescriptor *    buffer  = NULL;
     DEBUG_LOG("%s[%p]::%s data = %p\n", getClassName(), this, __FUNCTION__, (void*)dataOut);
 
-    if (!dataOut, !outputSize || *outputSize != sizeof ( ATASMARTData ) ) {
+    if (!dataOut ||  !outputSize || *outputSize != sizeof ( ATASMARTData ) ) {
         return kIOReturnBadArgument;
     }
 
@@ -804,7 +804,7 @@ SATSMARTUserClient::ReadData (UInt32 * dataOut,
         goto ReleaseProvider;
     }
 
-    buffer = IOBufferMemoryDescriptor::withCapacity ( sizeof ( ATASMARTData ), kIODirectionIn, false );
+    buffer = IOMemoryDescriptor::withAddress(dataOut, sizeof ( ATASMARTData ), kIODirectionIn);
     
     if ( buffer == NULL )
     {
@@ -855,7 +855,6 @@ SATSMARTUserClient::ReadData (UInt32 * dataOut,
 
     }
 
-    memcpy(dataOut, buffer->getBytesNoCopy ( ), buffer->getLength());
     *outputSize = buffer->getLength();
 
     buffer->complete ( );
@@ -903,10 +902,10 @@ SATSMARTUserClient::ReadDataThresholds (UInt32 * dataOut,
 
     IOReturn status  = kIOReturnSuccess;
     IOSATCommand *                  command = NULL;
-    IOBufferMemoryDescriptor *    buffer  = NULL;
+    IOMemoryDescriptor *    buffer  = NULL;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
-    if (!dataOut, !outputSize || *outputSize != sizeof ( ATASMARTDataThresholds ) ) {
+    if (!dataOut || !outputSize || *outputSize != sizeof ( ATASMARTDataThresholds ) ) {
         return kIOReturnBadArgument;
     }
 
@@ -931,7 +930,7 @@ SATSMARTUserClient::ReadDataThresholds (UInt32 * dataOut,
 
     }
 
-    buffer = IOBufferMemoryDescriptor::withCapacity ( sizeof ( ATASMARTDataThresholds ), kIODirectionIn, false );
+    buffer = IOMemoryDescriptor::withAddress(dataOut, sizeof ( ATASMARTDataThresholds ), kIODirectionIn);
     
     if ( buffer == NULL )
     {
@@ -981,7 +980,6 @@ SATSMARTUserClient::ReadDataThresholds (UInt32 * dataOut,
 
     }
 
-    memcpy(dataOut, buffer->getBytesNoCopy ( ), buffer->getLength());
     *outputSize = buffer->getLength();
 
     buffer->complete ( );
@@ -1031,9 +1029,7 @@ SATSMARTUserClient::ReadLogAtAddress ( ATASMARTReadLogStruct * structIn,
 
     IOReturn status                  = kIOReturnSuccess;
     IOSATCommand *                  command                 = NULL;
-    //IOMemoryDescriptor *    buffer                  = NULL;
-    IOBufferMemoryDescriptor * buffer =NULL;
-    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    IOMemoryDescriptor *    buffer                  = NULL;
     DEBUG_LOG("%s[%p]::%s %p(%ld) %p(%ld)\n", getClassName(), this, __FUNCTION__, structIn, (long)inStructSize, structOut, (long)(outStructSize));
 
     if ( inStructSize != sizeof ( ATASMARTReadLogStruct )  || !outStructSize || *outStructSize < 1) {
@@ -1061,7 +1057,7 @@ SATSMARTUserClient::ReadLogAtAddress ( ATASMARTReadLogStruct * structIn,
 
     }
 
-    buffer = IOBufferMemoryDescriptor::withCapacity ( *outStructSize, kIODirectionIn, false );
+    buffer = IOMemoryDescriptor::withAddress (structOut,  *outStructSize, kIODirectionIn);
     if ( buffer == NULL )
     {
 
@@ -1113,7 +1109,6 @@ SATSMARTUserClient::ReadLogAtAddress ( ATASMARTReadLogStruct * structIn,
 
     }
 
-    memcpy(structOut, buffer->getBytesNoCopy ( ), buffer->getLength());
     *outStructSize = buffer->getLength();
     
     buffer->complete ( );
@@ -1162,12 +1157,12 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
 
     IOReturn status                  = kIOReturnSuccess;
     IOSATCommand *                  command                 = NULL;
-    //IOMemoryDescriptor *    buffer                  = NULL;
-    IOBufferMemoryDescriptor * buffer = NULL;
+    IOMemoryDescriptor *    buffer                  = NULL;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
-    if ( inStructSize != sizeof ( ATASMARTWriteLogStruct ) )
+    if ( inStructSize != sizeof ( ATASMARTWriteLogStruct ) ) {
         return kIOReturnBadArgument;
+    }
 
     fOutstandingCommands++;
 
@@ -1190,7 +1185,7 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
 
     }
 
-    buffer = IOBufferMemoryDescriptor::withBytes (writeLogData->buffer, writeLogData->bufferSize, kIODirectionOut, false );
+    buffer = IOMemoryDescriptor::withAddress(writeLogData->buffer, writeLogData->bufferSize, kIODirectionOut);
     
     if ( buffer == NULL )
     {
@@ -1287,11 +1282,11 @@ SATSMARTUserClient::GetIdentifyData (UInt32 * dataOut,
 
     IOReturn status                  = kIOReturnSuccess;
     IOSATCommand *                          command                 = NULL;
-    IOBufferMemoryDescriptor *      buffer                  = NULL;
+    IOMemoryDescriptor *      buffer                  = NULL;
     UInt8 *                                         identifyDataPtr = NULL;
     DEBUG_LOG("%s[%p]::%s %p(%ld)\n", getClassName(), this, __FUNCTION__, dataOut, (long)(outputSize));
 
-    if (!outputSize || *outputSize < kATADefaultSectorSize ) {
+    if (!dataOut || !outputSize || *outputSize < kATADefaultSectorSize ) {
         return kIOReturnBadArgument;
     }
         
@@ -1316,7 +1311,7 @@ SATSMARTUserClient::GetIdentifyData (UInt32 * dataOut,
 
     }
 
-    buffer = IOBufferMemoryDescriptor::withCapacity ( kATADefaultSectorSize, kIODirectionIn, false );
+    buffer = IOMemoryDescriptor::withAddress(dataOut, kATADefaultSectorSize, kIODirectionIn);
     if ( buffer == NULL )
     {
 
@@ -1325,7 +1320,7 @@ SATSMARTUserClient::GetIdentifyData (UInt32 * dataOut,
 
     }
 
-    identifyDataPtr = ( UInt8 * ) buffer->getBytesNoCopy ( );
+    identifyDataPtr = ( UInt8 * )dataOut;
 
     status = buffer->prepare ( );
     if ( status != kIOReturnSuccess )
@@ -1348,9 +1343,8 @@ SATSMARTUserClient::GetIdentifyData (UInt32 * dataOut,
     if ( status == kIOReturnSuccess )
     {
 
-        UInt8 *         bufferToCopy = identifyDataPtr;
-
                 #if defined(__BIG_ENDIAN__)
+        UInt8 *         bufferToCopy = identifyDataPtr;
 
         // The identify device info needs to be byte-swapped on big-endian (ppc)
         // systems becuase it is data that is produced by the drive, read across a
@@ -1374,9 +1368,7 @@ SATSMARTUserClient::GetIdentifyData (UInt32 * dataOut,
 
                 #endif
 
-        // Write to user
         *outputSize = buffer->getLength ( );
-        memcpy(dataOut, bufferToCopy, buffer->getLength ( ));
         DEBUG_LOG("%s[%p]::%s cpy %p %p\n", getClassName(), this,  __FUNCTION__, (void*)*outputSize, (void*)buffer->getLength());
     }
 
