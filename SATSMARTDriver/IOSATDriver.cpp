@@ -490,7 +490,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
         trimcpy(model, (char*)(ataIdentify+kATAIdentifyModelNumber), sizeof(model));
         
 	// TODO get from build
-        IOLog("SATSMARTDriver v0.4: disk serial '%s', revision '%s', model '%s'\n",serial, revision, model);
+        IOLog("SATSMARTDriver v0.5: disk serial '%s', revision '%s', model '%s'\n",serial, revision, model);
         //DEBUG_LOG("capabilities %04x %04x %04x\n",ataIdentify[kATAIdentifyDriveCapabilities],
         //    ataIdentify[kATAIdentifyDriveCapabilitiesExtended],
         //    ataIdentify[kATAIdentifyCommandSetSupported]);
