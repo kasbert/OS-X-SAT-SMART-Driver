@@ -17,9 +17,9 @@ http://www.opensource.apple.com/license/apsl/
 Install
 =======
  
+ * Unmount external drives
  * Use the dmg image and the installer
- * Power cycle the external drives
- * Check DiskUtility. The disk should have "S.M.A.R.T. Status: Verified"
+ * Check DiskUtility. The disks should have "S.M.A.R.T. Status: Verified"
 
 
 Uninstall
