@@ -118,7 +118,7 @@
 		A8CDB9BE14E5395800881848 /* SATSMARTLibPriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SATSMARTLibPriv.h; sourceTree = "<group>"; };
 		A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SATSMARTLib.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "SATSMARTLib-Info.plist"; path = "UserClientLib/SATSMARTLib-Info.plist"; sourceTree = "<group>"; };
-		A8CDBAFE14E5405F00881848 /* set_properties */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = set_properties; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8CDBAFE14E5405F00881848 /* TestTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestTool; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8D7730414E9B23000195DA7 /* IOSATBusCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATBusCommand.cpp; sourceTree = "<group>"; };
 		A8D7732714E9B2DB00195DA7 /* IOSATCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATCommand.cpp; sourceTree = "<group>"; };
 		A8D7732C14EABA9400195DA7 /* IOSATCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATCommand.h; sourceTree = "<group>"; };
@@ -195,7 +195,7 @@
 			children = (
 				32D94FD00562CBF700B6AF17 /* SATSMARTDriver.kext */,
 				A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */,
-				A8CDBAFE14E5405F00881848 /* set_properties */,
+				A8CDBAFE14E5405F00881848 /* TestTool */,
 				A813771514E6F99B005EAAE7 /* smart_status */,
 				A813772C14E6F9BC005EAAE7 /* smart_sample */,
 			);
@@ -350,7 +350,7 @@
 			);
 			name = TestTool;
 			productName = TestTool;
-			productReference = A8CDBAFE14E5405F00881848 /* set_properties */;
+			productReference = A8CDBAFE14E5405F00881848 /* TestTool */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -525,11 +525,11 @@
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CURRENT_PROJECT_VERSION = 1.0.3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
+				GCC_MODEL_TUNING = "";
 				HEADER_SEARCH_PATHS = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
-				MODULE_NAME = com.yourcompany.driver.SATSMARTDriver;
+				MODULE_NAME = org.dungeon.driver.SATSMARTDriver;
 				MODULE_VERSION = 1.0.3;
 				PRODUCT_NAME = SATSMARTDriver;
 				WRAPPER_EXTENSION = kext;
@@ -555,11 +555,20 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_AUTO_VECTORIZATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DEBUGGING_SYMBOLS = used;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SSE41_EXTENSIONS = NO;
+				GCC_ENABLE_SSE42_EXTENSIONS = NO;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_STRICT_ALIASING = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
+				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Release;
 		};
@@ -703,10 +712,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
+				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_MODEL_TUNING = G5;
+				GCC_MODEL_TUNING = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				HEADER_SEARCH_PATHS = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/;
