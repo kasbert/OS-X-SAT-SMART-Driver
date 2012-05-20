@@ -87,14 +87,14 @@ IOSATBusCommand::allocateCmd(void)
 {
     IOSATBusCommand* cmd = new IOSATBusCommand;
 
-    if( cmd == 0L)
-        return 0L;
+    if( cmd == NULL)
+        return NULL;
 
 
     if( !cmd->init() )
     {
         cmd->free();
-        return 0L;
+        return NULL;
     }
 
     return cmd;
@@ -127,7 +127,7 @@ IOSATBusCommand::zeroCommand(void)
 {
     queue_init( &queueChain );
     state = 0;
-    syncer = 0L;
+    syncer = NULL;
 
     super::zeroCommand();
 
@@ -227,14 +227,14 @@ IOSATBusCommand::executeCallback(void)
 {
     _inUse = false;
 
-    if(_callback != 0L)
+    if(_callback != NULL)
     {
         (*_callback)(this);
 
-    } else if( syncer != 0L ) {
+    } else if( syncer != NULL ) {
 
         syncer->signal();
-        syncer = 0L;
+        syncer = NULL;
 
     }
 
@@ -336,14 +336,14 @@ IOSATBusCommand64::allocateCmd32(void)
 {
     IOSATBusCommand64* cmd = new IOSATBusCommand64;
 
-    if( cmd == 0L)
-        return 0L;
+    if( cmd == NULL)
+        return NULL;
 
 
     if( !cmd->init() )
     {
         cmd->free();
-        return 0L;
+        return NULL;
     }
 
 

@@ -420,6 +420,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     IOBufferMemoryDescriptor *        buffer            = NULL;
     SCSITaskIdentifier request            = NULL;
+    SCSI_Sense_Data senseData;
     UInt8 *                            ptr                = NULL;
     UInt16 * ataIdentify = NULL;
     bool result = false;
@@ -478,7 +479,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
         serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
     }
     if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
-        GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
+        (GetTaskStatus ( request ) == kSCSITaskStatus_GOOD) )
     {
         DEBUG_LOG("%s[%p]::%s checksum %d\n", getClassName(), this,  __FUNCTION__, checksum(buffer) );
         swapbytes(buffer);
@@ -500,7 +501,29 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
     }
     else
     {
+	    GetAutoSenseData( request, &senseData, sizeof(senseData) );
         ERROR_LOG("%s::%s failed %d %d\n", getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ) );
+	    ERROR_LOG( "senseData: VALID_RESPONSE_CODE=%d (7=valid),\n"
+			    ":          SEGMENT_NUMBER=%d,\n"
+			    ":          SENSE_KEY=%d (7 = FILEMARK, 6 = EOM, 5 = ILI, 3-0 = SENSE KEY)\n"
+			    ":          INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
+			    ":          ADDITIONAL_SENSE_LENGTH=%d,\n"
+			    ":          COMMAND_SPECIFIC_INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
+			    ":          ADDITIONAL_SENSE_CODE=%d,\n"
+			    ":          ADDITIONAL_SENSE_CODE_QUALIFIER=%d,\n"
+			    ":          FIELD_REPLACEABLE_UNIT_CODE=%d,\n"
+			    ":          SKSV_SENSE_KEY_SPECIFIC_MSB=%d (7 = Sense Key Specific Valid bit, 6-0 Sense Key Specific MSB),\n"
+			    ":          SENSE_KEY_SPECIFIC_MID=%d,\n"
+			    ":          SENSE_KEY_SPECIFIC_LSB=%d\n",
+			    senseData.VALID_RESPONSE_CODE, senseData.SEGMENT_NUMBER, senseData.SENSE_KEY,
+			    senseData.INFORMATION_1, senseData.INFORMATION_2,
+			    senseData.INFORMATION_3, senseData.INFORMATION_4, senseData.ADDITIONAL_SENSE_LENGTH,
+			    senseData.COMMAND_SPECIFIC_INFORMATION_1, senseData.COMMAND_SPECIFIC_INFORMATION_2,
+			    senseData.COMMAND_SPECIFIC_INFORMATION_3, senseData.COMMAND_SPECIFIC_INFORMATION_4,
+			    senseData.ADDITIONAL_SENSE_CODE, senseData.ADDITIONAL_SENSE_CODE_QUALIFIER,
+			    senseData.FIELD_REPLACEABLE_UNIT_CODE, senseData.SKSV_SENSE_KEY_SPECIFIC_MSB,
+			    senseData.SENSE_KEY_SPECIFIC_MID, senseData.SENSE_KEY_SPECIFIC_LSB
+		);
         fSATSMARTCapable = false;
     }
     
@@ -528,6 +551,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     IOBufferMemoryDescriptor *        buffer            = NULL;
     SCSITaskIdentifier request            = NULL;
+    SCSI_Sense_Data senseData;
     UInt8 *                            ptr                = NULL;
     UInt16 * ptr16;
     bool result = false;
@@ -567,8 +591,10 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
     {
         serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
     }
+    // 20120521 RJVB: it appears we should accept a kSCSITaskStatus_CHECK_CONDITION status too:
     if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
-        GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
+        (GetTaskStatus ( request ) == kSCSITaskStatus_GOOD ||
+	    GetTaskStatus(request) == kSCSITaskStatus_CHECK_CONDITION) )
     {
         DEBUG_LOG("%s[%p]::%s success checksum %d\n", getClassName(), this,  __FUNCTION__, checksum(buffer) );
         swapbytes(buffer);
@@ -578,8 +604,30 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
     }
     else
     {
+	    GetAutoSenseData( request, &senseData, sizeof(senseData) );
 	ERROR_LOG("%s::%s failed %d %d\n", getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ) );
-        fSATSMARTCapable = false;
+	    ERROR_LOG( "senseData: VALID_RESPONSE_CODE=%d (7=valid),\n"
+			    ":          SEGMENT_NUMBER=%d,\n"
+			    ":          SENSE_KEY=%d (7 = FILEMARK, 6 = EOM, 5 = ILI, 3-0 = SENSE KEY)\n"
+			    ":          INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
+			    ":          ADDITIONAL_SENSE_LENGTH=%d,\n"
+			    ":          COMMAND_SPECIFIC_INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
+			    ":          ADDITIONAL_SENSE_CODE=%d,\n"
+			    ":          ADDITIONAL_SENSE_CODE_QUALIFIER=%d,\n"
+			    ":          FIELD_REPLACEABLE_UNIT_CODE=%d,\n"
+			    ":          SKSV_SENSE_KEY_SPECIFIC_MSB=%d (7 = Sense Key Specific Valid bit, 6-0 Sense Key Specific MSB),\n"
+			    ":          SENSE_KEY_SPECIFIC_MID=%d,\n"
+			    ":          SENSE_KEY_SPECIFIC_LSB=%d\n",
+			    senseData.VALID_RESPONSE_CODE, senseData.SEGMENT_NUMBER, senseData.SENSE_KEY,
+			    senseData.INFORMATION_1, senseData.INFORMATION_2,
+			    senseData.INFORMATION_3, senseData.INFORMATION_4, senseData.ADDITIONAL_SENSE_LENGTH,
+			    senseData.COMMAND_SPECIFIC_INFORMATION_1, senseData.COMMAND_SPECIFIC_INFORMATION_2,
+			    senseData.COMMAND_SPECIFIC_INFORMATION_3, senseData.COMMAND_SPECIFIC_INFORMATION_4,
+			    senseData.ADDITIONAL_SENSE_CODE, senseData.ADDITIONAL_SENSE_CODE_QUALIFIER,
+			    senseData.FIELD_REPLACEABLE_UNIT_CODE, senseData.SKSV_SENSE_KEY_SPECIFIC_MSB,
+			    senseData.SENSE_KEY_SPECIFIC_MID, senseData.SENSE_KEY_SPECIFIC_LSB
+		);
+		fSATSMARTCapable = false;
     }
     
     buffer->complete ( );
@@ -835,7 +883,7 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
             require (T_DIR == kIOSATTDirectionFromDevice, ErrorExit);
             require (dataBuffer, ErrorExit);
             require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-            transferCount = dataBuffer->getLength();
+            transferCount = (int) dataBuffer->getLength();
             direction =  kSCSIDataTransfer_FromTargetToInitiator;
             break;
         case kIOSATProtocolPIODataOut:     // PIO Data-Out
@@ -843,7 +891,7 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
             require (T_DIR == kIOSATTDirectionToDevice, ErrorExit);
             require (dataBuffer, ErrorExit);
             require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-            transferCount = dataBuffer->getLength();
+            transferCount = (int) dataBuffer->getLength();
             direction = kSCSIDataTransfer_FromInitiatorToTarget;
             break;
         case kIOSATProtocolDMA:     // DMA
@@ -857,7 +905,7 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
             } else {
                 require (dataBuffer, ErrorExit);
                 require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-                transferCount = dataBuffer->getLength();
+                transferCount = (int) dataBuffer->getLength();
                 if (T_DIR == kIOSATTDirectionFromDevice) {
                     direction = kSCSIDataTransfer_FromTargetToInitiator;
                 } else {

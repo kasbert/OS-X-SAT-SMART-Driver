@@ -80,7 +80,7 @@ public:
 
 virtual bool     initWithTask           ( task_t owningTask, void * securityToken, UInt32 type );
 
-virtual bool         init                           ( OSDictionary * dictionary = 0 );
+virtual bool         init                           ( OSDictionary * dictionary = NULL );
 virtual bool         start                          ( IOService * provider );
 virtual void     free                           ( void );
 virtual IOReturn message                    ( UInt32 type, IOService * provider, void * arg );

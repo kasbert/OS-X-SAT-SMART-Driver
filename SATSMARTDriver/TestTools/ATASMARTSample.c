@@ -566,8 +566,8 @@ GetDriveDescription ( io_object_t service )
 
     product = ( CFStringRef ) CFDictionaryGetValue ( deviceDict, CFSTR ( kIOPropertyProductNameKey ) );
 
-    description = CFStringCreateMutableCopy ( kCFAllocatorDefault, 0, product );
-    require ( ( description != 0 ), Exit );
+    description = CFStringCreateMutableCopy ( kCFAllocatorDefault, 0L, product );
+    require ( ( description != NULL ), Exit );
 
 
 Exit:

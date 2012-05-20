@@ -123,6 +123,10 @@
 		A8D7732714E9B2DB00195DA7 /* IOSATCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATCommand.cpp; sourceTree = "<group>"; };
 		A8D7732C14EABA9400195DA7 /* IOSATCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATCommand.h; sourceTree = "<group>"; };
 		A8D7732E14EABAC600195DA7 /* IOSATBusCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATBusCommand.h; sourceTree = "<group>"; };
+		D6E326A115699D1B00C0B62B /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../README; sourceTree = SOURCE_ROOT; };
+		D6E326A215699D1B00C0B62B /* mkdmg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = mkdmg; path = ../mkdmg; sourceTree = SOURCE_ROOT; };
+		D6E326A315699D1B00C0B62B /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = makefile; path = ../makefile; sourceTree = SOURCE_ROOT; };
+		D6E326A415699D1B00C0B62B /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = build.sh; path = ../build.sh; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +190,10 @@
 				A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */,
 				32D94FCF0562CBF700B6AF17 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+				D6E326A115699D1B00C0B62B /* README */,
+				D6E326A215699D1B00C0B62B /* mkdmg */,
+				D6E326A315699D1B00C0B62B /* makefile */,
+				D6E326A415699D1B00C0B62B /* build.sh */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -564,7 +572,9 @@
 				GCC_ENABLE_SSE42_EXTENSIONS = NO;
 				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
 				GCC_STRICT_ALIASING = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;

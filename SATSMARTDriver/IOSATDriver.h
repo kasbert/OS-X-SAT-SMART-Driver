@@ -120,7 +120,7 @@ bool    PASS_THROUGH_16 (
 void    SendBuiltInINQUIRY ( void );
 
 public:
-virtual bool init(OSDictionary *dictionary = 0);
+virtual bool init(OSDictionary *dictionary = NULL);
 virtual void free(void);
 virtual IOService *probe(IOService *provider, SInt32 *score);
 virtual bool start(IOService *provider);
