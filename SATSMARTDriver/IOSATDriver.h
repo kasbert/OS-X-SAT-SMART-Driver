@@ -117,10 +117,30 @@ bool    PASS_THROUGH_16 (
     SCSICmdField1Byte DEVICE,
     SCSICmdField1Byte COMMAND,
     SCSICmdField1Byte CONTROL);
+bool    PASS_THROUGH_12or16 (
+    SCSITaskIdentifier request,
+    IOMemoryDescriptor *    dataBuffer,
+    SCSICmdField3Bit MULTIPLE_COUNT,
+    SCSICmdField4Bit PROTOCOL,
+    SCSICmdField1Bit EXTEND,
+    SCSICmdField2Bit OFF_LINE,
+    SCSICmdField1Bit CK_COND,
+    SCSICmdField1Bit T_DIR,
+    SCSICmdField1Bit BYT_BLOK,
+    SCSICmdField2Bit T_LENGTH,
+    SCSICmdField2Byte FEATURES,
+    SCSICmdField2Byte SECTOR_COUNT,
+    SCSICmdField2Byte LBA_LOW,
+    SCSICmdField2Byte LBA_MID,
+    SCSICmdField2Byte LBA_HIGH,
+    SCSICmdField1Byte DEVICE,
+    SCSICmdField1Byte COMMAND,
+    SCSICmdField1Byte CONTROL,
+    UInt8 &opBytes);
 void    SendBuiltInINQUIRY ( void );
 
 public:
-virtual bool init(OSDictionary *dictionary = 0);
+virtual bool init(OSDictionary *dictionary = NULL);
 virtual void free(void);
 virtual IOService *probe(IOService *provider, SInt32 *score);
 virtual bool start(IOService *provider);

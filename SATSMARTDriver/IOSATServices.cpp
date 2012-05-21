@@ -101,7 +101,7 @@ IOSATServices::attach ( IOService * provider )
             setProperty(kIOPropertySMARTCapableKey, true);
 
             OSDictionary *      userClientDict = OSDictionary::withCapacity ( 1 );
-            OSString *          string2 = 0;
+            OSString *          string2 = NULL;
 
             string2 = OSString::withCString ( kSATSMARTUserClientLibLocationKey );
             userClientDict->setObject ( kATASMARTUserClientTypeIDKey, string2 );
@@ -164,7 +164,7 @@ IOReturn IOSATServices::newUserClient (
     //DEBUG_LOG("newUserClient super %x %s\n", err, stringFromReturn(err));
 
 
-    const OSSymbol *userClientClass = 0;
+    const OSSymbol *userClientClass = NULL;
     IOUserClient *client;
     OSObject *temp;
 

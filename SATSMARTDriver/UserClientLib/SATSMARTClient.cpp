@@ -380,7 +380,7 @@ SATSMARTClient::Probe ( CFDictionaryRef propertyTable,
                         SInt32 *                order )
 {
 
-    CFMutableDictionaryRef dict    = 0;
+    CFMutableDictionaryRef dict    = NULL;
     IOReturn status  = kIOReturnBadArgument;
 
     PRINT ( ( "SATSMARTClient::Probe called\n" ) );
@@ -409,11 +409,11 @@ SATSMARTClient::Probe ( CFDictionaryRef propertyTable,
 Exit:
 
 
-    if ( dict != 0 )
+    if ( dict != NULL )
     {
 
         CFRelease ( dict );
-        dict = 0;
+        dict = NULL;
 
     }
 
@@ -494,7 +494,7 @@ SATSMARTClient::SMARTEnableDisableOperations ( Boolean enable )
 {
 
     IOReturn status          = kIOReturnSuccess;
-    uint64_t selection       = ( enable == true ) ? 1 : 0;
+    uint64_t selection       = ( enable ) ? 1 : 0;
 
     PRINT ( ( "SATSMARTClient::SMARTEnableDisableOperations called\n" ) );
 
@@ -520,7 +520,7 @@ SATSMARTClient::SMARTEnableDisableAutosave ( Boolean enable )
 {
 
     IOReturn status          = kIOReturnSuccess;
-    uint64_t selection       = ( enable == true ) ? 1 : 0;
+    uint64_t selection       = ( enable ) ? 1 : 0;
 
     PRINT ( ( "SATSMARTClient::SMARTEnableDisableAutosave called\n" ) );
 
@@ -559,7 +559,7 @@ SATSMARTClient::SMARTReturnStatus ( Boolean * exceededCondition )
     if ( status == kIOReturnSuccess )
     {
 
-        *exceededCondition = ( condition != 0 ) ? true : false;
+        *exceededCondition = ( condition != 0 );
         PRINT ( ( "exceededCondition = %ld\n", (long)condition ) );
 
     }
@@ -581,7 +581,7 @@ SATSMARTClient::SMARTExecuteOffLineImmediate ( Boolean extendedTest )
 {
 
     IOReturn status          = kIOReturnSuccess;
-    uint64_t selection       = ( extendedTest == true ) ? 1 : 0;;
+    uint64_t selection       = ( extendedTest ) ? 1 : 0;
 
     PRINT ( ( "SATSMARTClient::SMARTExecuteOffLineImmediate called\n" ) );
 
@@ -877,7 +877,7 @@ SATSMARTClient::GetATAIdentifyData ( void * buffer, UInt32 inSize, UInt32 * outS
     
     if ( outSize != NULL )
     {
-        *outSize = bytesTransferred;
+        *outSize = (UInt32) bytesTransferred;
     }
 
 

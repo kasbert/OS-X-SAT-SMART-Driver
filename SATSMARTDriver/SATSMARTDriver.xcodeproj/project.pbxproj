@@ -22,6 +22,17 @@
 			name = "Build All";
 			productName = "Build All";
 		};
+		D61EE2F6156A4F5C00A803A2 /* buildDMG */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = D61EE2FE156A4F8700A803A2 /* Build configuration list for PBXAggregateTarget "buildDMG" */;
+			buildPhases = (
+				D61EE2F5156A4F5C00A803A2 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = buildDMG;
+			productName = buildDMG;
+		};
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
@@ -118,11 +129,18 @@
 		A8CDB9BE14E5395800881848 /* SATSMARTLibPriv.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SATSMARTLibPriv.h; sourceTree = "<group>"; };
 		A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SATSMARTLib.plugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "SATSMARTLib-Info.plist"; path = "UserClientLib/SATSMARTLib-Info.plist"; sourceTree = "<group>"; };
-		A8CDBAFE14E5405F00881848 /* set_properties */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = set_properties; sourceTree = BUILT_PRODUCTS_DIR; };
+		A8CDBAFE14E5405F00881848 /* TestTool */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestTool; sourceTree = BUILT_PRODUCTS_DIR; };
 		A8D7730414E9B23000195DA7 /* IOSATBusCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATBusCommand.cpp; sourceTree = "<group>"; };
 		A8D7732714E9B2DB00195DA7 /* IOSATCommand.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = IOSATCommand.cpp; sourceTree = "<group>"; };
 		A8D7732C14EABA9400195DA7 /* IOSATCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATCommand.h; sourceTree = "<group>"; };
 		A8D7732E14EABAC600195DA7 /* IOSATBusCommand.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOSATBusCommand.h; sourceTree = "<group>"; };
+		D61EE2F1156A491A00A803A2 /* 01root-contents.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = "01root-contents.xml"; sourceTree = "<group>"; };
+		D61EE2F2156A491A00A803A2 /* 01root.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = 01root.xml; sourceTree = "<group>"; };
+		D61EE2F3156A491A00A803A2 /* index.xml */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = index.xml; sourceTree = "<group>"; };
+		D6E326A115699D1B00C0B62B /* README */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = README; path = ../README; sourceTree = SOURCE_ROOT; };
+		D6E326A215699D1B00C0B62B /* mkdmg */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = mkdmg; path = ../mkdmg; sourceTree = SOURCE_ROOT; };
+		D6E326A315699D1B00C0B62B /* makefile */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.make; name = makefile; path = ../makefile; sourceTree = SOURCE_ROOT; };
+		D6E326A415699D1B00C0B62B /* build.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = build.sh; path = ../build.sh; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +204,11 @@
 				A8CDBA1314E53D3E00881848 /* SATSMARTLib-Info.plist */,
 				32D94FCF0562CBF700B6AF17 /* Info.plist */,
 				089C167DFE841241C02AAC07 /* InfoPlist.strings */,
+				D6E326A115699D1B00C0B62B /* README */,
+				D61EE2F0156A491A00A803A2 /* SATSMARTDriver.pmdoc */,
+				D6E326A215699D1B00C0B62B /* mkdmg */,
+				D6E326A315699D1B00C0B62B /* makefile */,
+				D6E326A415699D1B00C0B62B /* build.sh */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -195,7 +218,7 @@
 			children = (
 				32D94FD00562CBF700B6AF17 /* SATSMARTDriver.kext */,
 				A8CDBA1214E53D3E00881848 /* SATSMARTLib.plugin */,
-				A8CDBAFE14E5405F00881848 /* set_properties */,
+				A8CDBAFE14E5405F00881848 /* TestTool */,
 				A813771514E6F99B005EAAE7 /* smart_status */,
 				A813772C14E6F9BC005EAAE7 /* smart_sample */,
 			);
@@ -247,6 +270,18 @@
 				A8CDB9BE14E5395800881848 /* SATSMARTLibPriv.h */,
 			);
 			path = UserClientLib;
+			sourceTree = "<group>";
+		};
+		D61EE2F0156A491A00A803A2 /* SATSMARTDriver.pmdoc */ = {
+			isa = PBXGroup;
+			children = (
+				D61EE2F1156A491A00A803A2 /* 01root-contents.xml */,
+				D61EE2F2156A491A00A803A2 /* 01root.xml */,
+				D61EE2F3156A491A00A803A2 /* index.xml */,
+			);
+			includeInIndex = 0;
+			name = SATSMARTDriver.pmdoc;
+			path = ../SATSMARTDriver.pmdoc;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -350,7 +385,7 @@
 			);
 			name = TestTool;
 			productName = TestTool;
-			productReference = A8CDBAFE14E5405F00881848 /* set_properties */;
+			productReference = A8CDBAFE14E5405F00881848 /* TestTool */;
 			productType = "com.apple.product-type.tool";
 		};
 /* End PBXNativeTarget section */
@@ -373,6 +408,7 @@
 			projectRoot = "";
 			targets = (
 				A86A787514F57C900067035C /* Build All */,
+				D61EE2F6156A4F5C00A803A2 /* buildDMG */,
 				32D94FC30562CBF700B6AF17 /* SATSMARTDriver */,
 				A8CDBA1114E53D3E00881848 /* SATSMARTLib */,
 				A8CDBAFD14E5405F00881848 /* TestTool */,
@@ -409,6 +445,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXRezBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		D61EE2F5156A4F5C00A803A2 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# shell script goes here\ncd \"${PROJECT_DIR}\"/..\n./build.sh\nexit 0";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		32D94FC90562CBF700B6AF17 /* Sources */ = {
@@ -524,12 +577,12 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CURRENT_PROJECT_VERSION = 1.0.3;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				GCC_MODEL_TUNING = G5;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_MODEL_TUNING = "";
 				HEADER_SEARCH_PATHS = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
-				MODULE_NAME = com.yourcompany.driver.SATSMARTDriver;
+				MODULE_NAME = org.dungeon.driver.SATSMARTDriver;
 				MODULE_VERSION = 1.0.3;
 				PRODUCT_NAME = SATSMARTDriver;
 				WRAPPER_EXTENSION = kext;
@@ -555,11 +608,22 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_AUTO_VECTORIZATION = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DEBUGGING_SYMBOLS = used;
+				GCC_ENABLE_SSE3_EXTENSIONS = YES;
+				GCC_ENABLE_SSE41_EXTENSIONS = NO;
+				GCC_ENABLE_SSE42_EXTENSIONS = NO;
+				GCC_ENABLE_SUPPLEMENTAL_SSE3_INSTRUCTIONS = YES;
+				GCC_STRICT_ALIASING = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_PEDANTIC = NO;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
+				STRIP_INSTALLED_PRODUCT = NO;
 			};
 			name = Release;
 		};
@@ -703,10 +767,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COPY_PHASE_STRIP = YES;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
-				GCC_MODEL_TUNING = G5;
+				GCC_MODEL_TUNING = "";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				HEADER_SEARCH_PATHS = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/;
@@ -762,6 +826,27 @@
 				);
 				PREBINDING = NO;
 				PRODUCT_NAME = TestTool;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
+		D61EE2F7156A4F5D00A803A2 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				PRODUCT_NAME = buildDMG;
+			};
+			name = Debug;
+		};
+		D61EE2F8156A4F5D00A803A2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				PRODUCT_NAME = buildDMG;
 				ZERO_LINK = NO;
 			};
 			name = Release;
@@ -828,6 +913,15 @@
 			buildConfigurations = (
 				A8CDBB0014E5406000881848 /* Debug */,
 				A8CDBB0114E5406000881848 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		D61EE2FE156A4F8700A803A2 /* Build configuration list for PBXAggregateTarget "buildDMG" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D61EE2F7156A4F5D00A803A2 /* Debug */,
+				D61EE2F8156A4F5D00A803A2 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
