@@ -493,8 +493,9 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
         trimcpy(revision, (char*)(ataIdentify+kATAIdentifyFirmwareRevision), sizeof(revision));
         trimcpy(model, (char*)(ataIdentify+kATAIdentifyModelNumber), sizeof(model));
         
-        IOLog("SATSMARTDriver v%2.1f: disk serial '%s', revision '%s', model '%s', kSCSICmd_PASS_THROUGH_%u\n",
-		    SATSMARTDriverVersionNumber, serial, revision, model, opBytes );
+        IOLog("SATSMARTDriver v%d.%d: disk serial '%s', revision '%s', model '%s', kSCSICmd_PASS_THROUGH_%u\n",
+		    (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
+                    serial, revision, model, opBytes );
         //DEBUG_LOG("capabilities %04x %04x %04x\n",ataIdentify[kATAIdentifyDriveCapabilities],
         //    ataIdentify[kATAIdentifyDriveCapabilitiesExtended],
         //    ataIdentify[kATAIdentifyCommandSetSupported]);

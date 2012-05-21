@@ -16,9 +16,10 @@ source=SATSMARTDriver.pkg
 /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc --out "${source}"
 
 #
+version=$(cat SATSMARTDriver/build/Release/SATSMARTDriver.kext/Contents/Info.plist | xpath "//string[preceding-sibling::key[1]='CFBundleVersion']/text()")
 size=550
 title="SATSMARTDriver"
-finalDMGName=SATSMARTDriver-0.41.dmg
+finalDMGName=${title}-${version}.dmg
 applicationName=applicationName
  
 #Create a R/W DMG. It must be larger than the result will be. In this example, the bash variable "size" contains the size in Kb and the contents of the folder in the "source" bash variable will be copied into the DMG:
