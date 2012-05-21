@@ -24,6 +24,8 @@
 #include "IOSATDriver.h"
 #include "IOSATServices.h"
 
+extern const double SATSMARTDriverVersionNumber;
+
 #ifdef DEBUG
 #define DEBUG_LOG IOLog
 #else
@@ -41,10 +43,8 @@
 #define kSCSICmd_PASS_THROUGH_16 0x85
 #define kSCSICmd_PASS_THROUGH_12 0xA1
 
-
 #define super IOSCSIPeripheralDeviceType00
 OSDefineMetaClassAndStructors(org_dungeon_driver_IOSATDriver, IOSCSIPeripheralDeviceType00)
-
 
 /////////////
 static void hexdump16(UInt16 *data, int start, int len) {
@@ -493,9 +493,8 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
         trimcpy(revision, (char*)(ataIdentify+kATAIdentifyFirmwareRevision), sizeof(revision));
         trimcpy(model, (char*)(ataIdentify+kATAIdentifyModelNumber), sizeof(model));
         
-	// TODO get from build
-        IOLog("SATSMARTDriver v0.5: disk serial '%s', revision '%s', model '%s', kSCSICmd_PASS_THROUGH_%u\n",
-		    serial, revision, model, opBytes );
+        IOLog("SATSMARTDriver v%2.1f: disk serial '%s', revision '%s', model '%s', kSCSICmd_PASS_THROUGH_%u\n",
+		    SATSMARTDriverVersionNumber, serial, revision, model, opBytes );
         //DEBUG_LOG("capabilities %04x %04x %04x\n",ataIdentify[kATAIdentifyDriveCapabilities],
         //    ataIdentify[kATAIdentifyDriveCapabilitiesExtended],
         //    ataIdentify[kATAIdentifyCommandSetSupported]);
