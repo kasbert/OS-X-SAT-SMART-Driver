@@ -85,3 +85,11 @@ Compile
   |   "Peripheral Device Type" = 0
   | }
 ..
+
+*** 20120521 RJVB
+I created a fork (https://github.com/RJVB/OS-X-SAT-SMART-Driver) that works with enclosures that weren't supported before, in 64bit. I'd of course be more than happy to see my tweaks included in your code (possibly a branch)!
+
+- some code cleanup
+- use NULL instead of 0 or 0L when pointers/addresses are concerned
+- accept CHECK_CONDITION request status when reading SMART data. My guess is that this is comparable to the smartmontools' "-T permissive" option.
+what about PASS_THROUGH_16()? The function is defined but unused; is it a 'drop-in' replacement for PASS_THROUGH_12() and if so, could one issue the 16 variant after the 12 variant failed in hope of supporting more enclosures?
