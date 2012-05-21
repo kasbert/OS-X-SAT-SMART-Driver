@@ -36,7 +36,7 @@ Compile
 
  * Compile all targets using XCode.
     cd SATSMARTDriver
-    xcodebuild -configuration Debug
+    xcodebuild -configuration Release
 
  * Unmount all existing external drives.
 

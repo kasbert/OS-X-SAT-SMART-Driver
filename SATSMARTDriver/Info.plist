@@ -6,22 +6,22 @@
 	<string>English</string>
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
-	<key>CFBundleName</key>
-	<string>${PRODUCT_NAME}</string>
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
 	<string>org.dungeon.driver.SATSMARTDriver</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>${PRODUCT_NAME}</string>
 	<key>CFBundlePackageType</key>
 	<string>KEXT</string>
+	<key>CFBundleShortVersionString</key>
+	<string>1.0</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
-	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>1.1</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>SATSMARTDriver</key>
@@ -30,32 +30,32 @@
 			<string>org.dungeon.driver.SATSMARTDriver</string>
 			<key>IOClass</key>
 			<string>org_dungeon_driver_IOSATDriver</string>
-			<key>IOProviderClass</key>
-			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
+			<key>IOProbeScore</key>
+			<integer>1000</integer>
+			<key>IOProviderClass</key>
+			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
 			<integer>0</integer>
 			<key>xProduct Identification</key>
 			<string>My Book</string>
 			<key>xVendor Identification</key>
 			<string>WD</string>
-			<key>IOProbeScore</key>
-			<integer>1000</integer>
 		</dict>
 	</dict>
 	<key>OSBundleLibraries</key>
 	<dict>
-		<key>com.apple.kpi.iokit</key>
-		<string>10.8</string>
-		<key>com.apple.kpi.libkern</key>
-		<string>10.8</string>
 		<key>com.apple.iokit.IOSCSIArchitectureModelFamily</key>
 		<string>2.6.8</string>
 		<key>com.apple.iokit.IOSCSIBlockCommandsDevice</key>
 		<string>2.6.8</string>
 		<key>com.apple.iokit.IOStorageFamily</key>
 		<string>1.6.3</string>
+		<key>com.apple.kpi.iokit</key>
+		<string>10.8</string>
+		<key>com.apple.kpi.libkern</key>
+		<string>10.8</string>
 	</dict>
 	<key>OSBundleRequired</key>
 	<string>Local-Root</string>
