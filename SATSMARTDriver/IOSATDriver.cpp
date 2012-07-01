@@ -203,6 +203,15 @@ org_dungeon_driver_IOSATDriver::attach ( IOService * provider )
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     bool result = false;
+    OSBoolean *value;
+    
+    value = OSDynamicCast ( OSBoolean, getProperty(kPermissiveKey));
+    if  (value != NULL && value->isTrue()) {
+        fPermissive = true;
+    } else {
+        fPermissive = false;
+    }
+    
     require_string ( super::attach ( provider ), ErrorExit,
                     "Superclass didn't attach" );
     
@@ -228,7 +237,8 @@ org_dungeon_driver_IOSATDriver::CreateStorageServiceNub ( void )
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     IOService *         nub = NULL;
     if (!fSATSMARTCapable) {
-        goto ErrorExit;
+        super::CreateStorageServiceNub();
+        return;
     }
     //nub = OSTypeAlloc ( IOBlockStorageServices );
     nub = OSTypeAlloc ( IOSATServices );
@@ -599,7 +609,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
     // 20120521 RJVB: it appears we should accept a kSCSITaskStatus_CHECK_CONDITION status too:
     if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
         (GetTaskStatus ( request ) == kSCSITaskStatus_GOOD ||
-	    GetTaskStatus(request) == kSCSITaskStatus_CHECK_CONDITION) )
+	    (fPermissive && GetTaskStatus(request) == kSCSITaskStatus_CHECK_CONDITION)) )
     {
         DEBUG_LOG("%s[%p]::%s success checksum %d, kSCSICmd_PASS_THROUGH_%u\n",
 			   getClassName(), this,  __FUNCTION__, checksum(buffer), opBytes );

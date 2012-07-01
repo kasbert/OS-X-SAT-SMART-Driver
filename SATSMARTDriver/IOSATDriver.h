@@ -16,6 +16,7 @@
 class IOSATCommand;
 class IOBufferMemoryDescriptor;
 
+#define kPermissiveKey  "Permissive"
 #define kMyPropertyKey  "MyProperty"
 
 enum {
@@ -67,6 +68,7 @@ char revision[9];
 char model[41];
 
 bool fSATSMARTCapable;
+bool fPermissive;
 int capabilities;
 
 protected:

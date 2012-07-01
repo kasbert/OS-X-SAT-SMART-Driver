@@ -42,6 +42,8 @@
 			<string>My Book</string>
 			<key>xVendor Identification</key>
 			<string>WD</string>
+			<key>Permissive</key>
+			<true/>
 		</dict>
 	</dict>
 	<key>OSBundleLibraries</key>
