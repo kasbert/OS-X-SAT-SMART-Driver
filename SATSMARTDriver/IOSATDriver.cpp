@@ -79,6 +79,18 @@ void swapbytes(IOBufferMemoryDescriptor *        buffer) {
     }
 }
 
+int countzeros(IOBufferMemoryDescriptor *        buffer) {
+    int i, count = 0;
+    UInt8 *ptr = ( UInt8 * ) buffer->getBytesNoCopy ( );
+    for (i = 0; i < buffer->getLength(); i++) {
+        if (ptr[i] == 0) {
+            count ++;
+        }
+    }
+    return count;
+}
+
+
 UInt8 checksum(IOBufferMemoryDescriptor *        buffer) {
     int i;
     UInt8 sum = 0;
@@ -211,11 +223,16 @@ org_dungeon_driver_IOSATDriver::attach ( IOService * provider )
     } else {
         fPermissive = false;
     }
+    value = OSDynamicCast ( OSBoolean, getProperty(kUsePassThrough16));
+    if  (value != NULL && value->isTrue()) {
+        fUsePassThrough16 = true;
+    } else {
+        fUsePassThrough16 = false;
+    }
     
     require_string ( super::attach ( provider ), ErrorExit,
                     "Superclass didn't attach" );
     
-    //setProperty ( "Hello", "World" );
     result = true;
     
 ErrorExit:
@@ -268,7 +285,6 @@ IOReturn org_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comma
     int ataResult = kATAErrUnknownType;
     IOReturn err = kIOReturnInvalid;
     int direction, count, protocol;
-    UInt8 opBytes;
     
     IOSATBusCommand* cmd = OSDynamicCast( IOSATBusCommand, command);
     require_action_string(cmd, ErrorExit, err = kIOReturnBadArgument, "Command is not a IOSATBusCommand");
@@ -317,7 +333,7 @@ IOReturn org_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comma
                           cmd->getCylHi(),               //	LBA_HIGH,
                           0,               //	DEVICE,
                           cmd->getStatus(),               //	COMMAND, smart
-                          0x00, opBytes )               // CONTROL
+                          0x00)               // CONTROL
         == true)
     {
         serviceResponse = SendCommand ( request, cmd->getTimeoutMS() );
@@ -325,15 +341,15 @@ IOReturn org_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comma
     if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
         GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
     {
-        DEBUG_LOG("%s[%p]::%s success, service response %d, task status %d, kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(), this, __FUNCTION__, serviceResponse, GetTaskStatus ( request ), opBytes );
+        DEBUG_LOG("%s[%p]::%s success, service response %d, task status %d\n",
+			   getClassName(), this, __FUNCTION__, serviceResponse, GetTaskStatus ( request ));
         ataResult = kATANoErr;
         err=kIOReturnSuccess;
     }
     else
     {
-        ERROR_LOG("%s::%s failed, service response %d, task status %d, kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(), __FUNCTION__, serviceResponse, GetTaskStatus ( request ), opBytes );
+        ERROR_LOG("%s::%s failed, service response %d, task status %d\n",
+			   getClassName(), __FUNCTION__, serviceResponse, GetTaskStatus ( request ));
         if (GetTaskStatus ( request ) == kSCSITaskStatus_TaskTimeoutOccurred) {
             ataResult = kATATimeoutErr;
             err=kIOReturnSuccess;
@@ -381,23 +397,32 @@ org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
     require (result, ErrorExit);
     
     //SendBuiltInINQUIRY ( );
-    if (Send_ATA_IDENTIFY()) {
+    if (!Send_ATA_IDENTIFY() && fUsePassThrough16) {
+	ERROR_LOG("%s[%p]::%s SAT PassThrough16 failed, retrying with PassThrough12\n", getClassName(), this,  __FUNCTION__);
+	fSATSMARTCapable = true;
+	fUsePassThrough16 = false;
+	setProperty(kUsePassThrough16, false);
+	Send_ATA_IDENTIFY();
+    }
+
+    if (fSATSMARTCapable) {
         //setProperty (kIOPropertyVendorNameKey, GetVendorString() );
         setProperty ("Model", model);
         setProperty (kIOPropertyProductNameKey, model);
         setProperty (kIOPropertyProductRevisionLevelKey, revision);
         setProperty (kIOPropertyProductSerialNumberKey, serial);
 
-        Send_ATA_SMART_READ_DATA();
-
-        if (fSATSMARTCapable) {
-            unsigned long features = kIOATAFeatureSMART;
-            OSNumber *number;
-            number = OSNumber::withNumber(features, 32);
-            require_string(number, ErrorExit, "OSNumber::withNumber");
-            setProperty ( kIOATASupportedFeaturesKey, number );
-            number->release();
-        }
+	Send_ATA_SMART_READ_DATA();
+    }
+        
+    if (fSATSMARTCapable) {
+	unsigned long features = kIOATAFeatureSMART;
+	OSNumber *number;
+	number = OSNumber::withNumber(features, 32);
+	require_string(number, ErrorExit, "OSNumber::withNumber");
+	setProperty ( kIOATASupportedFeaturesKey, number );
+	number->release();
+        result = true;
     }
         
 ErrorExit:
@@ -434,7 +459,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
     IOBufferMemoryDescriptor *        buffer            = NULL;
     SCSITaskIdentifier request            = NULL;
     SCSI_Sense_Data senseData;
-    UInt8 *                            ptr                = NULL, opBytes;
+    UInt8 *                            ptr                = NULL;
     UInt16 * ataIdentify = NULL;
     bool result = false;
     
@@ -486,7 +511,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
                           0,               //	LBA_HIGH,
                           0,               //	DEVICE,
                           0xEC,               //	COMMAND, identify
-                          0x00, opBytes )               // CONTROL
+                          0x00)               // CONTROL
         == true)
     {
         serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
@@ -497,27 +522,32 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
         DEBUG_LOG("%s[%p]::%s checksum %d\n", getClassName(), this,  __FUNCTION__, checksum(buffer) );
         swapbytes(buffer);
         ataIdentify = ( UInt16 * ) buffer->getBytesNoCopy ( );
-        //hexdump16(ataIdentify, 80, 8);
         
         trimcpy(serial, (char*)(ataIdentify+kATAIdentifySerialNumber), sizeof(serial));
         trimcpy(revision, (char*)(ataIdentify+kATAIdentifyFirmwareRevision), sizeof(revision));
         trimcpy(model, (char*)(ataIdentify+kATAIdentifyModelNumber), sizeof(model));
         
-        IOLog("SATSMARTDriver v%d.%d: disk serial '%s', revision '%s', model '%s', kSCSICmd_PASS_THROUGH_%u\n",
-		    (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
-                    serial, revision, model, opBytes );
-        //DEBUG_LOG("capabilities %04x %04x %04x\n",ataIdentify[kATAIdentifyDriveCapabilities],
-        //    ataIdentify[kATAIdentifyDriveCapabilitiesExtended],
-        //    ataIdentify[kATAIdentifyCommandSetSupported]);
-        capabilities = ataIdentify[kATAIdentifyDriveCapabilities]&0xffff;
-        fSATSMARTCapable = true;
-	result = true;
+        if ((*revision == 0 && *model == 0) || (countzeros(buffer) == buffer->getLength ( ))) {
+	    // Some disk enclosures return success, but data is no good
+            ERROR_LOG("%s::%s zero response\n", getClassName(), __FUNCTION__);
+            hexdump16(ataIdentify, 0, buffer->getLength ( ));
+	    fSATSMARTCapable = false;
+	    result = false;
+                
+        } else {
+	    IOLog("SATSMARTDriver v%d.%d: disk serial '%s', revision '%s', model '%s'\n",
+		  (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
+                    serial, revision, model);
+	    capabilities = ataIdentify[kATAIdentifyDriveCapabilities]&0xffff;
+	    fSATSMARTCapable = true;
+	    result = true;
+	}
     }
     else
     {
 	    GetAutoSenseData( request, &senseData, sizeof(senseData) );
-        ERROR_LOG("%s::%s failed %d %d kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ), opBytes );
+        ERROR_LOG("%s::%s failed %d %d\n",
+			   getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
 	    ERROR_LOG( "senseData: VALID_RESPONSE_CODE=%d (7=valid),\n"
 			    ":          SEGMENT_NUMBER=%d,\n"
 			    ":          SENSE_KEY=%d (7 = FILEMARK, 6 = EOM, 5 = ILI, 3-0 = SENSE KEY)\n"
@@ -567,7 +597,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
     IOBufferMemoryDescriptor *        buffer            = NULL;
     SCSITaskIdentifier request            = NULL;
     SCSI_Sense_Data senseData;
-    UInt8 *                            ptr                = NULL, opBytes;
+    UInt8 *                            ptr                = NULL;
     UInt16 * ptr16;
     bool result = false;
     
@@ -601,7 +631,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
                           0xc2,               //	LBA_HIGH,
                           0,               //	DEVICE,
                           0xB0,               //	COMMAND, smart
-                          0x00, opBytes )               // CONTROL
+                          0x00)               // CONTROL
         == true)
     {
         serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
@@ -611,18 +641,17 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
         (GetTaskStatus ( request ) == kSCSITaskStatus_GOOD ||
 	    (fPermissive && GetTaskStatus(request) == kSCSITaskStatus_CHECK_CONDITION)) )
     {
-        DEBUG_LOG("%s[%p]::%s success checksum %d, kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(), this,  __FUNCTION__, checksum(buffer), opBytes );
+        DEBUG_LOG("%s[%p]::%s success checksum %d\n",
+			   getClassName(), this,  __FUNCTION__, checksum(buffer));
         swapbytes(buffer);
         hexdump16(ptr16, 368, 10);
 	result = true;
-        
     }
     else
     {
 	    GetAutoSenseData( request, &senseData, sizeof(senseData) );
-	    ERROR_LOG("%s::%s failed %d %d, kSCSICmd_PASS_THROUGH_%u\n",
-			    getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ), opBytes );
+	    ERROR_LOG("%s::%s failed %d %d\n",
+			    getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
 	    ERROR_LOG( "senseData: VALID_RESPONSE_CODE=%d (7=valid),\n"
 			    ":          SEGMENT_NUMBER=%d,\n"
 			    ":          SENSE_KEY=%d (7 = FILEMARK, 6 = EOM, 5 = ILI, 3-0 = SENSE KEY)\n"
@@ -670,7 +699,6 @@ bool
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     SCSITaskIdentifier request            = NULL;
     bool result = false;
-    UInt8 opBytes;
     
     DEBUG_LOG("%s[%p]::%s value %d\n", getClassName(), this, __FUNCTION__, (int) value);
     
@@ -694,7 +722,7 @@ bool
                           0x00,               //	LBA_HIGH,
                           0,               //	DEVICE,
                           0xe3,               //	COMMAND, idle
-                          0x00, opBytes )               // CONTROL
+                          0x00)               // CONTROL
         == true)
     {
         serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
@@ -702,14 +730,14 @@ bool
     if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
         GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
     {
-        DEBUG_LOG("%s[%p]::%s success %d %d, kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(), this,  __FUNCTION__, serviceResponse,GetTaskStatus ( request ), opBytes );
+        DEBUG_LOG("%s[%p]::%s success %d %d\n",
+			   getClassName(), this,  __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
 	result = true;
     }
     else
     {
-        ERROR_LOG("%s::%s failed %d %d, kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ), opBytes );
+        ERROR_LOG("%s::%s failed %d %d\n",
+			   getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
     }
     
 ReleaseTask:
@@ -730,7 +758,6 @@ org_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     SCSITaskIdentifier request            = NULL;
     bool result = false;
-    UInt8 opBytes;
     
     DEBUG_LOG("%s[%p]::%s value %d\n", getClassName(), this, __FUNCTION__, (int) value);
     
@@ -754,7 +781,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
                           0x00,               //	LBA_HIGH,
                           0,               //	DEVICE,
                           0xe2,               //	COMMAND, standby
-                          0x00, opBytes )               // CONTROL
+                          0x00)               // CONTROL
         == true)
     {
         serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
@@ -762,14 +789,14 @@ org_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
     if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
         GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
     {
-        DEBUG_LOG("%s[%p]::%s success %d %d, kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(), this,  __FUNCTION__, serviceResponse,GetTaskStatus ( request ), opBytes );
+        DEBUG_LOG("%s[%p]::%s success %d %d\n",
+			   getClassName(), this,  __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
 	result = true;
     }
     else
     {
-        ERROR_LOG("%s::%s failed %d %d, kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ), opBytes );
+        ERROR_LOG("%s::%s failed %d %d\n",
+			   getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
     }
     
 ReleaseTask:
@@ -790,7 +817,6 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SEND_SOFT_RESET ( void )
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     SCSITaskIdentifier request            = NULL;
     bool result = false;
-    UInt8 opBytes;
     
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
@@ -814,7 +840,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SEND_SOFT_RESET ( void )
                           0x00,               //	LBA_HIGH,
                           0,               //	DEVICE,
                           0x00,               //	COMMAND
-                          0x00, opBytes )               // CONTROL
+                          0x00)               // CONTROL
         == true)
     {
         serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
@@ -822,14 +848,14 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SEND_SOFT_RESET ( void )
     if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
         GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
     {
-        DEBUG_LOG("%s[%p]::%s success %d %d, kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(), this,  __FUNCTION__, serviceResponse,GetTaskStatus ( request ), opBytes );
+        DEBUG_LOG("%s[%p]::%s success %d %d\n",
+			   getClassName(), this,  __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
 	result = true;
     }
     else
     {
-        ERROR_LOG("%s::%s failed %d %d, kSCSICmd_PASS_THROUGH_%u\n",
-			   getClassName(),  __FUNCTION__, serviceResponse,GetTaskStatus ( request ), opBytes );
+        ERROR_LOG("%s::%s failed %d %d\n",
+			   getClassName(),  __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
     }
     
 ReleaseTask:
@@ -1068,24 +1094,25 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
                                                  SCSICmdField2Byte LBA_HIGH,
                                                  SCSICmdField1Byte DEVICE,
                                                  SCSICmdField1Byte COMMAND,
-                                                 SCSICmdField1Byte CONTROL,
-									    UInt8 &opBytes)
-{ bool ret = PASS_THROUGH_12( request, dataBuffer,
-					    MULTIPLE_COUNT, PROTOCOL, EXTEND, OFF_LINE, CK_COND, T_DIR, BYT_BLOK, T_LENGTH,
-					    (SCSICmdField1Byte) FEATURES, (SCSICmdField1Byte) SECTOR_COUNT,
-					    (SCSICmdField1Byte) LBA_LOW, (SCSICmdField1Byte) LBA_MID, (SCSICmdField1Byte) LBA_HIGH,
-					    DEVICE, COMMAND, CONTROL );
-	if( !ret ){
-		opBytes = 16;
-		return PASS_THROUGH_16( request, dataBuffer,
-					 MULTIPLE_COUNT, PROTOCOL, EXTEND, OFF_LINE, CK_COND, T_DIR, BYT_BLOK, T_LENGTH,
-					 FEATURES, SECTOR_COUNT,
-					 LBA_LOW, LBA_MID, LBA_HIGH,
-					 DEVICE, COMMAND, CONTROL );	}
-	else{
-		opBytes = 12;
-		return ret;
-	}
+                                                 SCSICmdField1Byte CONTROL)
+{
+    bool result;
+    
+    if (fUsePassThrough16) {
+        result = PASS_THROUGH_16( request, dataBuffer,
+                               MULTIPLE_COUNT, PROTOCOL, EXTEND, OFF_LINE, CK_COND, T_DIR, BYT_BLOK, T_LENGTH,
+                               FEATURES, SECTOR_COUNT,
+                               LBA_LOW, LBA_MID, LBA_HIGH,
+                               DEVICE, COMMAND, CONTROL );
+        return result;
+    }
+    
+    result = PASS_THROUGH_12( request, dataBuffer,
+                                MULTIPLE_COUNT, PROTOCOL, EXTEND, OFF_LINE, CK_COND, T_DIR, BYT_BLOK, T_LENGTH,
+				(SCSICmdField1Byte) FEATURES, (SCSICmdField1Byte) SECTOR_COUNT,
+				(SCSICmdField1Byte) LBA_LOW, (SCSICmdField1Byte) LBA_MID, (SCSICmdField1Byte) LBA_HIGH,
+				DEVICE, COMMAND, CONTROL );
+    return result;
 }
 
 void

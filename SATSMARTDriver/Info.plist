@@ -38,12 +38,79 @@
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
 			<integer>0</integer>
-			<key>xProduct Identification</key>
-			<string>My Book</string>
-			<key>xVendor Identification</key>
-			<string>WD</string>
 			<key>Permissive</key>
 			<true/>
+			<key>UsePassThrough16</key>
+			<false/>
+		</dict>
+		<key>SATSMARTDriver_WD_MyBook</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.dungeon.driver.SATSMARTDriver</string>
+			<key>IOClass</key>
+			<string>org_dungeon_driver_IOSATDriver</string>
+			<key>IOKitDebug</key>
+			<integer>65535</integer>
+			<key>IOProbeScore</key>
+			<integer>2000</integer>
+			<key>IOProviderClass</key>
+			<string>IOSCSIPeripheralDeviceNub</string>
+			<key>Peripheral Device Type</key>
+			<integer>0</integer>
+			<key>Product Identification</key>
+			<string>My Book</string>
+			<key>Vendor Identification</key>
+			<string>WD</string>
+			<key>Permissive</key>
+			<false/>
+			<key>UsePassThrough16</key>
+			<false/>
+		</dict>
+		<key>SATSMARTDriver_Generic_External</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.dungeon.driver.SATSMARTDriver</string>
+			<key>IOClass</key>
+			<string>org_dungeon_driver_IOSATDriver</string>
+			<key>IOKitDebug</key>
+			<integer>65535</integer>
+			<key>IOProbeScore</key>
+			<integer>2000</integer>
+			<key>IOProviderClass</key>
+			<string>IOSCSIPeripheralDeviceNub</string>
+			<key>Peripheral Device Type</key>
+			<integer>0</integer>
+			<key>Product Identification</key>
+			<string>External</string>
+			<key>Vendor Identification</key>
+			<string>Generic</string>
+			<key>Permissive</key>
+			<false/>
+			<key>UsePassThrough16</key>
+			<false/>
+		</dict>
+		<key>SATSMARTDriver_ExtHard__Disk</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.dungeon.driver.SATSMARTDriver</string>
+			<key>IOClass</key>
+			<string>org_dungeon_driver_IOSATDriver</string>
+			<key>IOKitDebug</key>
+			<integer>65535</integer>
+			<key>IOProbeScore</key>
+			<integer>2000</integer>
+			<key>IOProviderClass</key>
+			<string>IOSCSIPeripheralDeviceNub</string>
+			<key>Peripheral Device Type</key>
+			<integer>0</integer>
+			<key>Product Identification</key>
+			<string> Disk</string>
+			<key>Vendor Identification</key>
+			<string>Ext Hard</string>
+			<key>Permissive</key>
+			<false/>
+			<key>UsePassThrough16</key>
+			<false/>
 		</dict>
 	</dict>
 	<key>OSBundleLibraries</key>

@@ -17,6 +17,7 @@ class IOSATCommand;
 class IOBufferMemoryDescriptor;
 
 #define kPermissiveKey  "Permissive"
+#define kUsePassThrough16  "UsePassThrough16"
 #define kMyPropertyKey  "MyProperty"
 
 enum {
@@ -68,6 +69,7 @@ char revision[9];
 char model[41];
 
 bool fSATSMARTCapable;
+bool fUsePassThrough16;
 bool fPermissive;
 int capabilities;
 
@@ -137,8 +139,7 @@ bool    PASS_THROUGH_12or16 (
     SCSICmdField2Byte LBA_HIGH,
     SCSICmdField1Byte DEVICE,
     SCSICmdField1Byte COMMAND,
-    SCSICmdField1Byte CONTROL,
-    UInt8 &opBytes);
+    SCSICmdField1Byte CONTROL);
 void    SendBuiltInINQUIRY ( void );
 
 public:
