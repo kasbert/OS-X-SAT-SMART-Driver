@@ -89,6 +89,29 @@
 			<key>UsePassThrough16</key>
 			<false/>
 		</dict>
+		<key>SATSMARTDriver_Generic_StorageDevice</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.dungeon.driver.SATSMARTDriver</string>
+			<key>IOClass</key>
+			<string>org_dungeon_driver_IOSATDriver</string>
+			<key>IOKitDebug</key>
+			<integer>65535</integer>
+			<key>IOProbeScore</key>
+			<integer>2000</integer>
+			<key>IOProviderClass</key>
+			<string>IOSCSIPeripheralDeviceNub</string>
+			<key>Peripheral Device Type</key>
+			<integer>0</integer>
+			<key>Product Identification</key>
+			<string>Storage Device</string>
+			<key>Vendor Identification</key>
+			<string>Generic</string>
+			<key>Permissive</key>
+			<false/>
+			<key>UsePassThrough16</key>
+			<false/>
+		</dict>
 		<key>SATSMARTDriver_ExtHard__Disk</key>
 		<dict>
 			<key>CFBundleIdentifier</key>

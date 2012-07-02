@@ -246,8 +246,8 @@ IOSATServices::handleOpen ( IOService * client, IOOptionBits options, void * acc
     // If this isn't a user client, pass through to superclass.
     if ( ( options & kIOATASMARTUserClientAccessMask ) == 0 )
     {
-        return super::handleOpen ( client, options, access );
-    }
+        result = super::handleOpen ( client, options, access );
+    } else {
 
     // It's the user client, so add it to the set
 
@@ -265,6 +265,7 @@ IOSATServices::handleOpen ( IOService * client, IOOptionBits options, void * acc
     }
 
     fClients->setObject ( client );
+    }
 
 ErrorExit:
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
