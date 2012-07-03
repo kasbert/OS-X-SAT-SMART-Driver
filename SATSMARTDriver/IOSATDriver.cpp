@@ -548,29 +548,35 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
     else
     {
         GetAutoSenseData( request, &senseData, sizeof(senseData) );
-        ERROR_LOG("%s::%s failed %d %d\n",
-                  getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
-        ERROR_LOG( "senseData: VALID_RESPONSE_CODE=%d (7=valid),\n"
-                  ":          SEGMENT_NUMBER=%d,\n"
-                  ":          SENSE_KEY=%d (7 = FILEMARK, 6 = EOM, 5 = ILI, 3-0 = SENSE KEY)\n"
-                  ":          INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
-                  ":          ADDITIONAL_SENSE_LENGTH=%d,\n"
-                  ":          COMMAND_SPECIFIC_INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
-                  ":          ADDITIONAL_SENSE_CODE=%d,\n"
-                  ":          ADDITIONAL_SENSE_CODE_QUALIFIER=%d,\n"
-                  ":          FIELD_REPLACEABLE_UNIT_CODE=%d,\n"
-                  ":          SKSV_SENSE_KEY_SPECIFIC_MSB=%d (7 = Sense Key Specific Valid bit, 6-0 Sense Key Specific MSB),\n"
-                  ":          SENSE_KEY_SPECIFIC_MID=%d,\n"
-                  ":          SENSE_KEY_SPECIFIC_LSB=%d\n",
-                  senseData.VALID_RESPONSE_CODE, senseData.SEGMENT_NUMBER, senseData.SENSE_KEY,
-                  senseData.INFORMATION_1, senseData.INFORMATION_2,
-                  senseData.INFORMATION_3, senseData.INFORMATION_4, senseData.ADDITIONAL_SENSE_LENGTH,
-                  senseData.COMMAND_SPECIFIC_INFORMATION_1, senseData.COMMAND_SPECIFIC_INFORMATION_2,
-                  senseData.COMMAND_SPECIFIC_INFORMATION_3, senseData.COMMAND_SPECIFIC_INFORMATION_4,
-                  senseData.ADDITIONAL_SENSE_CODE, senseData.ADDITIONAL_SENSE_CODE_QUALIFIER,
-                  senseData.FIELD_REPLACEABLE_UNIT_CODE, senseData.SKSV_SENSE_KEY_SPECIFIC_MSB,
-                  senseData.SENSE_KEY_SPECIFIC_MID, senseData.SENSE_KEY_SPECIFIC_LSB
-                  );
+        if (((senseData.VALID_RESPONSE_CODE == 0x70) || (senseData.VALID_RESPONSE_CODE == 0x72)) && (senseData.SENSE_KEY == 5)) {
+            // Illegal Request - The disk (or for example a flash memory) does not support the command
+            DEBUG_LOG("%s::%s failed %d %d illegal request\n",
+                      getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+        } else {
+            ERROR_LOG("%s::%s failed %d %d\n",
+                      getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+            ERROR_LOG( "senseData: VALID_RESPONSE_CODE=%d (7=valid),\n"
+                      ":          SEGMENT_NUMBER=%d,\n"
+                      ":          SENSE_KEY=%d (7 = FILEMARK, 6 = EOM, 5 = ILI, 3-0 = SENSE KEY)\n"
+                      ":          INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
+                      ":          ADDITIONAL_SENSE_LENGTH=%d,\n"
+                      ":          COMMAND_SPECIFIC_INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
+                      ":          ADDITIONAL_SENSE_CODE=%d,\n"
+                      ":          ADDITIONAL_SENSE_CODE_QUALIFIER=%d,\n"
+                      ":          FIELD_REPLACEABLE_UNIT_CODE=%d,\n"
+                      ":          SKSV_SENSE_KEY_SPECIFIC_MSB=%d (7 = Sense Key Specific Valid bit, 6-0 Sense Key Specific MSB),\n"
+                      ":          SENSE_KEY_SPECIFIC_MID=%d,\n"
+                      ":          SENSE_KEY_SPECIFIC_LSB=%d\n",
+                      senseData.VALID_RESPONSE_CODE, senseData.SEGMENT_NUMBER, senseData.SENSE_KEY,
+                      senseData.INFORMATION_1, senseData.INFORMATION_2,
+                      senseData.INFORMATION_3, senseData.INFORMATION_4, senseData.ADDITIONAL_SENSE_LENGTH,
+                      senseData.COMMAND_SPECIFIC_INFORMATION_1, senseData.COMMAND_SPECIFIC_INFORMATION_2,
+                      senseData.COMMAND_SPECIFIC_INFORMATION_3, senseData.COMMAND_SPECIFIC_INFORMATION_4,
+                      senseData.ADDITIONAL_SENSE_CODE, senseData.ADDITIONAL_SENSE_CODE_QUALIFIER,
+                      senseData.FIELD_REPLACEABLE_UNIT_CODE, senseData.SKSV_SENSE_KEY_SPECIFIC_MSB,
+                      senseData.SENSE_KEY_SPECIFIC_MID, senseData.SENSE_KEY_SPECIFIC_LSB
+                      );
+        }
         fSATSMARTCapable = false;
     }
     
@@ -652,29 +658,35 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
     else
     {
         GetAutoSenseData( request, &senseData, sizeof(senseData) );
-        ERROR_LOG("%s::%s failed %d %d\n",
-                  getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
-        ERROR_LOG( "senseData: VALID_RESPONSE_CODE=%d (7=valid),\n"
-                  ":          SEGMENT_NUMBER=%d,\n"
-                  ":          SENSE_KEY=%d (7 = FILEMARK, 6 = EOM, 5 = ILI, 3-0 = SENSE KEY)\n"
-                  ":          INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
-                  ":          ADDITIONAL_SENSE_LENGTH=%d,\n"
-                  ":          COMMAND_SPECIFIC_INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
-                  ":          ADDITIONAL_SENSE_CODE=%d,\n"
-                  ":          ADDITIONAL_SENSE_CODE_QUALIFIER=%d,\n"
-                  ":          FIELD_REPLACEABLE_UNIT_CODE=%d,\n"
-                  ":          SKSV_SENSE_KEY_SPECIFIC_MSB=%d (7 = Sense Key Specific Valid bit, 6-0 Sense Key Specific MSB),\n"
-                  ":          SENSE_KEY_SPECIFIC_MID=%d,\n"
-                  ":          SENSE_KEY_SPECIFIC_LSB=%d\n",
-                  senseData.VALID_RESPONSE_CODE, senseData.SEGMENT_NUMBER, senseData.SENSE_KEY,
-                  senseData.INFORMATION_1, senseData.INFORMATION_2,
-                  senseData.INFORMATION_3, senseData.INFORMATION_4, senseData.ADDITIONAL_SENSE_LENGTH,
-                  senseData.COMMAND_SPECIFIC_INFORMATION_1, senseData.COMMAND_SPECIFIC_INFORMATION_2,
-                  senseData.COMMAND_SPECIFIC_INFORMATION_3, senseData.COMMAND_SPECIFIC_INFORMATION_4,
-                  senseData.ADDITIONAL_SENSE_CODE, senseData.ADDITIONAL_SENSE_CODE_QUALIFIER,
-                  senseData.FIELD_REPLACEABLE_UNIT_CODE, senseData.SKSV_SENSE_KEY_SPECIFIC_MSB,
-                  senseData.SENSE_KEY_SPECIFIC_MID, senseData.SENSE_KEY_SPECIFIC_LSB
-                  );
+        if (((senseData.VALID_RESPONSE_CODE == 0x70) || (senseData.VALID_RESPONSE_CODE == 0x72)) && (senseData.SENSE_KEY == 5)) {
+            // Illegal Request - The disk (or for example a flash memory) does not support the command
+            DEBUG_LOG("%s::%s failed %d %d illegal request\n",
+                      getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+        } else {
+            ERROR_LOG("%s::%s failed %d %d\n",
+                      getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+            ERROR_LOG( "senseData: VALID_RESPONSE_CODE=%d (7=valid),\n"
+                      ":          SEGMENT_NUMBER=%d,\n"
+                      ":          SENSE_KEY=%d (7 = FILEMARK, 6 = EOM, 5 = ILI, 3-0 = SENSE KEY)\n"
+                      ":          INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
+                      ":          ADDITIONAL_SENSE_LENGTH=%d,\n"
+                      ":          COMMAND_SPECIFIC_INFORMATION_1,_2,_3,_4=%d,%d,%d,%d,\n"
+                      ":          ADDITIONAL_SENSE_CODE=%d,\n"
+                      ":          ADDITIONAL_SENSE_CODE_QUALIFIER=%d,\n"
+                      ":          FIELD_REPLACEABLE_UNIT_CODE=%d,\n"
+                      ":          SKSV_SENSE_KEY_SPECIFIC_MSB=%d (7 = Sense Key Specific Valid bit, 6-0 Sense Key Specific MSB),\n"
+                      ":          SENSE_KEY_SPECIFIC_MID=%d,\n"
+                      ":          SENSE_KEY_SPECIFIC_LSB=%d\n",
+                      senseData.VALID_RESPONSE_CODE, senseData.SEGMENT_NUMBER, senseData.SENSE_KEY,
+                      senseData.INFORMATION_1, senseData.INFORMATION_2,
+                      senseData.INFORMATION_3, senseData.INFORMATION_4, senseData.ADDITIONAL_SENSE_LENGTH,
+                      senseData.COMMAND_SPECIFIC_INFORMATION_1, senseData.COMMAND_SPECIFIC_INFORMATION_2,
+                      senseData.COMMAND_SPECIFIC_INFORMATION_3, senseData.COMMAND_SPECIFIC_INFORMATION_4,
+                      senseData.ADDITIONAL_SENSE_CODE, senseData.ADDITIONAL_SENSE_CODE_QUALIFIER,
+                      senseData.FIELD_REPLACEABLE_UNIT_CODE, senseData.SKSV_SENSE_KEY_SPECIFIC_MSB,
+                      senseData.SENSE_KEY_SPECIFIC_MID, senseData.SENSE_KEY_SPECIFIC_LSB
+                      );
+        }
         fSATSMARTCapable = false;
     }
     
