@@ -426,6 +426,7 @@ org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
 	number->release();
         result = true;
     }
+    setProperty(kSATSMARTCapableKey, fSATSMARTCapable);
     
 ErrorExit:
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);

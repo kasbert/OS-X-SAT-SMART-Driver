@@ -16,6 +16,7 @@
 class IOSATCommand;
 class IOBufferMemoryDescriptor;
 
+#define kSATSMARTCapableKey  "SATSMARTCapable"
 #define kPermissiveKey  "Permissive"
 #define kUsePassThrough16  "UsePassThrough16"
 #define kMyPropertyKey  "MyProperty"
