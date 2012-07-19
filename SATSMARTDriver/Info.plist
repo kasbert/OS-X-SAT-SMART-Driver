@@ -85,7 +85,7 @@
 			<key>Vendor Identification</key>
 			<string>Generic</string>
 			<key>Permissive</key>
-			<false/>
+			<true/>
 			<key>UsePassThrough16</key>
 			<false/>
 		</dict>
@@ -134,6 +134,25 @@
 			<false/>
 			<key>UsePassThrough16</key>
 			<false/>
+		</dict>
+		<key>SATSMARTDriver_Kingston_DataTraveler20</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.dungeon.driver.SATSMARTDriver</string>
+			<key>IOClass</key>
+			<string>org_dungeon_driver_IOSATDriver</string>
+			<key>IOKitDebug</key>
+			<integer>65535</integer>
+			<key>IOProbeScore</key>
+			<integer>-15000</integer>
+			<key>IOProviderClass</key>
+			<string>IOSCSIPeripheralDeviceNub</string>
+			<key>Peripheral Device Type</key>
+			<integer>0</integer>
+			<key>Product Identification</key>
+			<string>DataTraveler 2.0</string>
+			<key>Vendor Identification</key>
+			<string>Kingston</string>
 		</dict>
 	</dict>
 	<key>OSBundleLibraries</key>
