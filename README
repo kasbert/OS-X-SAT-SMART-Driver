@@ -4,11 +4,11 @@ OS X SAT SMART Driver
 This is a kernel driver for Mac OS X external USB or FireWire drives.
 It extends the standard driver behaviour by providing access to drive
 SMART data. The interface to SMART data is same as with ATA family
-driver, so most existing applications should work. The driver requires
-a SAT (SCSI ATA Translation) capable external drive enclosure.
+driver, so most existing applications should work. 
 
-The driver consists of a kernel extension and a user client interface
-library.
+The driver should work with Snow Leopard and Lion. People have
+reported problems with Mountain Lion. The driver requires a SAT (SCSI
+ATA Translation) capable external drive enclosure.
 
 The code is based on Apple opensource files and is therefore published
 under Apple Public Source License. For details see
