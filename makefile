@@ -2,7 +2,7 @@ all: build pkg dmg
 
 build:
 	rm -rf SATSMARTDriver/build
-	(cd SATSMARTDriver; xcodebuild -configuration Release)
+	(cd SATSMARTDriver; xcodebuild -configuration Release -project SATSMARTDriver.xcodeproj)
 
 pkg:
 	rm -rf Root
@@ -13,5 +13,5 @@ pkg:
 	/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc
 
 dmg:
-	./mkdmg
+	./mkdmg SATSMARTDriver.pkg 550 SATSMARTDriver Release
 

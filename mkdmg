@@ -18,6 +18,8 @@ rm -f pack.temp.dmg "$finalDMGName"
 hdiutil create -srcfolder "${source}" -volname "${title}" -fs HFS+ \
       -fsargs "-c c=64,a=16,e=16" -format UDRW -size ${size}k pack.temp.dmg
 
+# Unmount old image
+[[ -d "/Volumes/${title}" ]] && hdiutil detach "/Volumes/${title}"
 #Mount the disk image, and store the device name (you might want to use sleep for a few seconds after this operation):
 
 device=$(hdiutil attach -readwrite -noverify -noautoopen "pack.temp.dmg" | \
