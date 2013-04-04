@@ -362,18 +362,6 @@ ErrorExit:
 }
 
 
-IOReturn org_dungeon_driver_IOSATDriver::setPowerState ( UInt32 powerStateOrdinal,
-                                                        IOService *      whatDevice ) {
-    DEBUG_LOG("%s[%p]::%s %d\n", getClassName(), this, __FUNCTION__, (int)powerStateOrdinal);
-    IOReturn err= super::setPowerState(powerStateOrdinal, whatDevice);
-    if (kIOReturnSuccess != err && 100000000 != err) {
-        ERROR_LOG("%s::%s result %x\n", getClassName(), __FUNCTION__, err);
-    } 
-    DEBUG_LOG("%s[%p]::%s result %x\n", getClassName(), this,  __FUNCTION__, err);
-    return err;
-}
-
-
 bool
 org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
 {

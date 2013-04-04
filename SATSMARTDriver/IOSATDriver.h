@@ -75,8 +75,6 @@ bool fPermissive;
 int capabilities;
 
 protected:
-IOReturn        setPowerState ( UInt32 powerStateOrdinal,
-                                IOService *  whatDevice );
 bool    InitializeDeviceSupport ( void );
 bool    Send_ATA_IDENTIFY ( void );
 bool    Send_ATA_SMART_READ_DATA(void);
