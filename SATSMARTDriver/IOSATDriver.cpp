@@ -521,7 +521,7 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
         if ((*revision == 0 && *model == 0) || (countzeros(buffer) == buffer->getLength ( ))) {
 	    // Some disk enclosures return success, but data is no good
             ERROR_LOG("%s::%s zero response\n", getClassName(), __FUNCTION__);
-            hexdump16(ataIdentify, 0, buffer->getLength ( ));
+            //hexdump16(ataIdentify, 0, buffer->getLength ( ));
 	    fSATSMARTCapable = false;
 	    result = false;
             
