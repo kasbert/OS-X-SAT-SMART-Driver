@@ -1,12 +1,14 @@
 #!/bin/sh
-umask 022
-set -e
-#
-size=550
-title="SATSMARTDriver"
-source=SATSMARTDriver.pkg
-version="$1"
-finalDMGName=SATSMARTDriver-$version.dmg
+if [[ $# != 4 ]]; then
+    echo "Usage: mkdmg <source_dir> <size_blocks> <title> <version>"
+    exit 1
+fi
+source="$1"
+size=$2
+title="$3"
+version="$4"
+
+finalDMGName="${title}-${version}.dmg"
 applicationName=applicationName
  
 #Create a R/W DMG. It must be larger than the result will be. In this example, the bash variable "size" contains the size in Kb and the contents of the folder in the "source" bash variable will be copied into the DMG:
@@ -25,24 +27,25 @@ sleep 3
 #Use AppleScript to set the visual styles (name of .app must be in bash variable "applicationName", use variables for the other properties as needed):
 
 echo '
+   activate application "Finder"
    tell application "Finder"
      tell disk "'${title}'"
            open
            set current view of container window to icon view
-           set toolbar visible of container window to false
-           set statusbar visible of container window to false
+           set toolbar visible of container window to true
+           set statusbar visible of container window to true
            set the bounds of container window to {400, 100, 885, 430}
            set theViewOptions to the icon view options of container window
            set arrangement of theViewOptions to not arranged
            set icon size of theViewOptions to 72
-close
-open
-           update without registering applications
-           delay 5
+           close
      end tell
    end tell
 ' | osascript
 
+#           open
+#           update without registering applications
+#           delay 5
 #           eject
 
 #           make new alias file at container window to POSIX file "/Applications" with properties {name:"Applications"}
@@ -57,6 +60,6 @@ sync
 sync
 hdiutil detach ${device}
 hdiutil convert "pack.temp.dmg" -format UDZO -imagekey zlib-level=9 -o "${finalDMGName}"
-rm -f pack.temp.dmg 
+rm -rf pack.temp.dmg 
 
 exit 0
