@@ -564,7 +564,7 @@
 				HEADER_SEARCH_PATHS = /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers;
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
-				MODULE_NAME = com.yourcompany.driver.SATSMARTDriver;
+				MODULE_NAME = org.dungeon.driver.SATSMARTDriver;
 				MODULE_VERSION = 0.6;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SATSMARTDriver;
@@ -599,7 +599,7 @@
 				GCC_PREPROCESSOR_DEFINITIONS = "DEBUG=1";
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				PREBINDING = NO;
 				SDKROOT = macosx10.6;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -795,7 +795,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";
+				/*ARCHS = "$(ARCHS_STANDARD_32_64_BIT)";*/
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_FIX_AND_CONTINUE = YES;
