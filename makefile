@@ -22,12 +22,18 @@ unmount:
 	ioreg -r -c IOSCSIPeripheralDeviceType00 -l | grep "BSD Name" | cut -d'"' -f4 | while read a; do diskutil unmountDisk "$$a" || exit 1; done
 
 unload: unmount
-	sudo kextunload -v -b org.dungeon.driver.SATSMARTDriver
+	-sudo kextunload -v -b org.dungeon.driver.SATSMARTDriver
+
+realinstall: unload
+	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin /System/Library/Extensions
+	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTDriver.kext /System/Library/Extensions
+	sync
+	sudo kextutil -t /System/Library/Extensions/SATSMARTDriver.kext
 
 install: unload
-	sudo cp -R build/Debug/SATSMARTLib.plugin /System/Library/Extensions
+	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin /System/Library/Extensions
 	sudo rm -rf /tmp/SATSMARTDriver.kext
-	sudo cp -R build/Debug/SATSMARTDriver.kext /tmp
+	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTDriver.kext /tmp
 	sync
 	sudo kextutil -t /tmp/SATSMARTDriver.kext
 
