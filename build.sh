@@ -5,10 +5,11 @@ set -e
 title=SATSMARTDriver
 pkg=SATSMARTDriver.pkg
 configuration=Release
+#configuration=Debug
 
 rm -rf SATSMARTDriver/build
 (cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver.xcodeproj)
-#(cd SATSMARTDriver; xcodebuild -project SATSMARTDriver-macosx10.5.xcodeproj/ -sdk macosx10.5)
+#(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver-macosx10.5.xcodeproj/ -sdk macosx10.5)
 
 rm -rf Root
 mkdir -p Root/System/Library/Extensions/
@@ -20,7 +21,10 @@ rm -fr "$pkg"
 
 version=$(cat SATSMARTDriver/build/$configuration/SATSMARTDriver.kext/Contents/Info.plist | xpath "//string[preceding-sibling::key[1]='CFBundleVersion']/text()")
 [[ $configuration != Release ]] && version="$version-$configuration"
-./mkdmg "$pkg" 550 "$title" $version
+#version="$version-macosx10.5"
+size=$(du -ks Root | awk '{print $1}')
+size=$((size+100))
+./mkdmg "$pkg" $size "$title" $version
 
 rm -rf "$pkg" Root
 
