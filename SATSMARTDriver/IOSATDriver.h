@@ -20,6 +20,7 @@ class IOBufferMemoryDescriptor;
 #define kPermissiveKey  "Permissive"
 #define kUsePassThrough16  "UsePassThrough16"
 #define kMyPropertyKey  "MyProperty"
+#define kProductModelKey "Model"
 
 enum {
     kIOSATTDirectionToDevice = 0,
@@ -76,6 +77,7 @@ int capabilities;
 
 protected:
 bool    InitializeDeviceSupport ( void );
+void	TerminateDeviceSupport ( void );
 bool    Send_ATA_IDENTIFY ( void );
 bool    Send_ATA_SMART_READ_DATA(void);
 bool    Send_ATA_IDLE(UInt8 value);
@@ -160,7 +162,8 @@ virtual void            detach ( IOService * provider );
 
 virtual void            CreateStorageServiceNub ( void );
 virtual IOReturn    sendSMARTCommand ( IOSATCommand * command );
-
+virtual bool IdentifyDevice ( void );
+    
 protected:
 
 // Reserve space for future expansion.

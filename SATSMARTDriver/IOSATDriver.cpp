@@ -142,6 +142,22 @@ bool org_dungeon_driver_IOSATDriver::start(IOService *provider)
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     bool result = super::start(provider);
+    require (result, ErrorExit);
+    if (fSATSMARTCapable) {
+        IOLog("SATSMARTDriver v%d.%d: disk serial '%s', revision '%s', model '%s'\n",
+              (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
+              serial, revision, model);
+    } else {
+        IOLog("SATSMARTDriver v%d.%d: disk is not SAT capable\n",
+              (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10);
+        result = false;
+    }
+    if (!result) {
+        // Stop is not called on failure
+        //TerminateDeviceSupport();
+        //stop(provider);
+    }
+ErrorExit:
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
 }
@@ -239,6 +255,10 @@ org_dungeon_driver_IOSATDriver::CreateStorageServiceNub ( void )
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     IOService *         nub = NULL;
+
+    // Query device identification and check SAT capability
+    IdentifyDevice();
+
     if (!fSATSMARTCapable) {
         super::CreateStorageServiceNub();
         return;
@@ -363,14 +383,11 @@ ErrorExit:
 
 
 bool
-org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
+org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
 {
     bool result = false;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     OSBoolean *value;
-    
-    result = super::InitializeDeviceSupport ( );
-    require (result, ErrorExit);
     
     value = OSDynamicCast ( OSBoolean, getProperty(kPermissiveKey));
     if  (value != NULL && value->isTrue()) {
@@ -397,7 +414,7 @@ org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
     
     if (fSATSMARTCapable) {
         //setProperty (kIOPropertyVendorNameKey, GetVendorString() );
-        setProperty ("Model", model);
+        setProperty (kProductModelKey, model);
         setProperty (kIOPropertyProductNameKey, model);
         setProperty (kIOPropertyProductRevisionLevelKey, revision);
         setProperty (kIOPropertyProductSerialNumberKey, serial);
@@ -415,11 +432,25 @@ org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
         result = true;
     }
     setProperty(kSATSMARTCapableKey, fSATSMARTCapable);
-    result = fSATSMARTCapable;
     
 ErrorExit:
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
+}
+
+bool
+org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
+{
+    bool result;
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    result = super::InitializeDeviceSupport ( );
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
+    return result;
+}
+
+void org_dungeon_driver_IOSATDriver::TerminateDeviceSupport ( void ) {
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    super::TerminateDeviceSupport();
 }
 
 
@@ -527,9 +558,6 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
 	    result = false;
             
         } else {
-	    IOLog("SATSMARTDriver v%d.%d: disk serial '%s', revision '%s', model '%s'\n",
-		  (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
-                  serial, revision, model);
 	    capabilities = ataIdentify[kATAIdentifyDriveCapabilities]&0xffff;
 	    fSATSMARTCapable = true;
 	    result = true;
