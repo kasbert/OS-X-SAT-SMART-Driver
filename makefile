@@ -6,6 +6,10 @@ build:
 	rm -rf SATSMARTDriver/build
 	(cd SATSMARTDriver; xcodebuild -configuration $(CONFIGURATION) -project SATSMARTDriver.xcodeproj)
 
+release:
+	rm -rf SATSMARTDriver/build
+	(cd SATSMARTDriver; xcodebuild -configuration Release -project SATSMARTDriver.xcodeproj)
+
 pkg:
 	rm -rf Root
 	mkdir -p Root/System/Library/Extensions/

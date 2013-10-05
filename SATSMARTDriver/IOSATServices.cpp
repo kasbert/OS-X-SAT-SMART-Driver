@@ -39,9 +39,8 @@
 #include "IOSATServices.h"
 #include "UserClientLib/SATSMARTLibPriv.h"
 #include "UserClient/SATSMARTUserClient.h"
-// /Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/
-#include <storage/ata/ATASMARTLib.h>
 
+#define kIOPropertySMARTCapableKey              "SMART Capable"
 
 #define super IOBlockStorageServices
 OSDefineMetaClassAndStructors ( IOSATServices, IOBlockStorageServices );

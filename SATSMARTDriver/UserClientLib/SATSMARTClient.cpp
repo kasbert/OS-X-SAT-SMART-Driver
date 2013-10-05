@@ -34,7 +34,7 @@
 
 // Private includes
 ///Developer/SDKs/MacOSX10.6.sdk/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/
-#include <storage/ata/ATASMARTLib.h>
+#include <IOKit/storage/ata/ATASMARTLib.h>
 //#include "ATASMARTLib.h"
 #include "SATSMARTClient.h"
 #include "SATSMARTLibPriv.h"
