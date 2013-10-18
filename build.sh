@@ -5,10 +5,14 @@ set -e
 title=SATSMARTDriver
 configuration=Release
 #configuration=Debug
+sdk=macosx10.5
+sdk=macosx10.6
+#sdk=osx10.8
 
 rm -rf SATSMARTDriver/build
-(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver.xcodeproj)
-#(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver-macosx10.5.xcodeproj/ -sdk macosx10.5)
+#(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver-osx10.8.xcodeproj)
+#(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver.xcodeproj)
+(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver-$sdk.xcodeproj/ -sdk $sdk)
 
 rm -rf Root
 mkdir -p Root/System/Library/Extensions/
@@ -18,7 +22,7 @@ ditto --rsrc SATSMARTDriver/build/$configuration/SATSMARTLib.plugin Root/System/
 version=$(cat SATSMARTDriver/build/$configuration/SATSMARTDriver.kext/Contents/Info.plist | xpath "//string[preceding-sibling::key[1]='CFBundleVersion']/text()")
 pkg=${title}-${version}-${configuration}.pkg
 [[ $configuration != Release ]] && version="$version-$configuration"
-#version="$version-macosx10.5"
+version="$version-$sdk"
 rm -fr "$pkg"
 /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc --out "$pkg"
 
