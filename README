@@ -55,7 +55,7 @@ Compile
  * Check DiskUtility. The disk should have "S.M.A.R.T. Status: Verified"
 
  * Install the driver to system permanently
-    make realinstall
+    sudo make realinstall
 
  * Reboot
 
