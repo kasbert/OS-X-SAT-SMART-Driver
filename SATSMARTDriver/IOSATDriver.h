@@ -163,6 +163,7 @@ virtual void            detach ( IOService * provider );
 virtual void            CreateStorageServiceNub ( void );
 virtual IOReturn    sendSMARTCommand ( IOSATCommand * command );
 virtual bool IdentifyDevice ( void );
+virtual void LogAutoSenseData (SCSITaskIdentifier request);
     
 protected:
 
