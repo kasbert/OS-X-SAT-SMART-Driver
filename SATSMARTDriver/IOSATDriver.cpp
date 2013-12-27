@@ -150,7 +150,7 @@ bool org_dungeon_driver_IOSATDriver::start(IOService *provider)
     } else {
         IOLog("SATSMARTDriver v%d.%d: disk is not SAT capable\n",
               (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10);
-        result = false;
+        //result = false;
     }
     if (!result) {
         // Stop is not called on failure
@@ -366,7 +366,7 @@ IOReturn org_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comma
                   , cmd->getFlags()
 		  , cmd->getOpcode()
 		  , (int)cmd->getTimeoutMS()
-		  , direction, count, protocol,cmd ? (int)cmd->getByteCount() : -1);
+		  , direction, count, protocol, (int)cmd->getByteCount());
 #endif
     }
     else
@@ -393,7 +393,7 @@ IOReturn org_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comma
 		  , cmd->getStatus()
                   , cmd->getFlags()
 		  , cmd->getOpcode()
-		  , (int)cmd->getTimeoutMS(), direction, count, protocol,cmd ? (int)cmd->getByteCount() : -1);
+		  , (int)cmd->getTimeoutMS(), direction, count, protocol, (int)cmd->getByteCount());
         LogAutoSenseData (request) ;
     }
         
