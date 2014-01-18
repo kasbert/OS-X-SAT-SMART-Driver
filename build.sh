@@ -2,6 +2,8 @@
 umask 022
 set -e
 
+# /Developer/usr/bin/agvtool new-version -all 0.8
+
 title=SATSMARTDriver
 [[ "$configuration" ]] || configuration=Release
 #configuration=Debug
