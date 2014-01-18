@@ -16,7 +16,7 @@ pkg:
 	/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc
 
 dmg:
-	./mkdmg SATSMARTDriver.pkg 550 SATSMARTDriver $(CONFIGURATION)
+	./mkdmg SATSMARTDriver.pkg 0 SATSMARTDriver $(CONFIGURATION)
 
 
 unmount:

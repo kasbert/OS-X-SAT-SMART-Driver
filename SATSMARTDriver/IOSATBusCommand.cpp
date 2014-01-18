@@ -32,6 +32,9 @@
 
 
 #include <IOKit/IOTypes.h>
+#ifndef APPLE_KEXT_DEPRECATED
+#define APPLE_KEXT_DEPRECATED  __attribute__((deprecated))
+#endif
 #include "IOSyncer.h"
 //#include "IOATATypes.h"
 #include <IOKit/ata/IOATATypes.h>

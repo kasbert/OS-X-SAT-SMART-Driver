@@ -3,16 +3,17 @@ umask 022
 set -e
 
 title=SATSMARTDriver
-configuration=Release
+[[ "$configuration" ]] || configuration=Release
 #configuration=Debug
-sdk=macosx10.5
-sdk=macosx10.6
+#sdk=macosx10.5
+[[ "$sdk" ]] || sdk=macosx10.6
 #sdk=osx10.8
 
 rm -rf SATSMARTDriver/build
 #(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver-osx10.8.xcodeproj)
 #(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver.xcodeproj)
-(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver-$sdk.xcodeproj/ -sdk $sdk)
+#(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver-$sdk.xcodeproj/ -sdk $sdk)
+(cd SATSMARTDriver; xcodebuild -configuration $configuration -project SATSMARTDriver.xcodeproj/ -sdk $sdk)
 
 rm -rf Root
 mkdir -p Root/System/Library/Extensions/
@@ -22,13 +23,11 @@ ditto --rsrc SATSMARTDriver/build/$configuration/SATSMARTLib.plugin Root/System/
 version=$(cat SATSMARTDriver/build/$configuration/SATSMARTDriver.kext/Contents/Info.plist | xpath "//string[preceding-sibling::key[1]='CFBundleVersion']/text()")
 pkg=${title}-${version}-${configuration}.pkg
 [[ $configuration != Release ]] && version="$version-$configuration"
-version="$version-$sdk"
+[[ $sdk != macosx10.6 ]] && version="$version-$sdk"
 rm -fr "$pkg"
 /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc --out "$pkg"
 
-size=$(du -ks Root | awk '{print $1}')
-size=$((size+100))
-./mkdmg "$pkg" $size "$title" $version
+./mkdmg "$pkg" 0 "$title" $version
 
 rm -rf "$pkg" Root
 
