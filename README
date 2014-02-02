@@ -7,10 +7,10 @@ SMART data. The interface to SMART data is same as with ATA family
 driver, so most existing applications should work. 
 
 The driver requires a SAT (SCSI ATA Translation) capable external
-drive enclosure. The driver should work with Snow Leopard and Lion. 
-For Mountain Lion I suggest trying a version compiled with OS X 10.8 sdk:
-http://www.fluentnudge.com/wp-content/uploads/2013/10/OS-X-SAT-SMART-Driver.zip
-Thanks to stephenej for that version.
+drive enclosure. The driver should work with Snow Leopard and Lion 
+and Mountain Lion. People have reported problems with Lion and 
+Encrypted volumes. Some enclosures are reported to work with
+FireWire but not with USB.
 
 The code is based on Apple opensource files and is therefore published
 under Apple Public Source License. For details see
