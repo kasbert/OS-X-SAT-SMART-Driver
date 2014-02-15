@@ -164,6 +164,67 @@ static CFStringRef
 GetDriveDescription ( io_object_t service );
 
 
+static const char *getStatus(int status) {
+    switch (status) {
+        case kIOReturnSuccess: return "kIOReturnSuccess";
+        case kIOReturnError: return "kIOReturnError";
+        case kIOReturnNoMemory: return "kIOReturnNoMemory";
+        case kIOReturnNoResources: return "kIOReturnNoResources";
+        case kIOReturnIPCError: return "kIOReturnIPCError";
+        case kIOReturnNoDevice: return "kIOReturnNoDevice";
+        case kIOReturnNotPrivileged: return "kIOReturnNotPrivileged";
+        case kIOReturnBadArgument: return "kIOReturnBadArgument";
+        case kIOReturnLockedRead: return "kIOReturnLockedRead";
+        case kIOReturnLockedWrite: return "kIOReturnLockedWrite";
+        case kIOReturnExclusiveAccess: return "kIOReturnExclusiveAccess";
+        case kIOReturnBadMessageID: return "kIOReturnBadMessageID";
+        case kIOReturnUnsupported: return "kIOReturnUnsupported";
+        case kIOReturnVMError: return "kIOReturnVMError";
+        case kIOReturnInternalError: return "kIOReturnInternalError";
+        case kIOReturnIOError: return "kIOReturnIOError";
+            //  case kIOReturn???Error: return "kIOReturn???Error";
+        case kIOReturnCannotLock: return "kIOReturnCannotLock";
+        case kIOReturnNotOpen: return "kIOReturnNotOpen";
+        case kIOReturnNotReadable: return "kIOReturnNotReadable";
+        case kIOReturnNotWritable: return "kIOReturnNotWritable";
+        case kIOReturnNotAligned: return "kIOReturnNotAligned";
+        case kIOReturnBadMedia: return "kIOReturnBadMedia";
+        case kIOReturnStillOpen: return "kIOReturnStillOpen";
+        case kIOReturnRLDError: return "kIOReturnRLDError";
+        case kIOReturnDMAError: return "kIOReturnDMAError";
+        case kIOReturnBusy: return "kIOReturnBusy";
+        case kIOReturnTimeout: return "kIOReturnTimeout";
+        case kIOReturnOffline: return "kIOReturnOffline";
+        case kIOReturnNotReady: return "kIOReturnNotReady";
+        case kIOReturnNotAttached: return "kIOReturnNotAttached";
+        case kIOReturnNoChannels: return "kIOReturnNoChannels";
+        case kIOReturnNoSpace: return "kIOReturnNoSpace";
+            //case kIOReturn???Error: return "kIOReturn???Error";
+        case kIOReturnPortExists: return "kIOReturnPortExists";
+        case kIOReturnCannotWire: return "kIOReturnCannotWire";
+        case kIOReturnNoInterrupt: return "kIOReturnNoInterrupt";
+        case kIOReturnNoFrames: return "kIOReturnNoFrames";
+        case kIOReturnMessageTooLarge: return "kIOReturnMessageTooLarge";
+        case kIOReturnNotPermitted: return "kIOReturnNotPermitted";
+        case kIOReturnNoPower: return "kIOReturnNoPower";
+        case kIOReturnNoMedia: return "kIOReturnNoMedia";
+        case kIOReturnUnformattedMedia: return "kIOReturnUnformattedMedia";
+        case kIOReturnUnsupportedMode: return "kIOReturnUnsupportedMode";
+        case kIOReturnUnderrun: return "kIOReturnUnderrun";
+        case kIOReturnOverrun: return "kIOReturnOverrun";
+        case kIOReturnDeviceError: return "kIOReturnDeviceError	";
+        case kIOReturnNoCompletion: return "kIOReturnNoCompletion	";
+        case kIOReturnAborted: return "kIOReturnAborted	";
+        case kIOReturnNoBandwidth: return "kIOReturnNoBandwidth	";
+        case kIOReturnNotResponding: return "kIOReturnNotResponding	";
+        case kIOReturnIsoTooOld: return "kIOReturnIsoTooOld	";
+        case kIOReturnIsoTooNew: return "kIOReturnIsoTooNew	";
+        case kIOReturnNotFound: return "kIOReturnNotFound";
+        case kIOReturnInvalid: return "kIOReturnInvalid";
+    }
+    return "INVALID";
+}
+
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 //	¥	main - Our main entry point
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
@@ -474,7 +535,10 @@ PrintSMARTData ( io_service_t service )
     SInt32 score                           = 0;
     Boolean conditionExceeded       = false;
     CFStringRef description                     = NULL;
-
+    UInt8 buffer[512];
+    UInt32 bytesRead;
+    ATASMARTLogDirectory logData;
+    
     err = IOCreatePlugInInterfaceForService (       service,
         kIOATASMARTUserClientTypeID,
         kIOCFPlugInInterfaceID,
@@ -492,6 +556,12 @@ PrintSMARTData ( io_service_t service )
 
     require_string ( ( smartInterface != NULL ), ReleasePlugIn, "smartInterface" );
 
+    description = GetDriveDescription ( service );
+    printf ( "SAT Drive: " );
+    fflush ( stdout );
+    CFShow ( description );
+    CFRelease ( description );
+    
     err = ( *smartInterface )->SMARTEnableDisableOperations ( smartInterface, true );
     require_string ( ( err == kIOReturnSuccess ), ReleaseInterface, "SMARTEnableDisableOperations" );
 
@@ -500,12 +570,6 @@ PrintSMARTData ( io_service_t service )
 
     err = ( *smartInterface )->SMARTReturnStatus ( smartInterface, &conditionExceeded );
     require ( ( err == kIOReturnSuccess ), ReleaseInterface );
-
-    description = GetDriveDescription ( service );
-    printf ( "SAT Drive: " );
-    fflush ( stdout );
-    CFShow ( description );
-    CFRelease ( description );
 
     if ( conditionExceeded )
     {
@@ -517,9 +581,37 @@ PrintSMARTData ( io_service_t service )
         printf ( "SMART condition not exceeded, drive OK\n" );
     }
 
-
+    err = ( *smartInterface )->GetATAIdentifyData (smartInterface, &buffer, sizeof buffer, &bytesRead );
+    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+    require ( ( bytesRead == sizeof buffer ), ReleaseInterface );
+    printf ( "Model: %s\n", buffer + 2 * kATAIdentifyModelNumber ); // FIXME not null terminated
+    
+    err = ( *smartInterface )->SMARTReadLogDirectory (smartInterface, &logData );
+    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+    for (int i = 0; i < 255; i++) {
+        if (logData.entries[i].numberOfSectors > 0)
+            printf ( "entry[%d]: %d\n", i, logData.entries[i].numberOfSectors);
+    }
+    err = ( *smartInterface )->SMARTReadLogAtAddress ( smartInterface,
+                                                      224,
+                                                 buffer,
+                                                 sizeof buffer);
+    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+    for (int i = 0; i < 512; i++) {
+        if (buffer[i])
+        printf ( "buffer[%d]: %d\n", i, buffer[i]);
+    }
+#if 0
+    err = ( *smartInterface )->SMARTWriteLogAtAddress ( smartInterface,
+                                                      224,
+                                                      buffer,
+                                                      sizeof buffer);
+    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+#endif
+    
 ReleaseInterface:
 
+    printf ("status %s\n", getStatus(err));
 
     ( *smartInterface )->Release ( smartInterface );
     smartInterface = NULL;

@@ -125,7 +125,7 @@ static void PrintStatusForDevice( CFStringRef name, UInt8 status )
     switch ( status )
     {
     case kATASMARTSelfTestStatusNoError:
-        msg = "No Error";
+        msg = "Status OK";
         break;
 
     case kATASMARTSelfTestStatusAbortedByHost:

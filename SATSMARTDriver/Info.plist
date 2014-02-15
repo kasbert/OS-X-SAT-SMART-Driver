@@ -21,7 +21,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>${CURRENT_PROJECT_VERSION}</string>
+	<string>0.9</string>
 	<key>IOKitPersonalities</key>
 	<dict>
 		<key>SATSMARTDriver</key>

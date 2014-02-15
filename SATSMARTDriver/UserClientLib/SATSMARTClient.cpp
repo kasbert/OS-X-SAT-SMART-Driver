@@ -619,7 +619,7 @@ SATSMARTClient::SMARTReadData ( ATASMARTData * data )
     
     PRINT ( ( "SATSMARTClient::SMARTReadData status = %d\n", status ) );
 
-        #if 0
+#ifdef DEBUG
     if ( status == kIOReturnSuccess )
     {
 
@@ -627,7 +627,7 @@ SATSMARTClient::SMARTReadData ( ATASMARTData * data )
 
         printf ( "ATA SMART DATA\n" );
 
-        for ( UInt8 index = 0; ( index < sizeof ( ATASMARTData ) ); index += 8 )
+        for ( int index = 0; ( index < sizeof ( ATASMARTData ) ); index += 8 )
         {
 
             printf ( "0x%02x 0x%02x 0x%02x 0x%02x | 0x%02x 0x%02x 0x%02x 0x%02x\n",
@@ -666,7 +666,7 @@ SATSMARTClient::SMARTReadDataThresholds ( ATASMARTDataThresholds * data )
 
     PRINT ( ( "SATSMARTClient::SMARTReadDataThresholds status = %d\n", status ) );
 
-        #if 0
+#ifdef DEBUG
     if ( status == kIOReturnSuccess )
     {
 
@@ -674,7 +674,7 @@ SATSMARTClient::SMARTReadDataThresholds ( ATASMARTDataThresholds * data )
 
         printf ( "ATA SMART DATA THRESHOLDS\n" );
 
-        for ( UInt8 index = 0; ( index < sizeof ( ATASMARTDataThresholds ) ); index += 8 )
+        for ( int index = 0; ( index < sizeof ( ATASMARTDataThresholds ) ); index += 8 )
         {
 
             printf ( "0x%02x 0x%02x 0x%02x 0x%02x | 0x%02x 0x%02x 0x%02x 0x%02x\n",
@@ -708,7 +708,7 @@ SATSMARTClient::SMARTReadLogDirectory ( ATASMARTLogDirectory * log )
 
     PRINT ( ( "SATSMARTClient::SMARTReadLogDirectory status = %d\n", status ) );
 
-        #if 0
+#ifdef DEBUG
     if ( status == kIOReturnSuccess )
     {
 
@@ -716,7 +716,7 @@ SATSMARTClient::SMARTReadLogDirectory ( ATASMARTLogDirectory * log )
 
         printf ( "ATA SMART Log Directory\n" );
 
-        for ( UInt8 index = 0; ( index < sizeof ( ATASMARTLogDirectory ) ); index += 8 )
+        for ( int index = 0; ( index < sizeof ( ATASMARTLogDirectory ) ); index += 8 )
         {
 
             printf ( "0x%02x 0x%02x 0x%02x 0x%02x | 0x%02x 0x%02x 0x%02x 0x%02x\n",
@@ -800,9 +800,9 @@ SATSMARTClient::SMARTWriteLogAtAddress ( UInt32 address,
     IOReturn status;
     ATASMARTWriteLogStruct params;
 
-    PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress called\n" ) );
+    PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress called %d %p %d\n", (int)address, buffer, (int)bufferSize ) );
 
-    if ( ( address > 0xFF ) || ( buffer == NULL )  || bufferSize > kSATMaxDataSize)
+    if ( ( address > 0xFF ) || ( buffer == NULL )  || (bufferSize > kSATMaxDataSize))
     {
         status = kIOReturnBadArgument;
         goto Exit;
@@ -811,16 +811,17 @@ SATSMARTClient::SMARTWriteLogAtAddress ( UInt32 address,
     params.numSectors       = bufferSize / kATADefaultSectorSize;
     params.logAddress       = address & 0xFF;
     params.bufferSize       = bufferSize;
-    memcpy (params.buffer, buffer, bufferSize);
-
+    
     // Can't read or write more than 16 sectors
-    if ( params.numSectors > 16 )
+    if ( params.numSectors > 16)
     {
 
         status = kIOReturnBadArgument;
         goto Exit;
 
     }
+    memcpy (params.buffer, buffer, bufferSize);
+    //params.buffer = (UInt8*)buffer;
 
     PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress address = %ld\n",( long )address ) );
 

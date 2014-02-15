@@ -5,7 +5,7 @@ SDK=macosx10.6
 
 build:
 	rm -rf SATSMARTDriver/build
-	(cd SATSMARTDriver; xcodebuild -configuration $(CONFIGURATION) -project SATSMARTDriver-$(SDK).xcodeproj)
+	(cd SATSMARTDriver; xcodebuild -configuration $(CONFIGURATION) -project SATSMARTDriver.xcodeproj)
 
 pkg:
 	rm -rf Root

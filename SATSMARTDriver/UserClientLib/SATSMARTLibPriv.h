@@ -36,7 +36,8 @@
 //	Structures
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-#define kSATMaxDataSize                   (512 * 16)
+// There seem to be 4k max size in mach messages
+#define kSATMaxDataSize                   (512 * 4)
 
 typedef struct ATASMARTReadLogStruct
 {
