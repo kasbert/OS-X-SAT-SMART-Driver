@@ -1158,7 +1158,7 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
     IOMemoryDescriptor *    buffer                  = NULL;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
 
-    if ( inStructSize != sizeof ( ATASMARTWriteLogStruct ) ) {
+    if ( inStructSize != sizeof ( ATASMARTWriteLogStruct ) || writeLogData->numSectors > 16 || writeLogData->data_length > kSATMaxDataSize) {
         return kIOReturnBadArgument;
     }
 
@@ -1177,32 +1177,27 @@ SATSMARTUserClient::WriteLogAtAddress ( ATASMARTWriteLogStruct *        writeLog
     command = AllocateCommand ( );
     if ( command == NULL )
     {
-
         status = kIOReturnNoResources;
         goto ReleaseProvider;
-
     }
 
-    buffer = IOMemoryDescriptor::withAddress(writeLogData->buffer, writeLogData->bufferSize, kIODirectionOut);
+    //buffer = IOMemoryDescriptor::withAddress(writeLogData->buffer, writeLogData->bufferSize, kIODirectionOut);
+    buffer = IOMemoryDescriptor::withAddressRange(writeLogData->data_pointer, writeLogData->data_length, kIODirectionOut, fTask);
     
     if ( buffer == NULL )
     {
-
-        status = kIOReturnNoResources;
+        status = kIOReturnVMError;
         goto ReleaseCommand;
-
     }
 
     status = buffer->prepare ( );
     if ( status != kIOReturnSuccess )
     {
-
         goto ReleaseBuffer;
-
     }
 
     command->setBuffer                      ( buffer );
-    command->setByteCount           ( writeLogData->bufferSize );
+    command->setByteCount           ( writeLogData->data_length );
     command->setFeatures            ( kFeaturesRegisterWriteLogAtAddress );
     command->setOpcode                      ( kATAFnExecIO );
     command->setTimeoutMS           ( kATAThirtySecondTimeoutInMS );

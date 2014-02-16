@@ -810,7 +810,7 @@ SATSMARTClient::SMARTWriteLogAtAddress ( UInt32 address,
 
     params.numSectors       = bufferSize / kATADefaultSectorSize;
     params.logAddress       = address & 0xFF;
-    params.bufferSize       = bufferSize;
+    params.data_length      = bufferSize;
     
     // Can't read or write more than 16 sectors
     if ( params.numSectors > 16)
@@ -820,8 +820,8 @@ SATSMARTClient::SMARTWriteLogAtAddress ( UInt32 address,
         goto Exit;
 
     }
-    memcpy (params.buffer, buffer, bufferSize);
-    //params.buffer = (UInt8*)buffer;
+    //memcpy (params.buffer, buffer, bufferSize);
+    params.data_pointer = (uintptr_t)buffer;
 
     PRINT ( ( "SATSMARTClient::SMARTWriteLogAtAddress address = %ld\n",( long )address ) );
 

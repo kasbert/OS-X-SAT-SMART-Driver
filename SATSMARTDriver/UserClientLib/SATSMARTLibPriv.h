@@ -36,8 +36,8 @@
 //	Structures
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-// There seem to be 4k max size in mach messages
-#define kSATMaxDataSize                   (512 * 4)
+// There seem to be 4k max size in mach messages, so we have to use a pointer
+#define kSATMaxDataSize                   (512 * 16)
 
 typedef struct ATASMARTReadLogStruct
 {
@@ -47,10 +47,12 @@ typedef struct ATASMARTReadLogStruct
 
 typedef struct ATASMARTWriteLogStruct
 {
+    mach_vm_address_t   data_pointer;
+    mach_vm_size_t      data_length;
     UInt8 numSectors;
     UInt8 logAddress;
-    UInt32 bufferSize;
-    UInt8 buffer[kSATMaxDataSize];
+    //UInt32 bufferSize;
+    //UInt8 buffer[kSATMaxDataSize];
 } ATASMARTWriteLogStruct;
 
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
