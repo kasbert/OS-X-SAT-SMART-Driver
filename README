@@ -10,7 +10,8 @@ The driver requires a SAT (SCSI ATA Translation) capable external
 drive enclosure. The driver should work with Snow Leopard and Lion 
 and Mountain Lion. People have reported problems with Lion and 
 Encrypted volumes. Some enclosures are reported to work with
-FireWire but not with USB.
+FireWire but not with USB. The driver is not compatible to 
+WD Drive Manager, or enclosures with custom kernel extensions.
 
 The code is based on Apple opensource files and is therefore published
 under Apple Public Source License. For details see
