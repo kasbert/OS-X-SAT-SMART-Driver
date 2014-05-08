@@ -601,7 +601,7 @@ PrintSMARTData ( io_service_t service )
         if (buffer[i])
         printf ( "buffer[%d]: %d\n", i, buffer[i]);
     }
-#if 0
+#if 1
     err = ( *smartInterface )->SMARTWriteLogAtAddress ( smartInterface,
                                                       224,
                                                       buffer,
