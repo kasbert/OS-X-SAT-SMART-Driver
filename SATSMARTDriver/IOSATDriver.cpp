@@ -134,6 +134,33 @@ IOService *org_dungeon_driver_IOSATDriver::probe(IOService *provider,
     //	}
     //if (!fSATSMARTCapable) result = 0;
     //}
+    
+    OSNumber *vendor, *product;
+    
+    vendor = OSDynamicCast ( OSNumber, getProperty("idVendor"));
+    product = OSDynamicCast ( OSNumber, getProperty("idProduct"));
+    if  (vendor != NULL) {
+        IOService *parent = this;
+        OSNumber *idVendor = NULL;
+        OSNumber *idProduct = NULL;
+        while ((parent = parent->getProvider())) {
+            idVendor = OSDynamicCast(OSNumber, parent->getProperty("idVendor"));
+            idProduct = OSDynamicCast(OSNumber, parent->getProperty("idProduct"));
+            if (idVendor && idVendor->unsigned32BitValue() == vendor->unsigned32BitValue()) {
+                if (product) {
+                    if (idProduct && idProduct->unsigned32BitValue() == product->unsigned32BitValue()) {
+                        DEBUG_LOG("%s[%p]::%s parent JIPII %d\n", getClassName(), this, __FUNCTION__, idVendor->unsigned32BitValue());
+                        *score += 5000;
+                    }
+                } else {
+                    *score += 2000;
+                }
+            }
+        }
+    }
+    
+    
+    
     DEBUG_LOG("%s[%p]::%s result %p score %d\n", getClassName(), this,  __FUNCTION__, result, score ? (int)*score : -1);
     return result;
 }
@@ -143,6 +170,33 @@ bool org_dungeon_driver_IOSATDriver::start(IOService *provider)
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     bool result = super::start(provider);
     require (result, ErrorExit);
+    {
+        UInt8 status;
+        // JMicron needs the port value. Unfortunately this is not reliable
+        IOService *fProvider = getProvider();
+        if (fProvider) {
+            OSNumber *lun = OSDynamicCast ( OSNumber, fProvider->getProperty("IOUnitLUN"));
+            if (lun) {
+                DEBUG_LOG("%s[%p]::%s LUN %d\n", getClassName(), this, __FUNCTION__, lun->unsigned32BitValue());
+                fPort = lun->unsigned32BitValue() & 1;
+            }
+        }
+        // Probe for JMicron
+        if (JMicron_get_registers(0x720f, & status, sizeof status)) {
+            DEBUG_LOG("%s[%p]::%s register value %02x USE JMICRON!\n", getClassName(), this, __FUNCTION__, (int) status);
+            fJMicron = true;
+            if (status & 0x40) {
+                // This does not orwk for me. Status is always 4 in my enclosure
+                fPort = 1;
+            }
+            if (!fSATSMARTCapable) {
+                // retry
+                fSATSMARTCapable = true;
+                IdentifyDevice();
+            }
+        }
+    }
+    
     if (fSATSMARTCapable) {
         IOLog("SATSMARTDriver v%d.%d: disk serial '%s', revision '%s', model '%s'\n",
               (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
@@ -168,7 +222,6 @@ void org_dungeon_driver_IOSATDriver::stop(IOService *provider)
     super::stop(provider);
 }
 
-
 // This function will be called when the user process calls IORegistryEntrySetCFProperties on
 // this driver. You can add your custom functionality to this function.
 IOReturn org_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
@@ -190,16 +243,76 @@ IOReturn org_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
         DEBUG_LOG("%s[%p]::%s(%p) got value %u\n", getName(), this, __FUNCTION__, properties, (unsigned int)value);
         
         // Some code to experiment the SAT commands
+#if 1
         switch (value) {
             case 1:
                 SendBuiltInINQUIRY ( );
                 break;
-            case 2:
-                IOLog("identify %d\n", Send_ATA_IDENTIFY());
+            case 2: {
+                int ret = Send_ATA_IDENTIFY();
+                IOLog("identify %d\n", ret);
+                if (ret) {
+                IOLog("SATSMARTDriver v%d.%d: disk serial '%s', revision '%s', model '%s'\n",
+                      (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
+                      serial, revision, model);
+                }
                 break;
+            }
             case 3:
                 IOLog("smart read %d\n", Send_ATA_SMART_READ_DATA());
                 break;
+            case 4:
+            {
+                UInt8 status = -1;
+                IOService *fProvider = getProvider();
+                if (fProvider) {
+                    OSNumber *lun = OSDynamicCast ( OSNumber, fProvider->getProperty("IOUnitLUN"));
+                    if (lun) {
+                        DEBUG_LOG("%s[%p]::%s LUN %d\n", getClassName(), this, __FUNCTION__, lun->unsigned32BitValue());
+                        
+                        //value->release();
+                    }
+                }
+                if (JMicron_get_registers(0x720f, & status, sizeof status)) {
+                    DEBUG_LOG("%s[%p]::%s register value %02x\n", getClassName(), this, __FUNCTION__, (int) status);
+                }
+            }
+                
+                //SendBuiltInQUERYLUNS ( );
+                break;
+            case 12: {
+                //fPort = 0;
+                //fDevice = 0;
+                fJMicron = true; // FIXME race condition
+                int ret = Send_ATA_IDENTIFY();
+                fJMicron = false;
+                IOLog("JMicron identify %d port %d device %d\n", ret, fPort, fDevice);
+                if (ret) {
+                    IOLog("JMicron v%d.%d: disk serial '%s', revision '%s', model '%s'\n",
+                          (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
+                          serial, revision, model);
+                }
+                break;
+            }
+            case 13: {
+                //fPort = 0;
+                //fDevice = 0;
+                fJMicron = true; // FIXME race condition
+                IOLog("JMicron smart read %d\n", Send_ATA_SMART_READ_DATA());
+                fJMicron = false;
+                break;
+            }
+            case 14: {
+                fPort = fPort ^ 1;
+                IOLog("JMicron port %d device %d\n", fPort, fDevice);
+                break;
+            }
+            case 15: {
+                fDevice = fDevice ^ 1;
+                IOLog("JMicron port %d device %d\n", fPort, fDevice);
+                break;
+            }
+                
             case 20:
 		IOLog("SRST %d\n", Send_ATA_SEND_SOFT_RESET());
                 break;
@@ -215,7 +328,23 @@ IOReturn org_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
             case 24:
 		IOLog("idle %d\n", Send_ATA_IDLE(0));
 		break;
+            case 25:
+		IOLog("standby %d\n", Send_ATA_STANDBY(12)); // 12 * 5 = 60s
+ 		break;
+            case 26: {
+                int mode = -2;
+                int ret = Send_ATA_CHECK_POWER_MODE(&mode);
+		IOLog("power mode %d %d\n", ret, mode);
+		break;
+            }
+            case 27:
+		IOLog("idle %d\n", Send_ATA_IDLE_IMMEDIATE());
+		break;
+            case 28:
+		IOLog("idle %d\n", Send_ATA_STANDBY_IMMEDIATE());
+		break;
         }
+#endif
         
         result = kIOReturnSuccess;
     }
@@ -413,6 +542,85 @@ ErrorExit:
     return err;
 }
 
+
+bool
+org_dungeon_driver_IOSATDriver::JMicron_get_registers ( UInt16 address, UInt8 *ptr, UInt16 length )
+{
+    SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
+    IOMemoryDescriptor *        buffer            = NULL;
+    SCSITaskIdentifier request            = NULL;
+    SCSI_Sense_Data senseData;
+    bool result = false;
+    
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    
+    buffer = IOMemoryDescriptor::withAddress(ptr, length, kIODirectionIn);
+    require ( ( buffer != NULL ), ErrorExit );
+    bzero ( ptr, buffer->getLength ( ) );
+    request = GetSCSITask ( );
+    require ( ( request != NULL ), ReleaseBuffer );
+    require ( ( buffer->prepare ( ) == kIOReturnSuccess ), ReleaseTask );
+
+    if ( PASS_THROUGH_JMicron( request,
+                              buffer,
+                              kIOSATProtocolPIODataIn,               //     PROTOCOL,
+                              kIOSATTDirectionFromDevice,               //     T_DIR,
+                              0,               //	FEATURES,
+                              address >> 8,               //	SECTOR_COUNT,
+                              address & 0xff,               //	LBA_LOW,
+                              0,               //	LBA_MID,
+                              0,               //	LBA_HIGH,
+                              0,               //	DEVICE,
+                              0xFD,               //	COMMAND
+                              0x00)               // CONTROL
+        == true)
+    {
+        serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
+    }
+    if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
+        (GetTaskStatus ( request ) == kSCSITaskStatus_GOOD) )
+    {
+        DEBUG_LOG("%s[%p]::%s register %04x value %02x\n", getClassName(), this,  __FUNCTION__, (int)address, (int)*ptr );
+        result = true;
+    }
+    else
+    {
+        GetAutoSenseData( request, &senseData, sizeof(senseData) );
+        if (((senseData.VALID_RESPONSE_CODE == 0x70) || (senseData.VALID_RESPONSE_CODE == 0x72)) && (senseData.SENSE_KEY == 5)) {
+            // Illegal Request - The disk (or for example a flash memory) does not support the command
+            DEBUG_LOG("%s::%s failed %d %d illegal request\n",
+                      getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+        } else if (senseData.VALID_RESPONSE_CODE == 0x70 && senseData.ADDITIONAL_SENSE_CODE == 0x3A) {
+            DEBUG_LOG("%s::%s failed %d %d no media\n",
+                      getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+            *ptr = 0;
+            result = true; // use this command to probe JMicron
+        } else {
+            ERROR_LOG("%s::%s failed %d %d\n",
+                      getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+            LogAutoSenseData(request);
+        }
+    }
+    
+    buffer->complete ( );
+    
+ReleaseTask:
+    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    ReleaseSCSITask ( request );
+    request = NULL;
+    
+ReleaseBuffer:
+    require_quiet ( ( buffer != NULL ), ErrorExit );
+    buffer->release ( );
+    buffer = NULL;
+    
+ErrorExit:
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, (int)result);
+    return result;
+}
+
+
+
 bool
 org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
 {
@@ -426,12 +634,17 @@ org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
     } else {
         fPermissive = false;
     }
-    value->release();
+    if (value) {
+        //value->release();
+    }
     value = OSDynamicCast ( OSBoolean, getProperty(kUsePassThrough16));
     if  (value != NULL && value->isTrue()) {
         fUsePassThrough16 = true;
     } else {
         fUsePassThrough16 = false;
+    }
+    if (value) {
+        //value->release();
     }
     
     //SendBuiltInINQUIRY ( );
@@ -627,6 +840,9 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
             // Illegal Request - The disk (or for example a flash memory) does not support the command
             DEBUG_LOG("%s::%s failed %d %d illegal request\n",
                       getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+        } else if (senseData.VALID_RESPONSE_CODE == 0x70 && senseData.ADDITIONAL_SENSE_CODE == 0x3A) {
+            DEBUG_LOG("%s::%s failed %d %d no media\n",
+                      getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
         } else {
             ERROR_LOG("%s::%s failed %d %d\n",
                       getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
@@ -717,6 +933,9 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
             // Illegal Request - The disk (or for example a flash memory) does not support the command
             DEBUG_LOG("%s::%s failed %d %d illegal request\n",
                       getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+        } else if (senseData.VALID_RESPONSE_CODE == 0x70 && senseData.ADDITIONAL_SENSE_CODE == 0x3A) {
+            DEBUG_LOG("%s::%s failed %d %d no media\n",
+                      getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
         } else {
             ERROR_LOG("%s::%s failed %d %d\n",
                       getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
@@ -741,6 +960,7 @@ ErrorExit:
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, (int)result);
     return result;
 }
+
 
 bool
 org_dungeon_driver_IOSATDriver::Send_ATA_IDLE(UInt8 value)
@@ -802,6 +1022,65 @@ ErrorExit:
 }
 
 bool
+org_dungeon_driver_IOSATDriver::Send_ATA_IDLE_IMMEDIATE()
+{
+    SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
+    SCSITaskIdentifier request            = NULL;
+    bool result = false;
+    
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    
+    request = GetSCSITask ( );
+    require ( ( request != NULL ), ReleaseBuffer );
+    
+    if ( PASS_THROUGH_12or16 ( request,
+                              0,               // buffer
+                              0,               //     MULTIPLE_COUNT,
+                              kIOSATProtocolNonData,     //     PROTOCOL
+                              0,               //     EXTEND,
+                              kIOSATOffline2s, //     OFF_LINE, 1 == 2s,  2 == 6s, 3 == 14s
+                              0,               //     CK_COND,
+                              0,               //     T_DIR,
+                              0,               //     BYT_BLOK,
+                              kIOSATTLengthNoData,   //     T_LENGTH,
+                              0x00,               //	FEATURES
+                              0x00,               //	SECTOR_COUNT,
+                              0,               //	LBA_LOW,
+                              0x00,               //	LBA_MID,
+                              0x00,               //	LBA_HIGH,
+                              0,               //	DEVICE,
+                              0xe1,               //	COMMAND, idle immediate
+                              0x00)               // CONTROL
+        == true)
+    {
+        serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
+    }
+    if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
+        GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
+    {
+        DEBUG_LOG("%s[%p]::%s success %d %d\n",
+                  getClassName(), this,  __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+	result = true;
+    }
+    else
+    {
+        ERROR_LOG("%s::%s failed %d %d\n",
+                  getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+    }
+    
+ReleaseTask:
+    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    ReleaseSCSITask ( request );
+    request = NULL;
+    
+ReleaseBuffer:
+    
+ErrorExit:
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, (int)result);
+    return result;
+}
+
+bool
 org_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
@@ -816,9 +1095,9 @@ org_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
     if ( PASS_THROUGH_12or16 ( request,
                               0,               // buffer
                               0,               //     MULTIPLE_COUNT,
-                              kIOSATProtocolNonData,     //     PROTOCOL, soft reset
+                              kIOSATProtocolNonData,     //     PROTOCOL
                               0,               //     EXTEND,
-                              kIOSATOffline0s, //     OFF_LINE, 1 == 2s,  2 == 6s, 3 == 14s
+                              kIOSATOffline2s, //     OFF_LINE, 1 == 2s,  2 == 6s, 3 == 14s
                               0,               //     CK_COND,
                               0,               //     T_DIR,
                               0,               //     BYT_BLOK,
@@ -846,6 +1125,128 @@ org_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
     {
         ERROR_LOG("%s::%s failed %d %d\n",
                   getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+    }
+    
+ReleaseTask:
+    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    ReleaseSCSITask ( request );
+    request = NULL;
+    
+ReleaseBuffer:
+    
+ErrorExit:
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, (int)result);
+    return result;
+}
+
+bool
+org_dungeon_driver_IOSATDriver::Send_ATA_STANDBY_IMMEDIATE()
+{
+    SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
+    SCSITaskIdentifier request            = NULL;
+    bool result = false;
+    
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    
+    request = GetSCSITask ( );
+    require ( ( request != NULL ), ReleaseBuffer );
+    
+    if ( PASS_THROUGH_12or16 ( request,
+                              0,               // buffer
+                              0,               //     MULTIPLE_COUNT,
+                              kIOSATProtocolNonData,     //     PROTOCOL
+                              0,               //     EXTEND,
+                              kIOSATOffline0s, //     OFF_LINE, 1 == 2s,  2 == 6s, 3 == 14s
+                              0,               //     CK_COND,
+                              0,               //     T_DIR,
+                              0,               //     BYT_BLOK,
+                              kIOSATTLengthNoData,   //     T_LENGTH,
+                              0x00,               //	FEATURES
+                              0x00,               //	SECTOR_COUNT,
+                              0,               //	LBA_LOW,
+                              0x00,               //	LBA_MID,
+                              0x00,               //	LBA_HIGH,
+                              0,               //	DEVICE,
+                              0xe0,               //	COMMAND, standby immediate
+                              0x00)               // CONTROL
+        == true)
+    {
+        serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
+    }
+    if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
+        GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
+    {
+        DEBUG_LOG("%s[%p]::%s success %d %d\n",
+                  getClassName(), this,  __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+	result = true;
+    }
+    else
+    {
+        ERROR_LOG("%s::%s failed %d %d\n",
+                  getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+    }
+    
+ReleaseTask:
+    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    ReleaseSCSITask ( request );
+    request = NULL;
+    
+ReleaseBuffer:
+    
+ErrorExit:
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, (int)result);
+    return result;
+}
+
+bool
+org_dungeon_driver_IOSATDriver::Send_ATA_CHECK_POWER_MODE(int *mode)
+{
+    SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
+    SCSITaskIdentifier request            = NULL;
+    bool result = false;
+    
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    
+    request = GetSCSITask ( );
+    require ( ( request != NULL ), ReleaseBuffer );
+    
+    if ( PASS_THROUGH_12or16 ( request,
+                              0,               // buffer
+                              0,               //     MULTIPLE_COUNT,
+                              kIOSATProtocolNonData,     //     PROTOCOL
+                              0,               //     EXTEND,
+                              kIOSATOffline0s, //     OFF_LINE, 1 == 2s,  2 == 6s, 3 == 14s
+                              1,               //     CK_COND,
+                              0,               //     T_DIR,
+                              0,               //     BYT_BLOK,
+                              kIOSATTLengthNoData,   //     T_LENGTH,
+                              0x00,               //	FEATURES
+                              0x00,               //	SECTOR_COUNT,
+                              0,               //	LBA_LOW,
+                              0x00,               //	LBA_MID,
+                              0x00,               //	LBA_HIGH,
+                              0,               //	DEVICE,
+                              0xe5,               //	COMMAND, check power mode
+                              0x00)               // CONTROL
+        == true)
+    {
+        serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
+    }
+    if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
+        GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
+    {
+        DEBUG_LOG("%s[%p]::%s success %d %d \n",
+                  getClassName(), this,  __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+        result = true;
+    }
+    else
+    {
+        ERROR_LOG("%s::%s failed %d %d\n",
+                  getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
+    }
+    LogAutoSenseData(request);
+    if (mode) {
+        *mode = 42;
     }
     
 ReleaseTask:
@@ -920,6 +1321,120 @@ ErrorExit:
 }
 
 //////////////
+
+bool
+org_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
+                                                 SCSITaskIdentifier request,
+                                                 IOMemoryDescriptor *    dataBuffer,
+                                                      SCSICmdField4Bit PROTOCOL,
+                                                      SCSICmdField1Bit T_DIR,
+                                                 SCSICmdField1Byte FEATURES,
+                                                 SCSICmdField1Byte SECTOR_COUNT,
+                                                 SCSICmdField1Byte LBA_LOW,
+                                                 SCSICmdField1Byte LBA_MID,
+                                                 SCSICmdField1Byte LBA_HIGH,
+                                                 SCSICmdField1Byte DEVICE,
+                                                 SCSICmdField1Byte COMMAND,
+                                                 SCSICmdField1Byte CONTROL)
+{
+    bool result = false;
+    int direction = kSCSIDataTransfer_NoDataTransfer;
+    int transferCount = 0;
+    int dxfer_len;
+    dxfer_len = 1; // FIXME in SMART_READ
+    
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    
+    // Validate the parameters here.
+    require ( ( request != NULL ), ErrorExit );
+    require ( ResetForNewTask ( request ), ErrorExit );
+    
+    // The helper functions ensure that the parameters fit within the
+    // CDB fields and that the buffer passed in is large enough for
+    // the transfer length.
+    require ( IsParameterValid ( PROTOCOL, kSCSICmdFieldMask4Bit ), ErrorExit );
+    require ( IsParameterValid ( T_DIR, kSCSICmdFieldMask1Bit ), ErrorExit );
+    require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
+    
+    switch (PROTOCOL) {
+        case kIOSATProtocolHardReset:     // Hard Reset
+        case kIOSATProtocolSRST:     // SRST
+        case kIOSATProtocolDEVICERESET:     // DEVICE RESET
+        case kIOSATProtocolNonData:     // Non-data
+            transferCount = 0;
+            direction = kSCSIDataTransfer_NoDataTransfer;
+            break;
+        case kIOSATProtocolPIODataIn:     // PIO Data-In
+        case kIOSATProtocolUDMADataIn:     // UDMA Data In
+            require (T_DIR == kIOSATTDirectionFromDevice, ErrorExit);
+            require (dataBuffer, ErrorExit);
+            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
+            transferCount = (int) dataBuffer->getLength();
+            direction =  kSCSIDataTransfer_FromTargetToInitiator;
+            break;
+        case kIOSATProtocolPIODataOut:     // PIO Data-Out
+        case kIOSATProtocolUDMADataOut:     // UDMA Data Out
+            require (T_DIR == kIOSATTDirectionToDevice, ErrorExit);
+            require (dataBuffer, ErrorExit);
+            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
+            transferCount = (int) dataBuffer->getLength();
+            direction = kSCSIDataTransfer_FromInitiatorToTarget;
+            break;
+        case kIOSATProtocolDMA:     // DMA
+        case kIOSATProtocolDMAQueued:     // DMA Queued
+        case kIOSATProtocolDeviceDiagnostic:     // Device Diagnostic
+        case kIOSATProtocolFPDMA:     //FPDMA
+        default:
+            if (!dataBuffer) {
+                direction = kSCSIDataTransfer_NoDataTransfer;
+                transferCount = 0;
+            } else {
+                require (dataBuffer, ErrorExit);
+                require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
+                transferCount = (int) dataBuffer->getLength();
+                if (T_DIR == kIOSATTDirectionFromDevice) {
+                    direction = kSCSIDataTransfer_FromTargetToInitiator;
+                } else {
+                    direction = kSCSIDataTransfer_FromInitiatorToTarget;
+                }
+            }
+    }
+    dxfer_len = transferCount;
+    
+    SetCommandDescriptorBlock ( request,
+                               0xdf,
+                               (direction == kSCSIDataTransfer_FromInitiatorToTarget) ? 0 : 0x10,
+                               0,
+                               dxfer_len >> 8,
+                               dxfer_len & 0xff,
+                               (FEATURES & 0xff),
+                               (SECTOR_COUNT & 0xff),
+                               (LBA_LOW & 0xff),
+                               (LBA_MID & 0xff),
+                               (LBA_HIGH & 0xff),
+                               fDevice | (fPort ? 0xa0 : 0xb0),
+                               COMMAND);
+    
+    SetTimeoutDuration ( request, 0 );
+    SetDataTransferDirection ( request, direction);
+    SetRequestedDataTransferCount ( request, transferCount );
+    if (transferCount > 0) {
+        SetDataBuffer ( request, dataBuffer );
+    }
+    
+    result = true;
+    
+ErrorExit:
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
+    return result;
+}
 
 bool
 org_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
@@ -1014,7 +1529,7 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
                 }
             }
     }
-    
+
     // This is a 12-byte command: fill out the CDB appropriately
     SetCommandDescriptorBlock ( request,
                                kSCSICmd_PASS_THROUGH_12,
@@ -1065,6 +1580,8 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
                                                  SCSICmdField1Byte COMMAND,
                                                  SCSICmdField1Byte CONTROL)
 {
+    // TODO the EXTEND is always set to zero, should it be 1?
+    
     bool result = false;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
@@ -1147,6 +1664,15 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
 {
     bool result;
     
+    if (fJMicron) {
+        result = PASS_THROUGH_JMicron(request, dataBuffer,
+                                 PROTOCOL, T_DIR, 
+                                 FEATURES, SECTOR_COUNT,
+                                 LBA_LOW, LBA_MID, LBA_HIGH,
+                                 DEVICE, COMMAND, CONTROL );
+        return result;
+    }
+    
     if (fUsePassThrough16) {
         result = PASS_THROUGH_16( request, dataBuffer,
                                  MULTIPLE_COUNT, PROTOCOL, EXTEND, OFF_LINE, CK_COND, T_DIR, BYT_BLOK, T_LENGTH,
@@ -1222,7 +1748,6 @@ ReleaseBuffer:
 ErrorExit:
     return;
 }
-
 
 
 // Padding for future binary compatibility.

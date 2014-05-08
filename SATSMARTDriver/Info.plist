@@ -24,6 +24,29 @@
 	<string>0.9</string>
 	<key>IOKitPersonalities</key>
 	<dict>
+		<key>SATSMARTDriver_ExtHard__Disk - 2</key>
+		<dict>
+			<key>CFBundleIdentifier</key>
+			<string>org.dungeon.driver.SATSMARTDriver</string>
+			<key>IOClass</key>
+			<string>org_dungeon_driver_IOSATDriver</string>
+			<key>IOKitDebug</key>
+			<integer>65535</integer>
+			<key>IOProbeScore</key>
+			<integer>2006</integer>
+			<key>IOProviderClass</key>
+			<string>IOSCSIPeripheralDeviceNub</string>
+			<key>Peripheral Device Type</key>
+			<integer>0</integer>
+			<key>idVendor</key>
+			<integer>5421</integer>
+			<key>Hello</key>
+			<string>World!</string>
+			<key>Permissive</key>
+			<false/>
+			<key>UsePassThrough16</key>
+			<false/>
+		</dict>
 		<key>SATSMARTDriver</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
@@ -33,7 +56,7 @@
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
 			<key>IOProbeScore</key>
-			<integer>1000</integer>
+			<integer>1001</integer>
 			<key>IOProviderClass</key>
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
@@ -41,7 +64,7 @@
 			<key>Permissive</key>
 			<true/>
 			<key>UsePassThrough16</key>
-			<false/>
+			<true/>
 		</dict>
 		<key>SATSMARTDriver_WD_MyBook</key>
 		<dict>
@@ -52,7 +75,7 @@
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
 			<key>IOProbeScore</key>
-			<integer>2000</integer>
+			<integer>2002</integer>
 			<key>IOProviderClass</key>
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
@@ -75,7 +98,7 @@
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
 			<key>IOProbeScore</key>
-			<integer>2000</integer>
+			<integer>2003</integer>
 			<key>IOProviderClass</key>
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
@@ -98,7 +121,7 @@
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
 			<key>IOProbeScore</key>
-			<integer>2000</integer>
+			<integer>2004</integer>
 			<key>IOProviderClass</key>
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
@@ -121,7 +144,7 @@
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
 			<key>IOProbeScore</key>
-			<integer>2000</integer>
+			<integer>2005</integer>
 			<key>IOProviderClass</key>
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
@@ -144,7 +167,7 @@
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
 			<key>IOProbeScore</key>
-			<integer>-15000</integer>
+			<integer>15000</integer>
 			<key>IOProviderClass</key>
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>

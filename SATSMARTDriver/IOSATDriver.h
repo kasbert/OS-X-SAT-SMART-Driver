@@ -72,19 +72,39 @@ char model[41];
 
 bool fSATSMARTCapable;
 bool fUsePassThrough16;
+    bool fJMicron; // FIXME enumerate 12/16/Jmicron
+    int fPort;
+    int fDevice;
 bool fPermissive;
 int capabilities;
-
 protected:
 bool    InitializeDeviceSupport ( void );
 void	TerminateDeviceSupport ( void );
 bool    Send_ATA_IDENTIFY ( void );
 bool    Send_ATA_SMART_READ_DATA(void);
 bool    Send_ATA_IDLE(UInt8 value);
+bool    Send_ATA_IDLE_IMMEDIATE(void);
 bool    Send_ATA_STANDBY(UInt8 value);
+bool    Send_ATA_STANDBY_IMMEDIATE(void);
+bool    Send_ATA_CHECK_POWER_MODE(int *);
 bool    Send_ATA_SEND_SOFT_RESET(void);
 
-bool    PASS_THROUGH_12 (
+    bool JMicron_get_registers(UInt16 address, UInt8 *ptr, UInt16 length );
+    bool
+    PASS_THROUGH_JMicron (
+                                                          SCSITaskIdentifier request,
+                                                          IOMemoryDescriptor *    dataBuffer,
+                                                          SCSICmdField4Bit PROTOCOL,
+                                                          SCSICmdField1Bit T_DIR,
+                                                          SCSICmdField1Byte FEATURES,
+                                                          SCSICmdField1Byte SECTOR_COUNT,
+                                                          SCSICmdField1Byte LBA_LOW,
+                                                          SCSICmdField1Byte LBA_MID,
+                                                          SCSICmdField1Byte LBA_HIGH,
+                                                          SCSICmdField1Byte DEVICE,
+                                                          SCSICmdField1Byte COMMAND,
+                                                          SCSICmdField1Byte CONTROL);
+    bool    PASS_THROUGH_12 (
     SCSITaskIdentifier request,
     IOMemoryDescriptor *    dataBuffer,
     SCSICmdField3Bit MULTIPLE_COUNT,
