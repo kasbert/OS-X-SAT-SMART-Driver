@@ -24,7 +24,7 @@
 	<string>0.9</string>
 	<key>IOKitPersonalities</key>
 	<dict>
-		<key>SATSMARTDriver_ExtHard__Disk - 2</key>
+		<key>SATSMARTDriver</key>
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>org.dungeon.driver.SATSMARTDriver</string>
@@ -38,144 +38,55 @@
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
 			<integer>0</integer>
-			<key>idVendor</key>
-			<integer>5421</integer>
-			<key>Hello</key>
-			<string>World!</string>
-			<key>Permissive</key>
-			<false/>
-			<key>UsePassThrough16</key>
-			<false/>
-		</dict>
-		<key>SATSMARTDriver</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>org.dungeon.driver.SATSMARTDriver</string>
-			<key>IOClass</key>
-			<string>org_dungeon_driver_IOSATDriver</string>
-			<key>IOKitDebug</key>
-			<integer>65535</integer>
-			<key>IOProbeScore</key>
-			<integer>1001</integer>
-			<key>IOProviderClass</key>
-			<string>IOSCSIPeripheralDeviceNub</string>
-			<key>Peripheral Device Type</key>
-			<integer>0</integer>
 			<key>Permissive</key>
 			<true/>
-			<key>UsePassThrough16</key>
-			<true/>
-		</dict>
-		<key>SATSMARTDriver_WD_MyBook</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>org.dungeon.driver.SATSMARTDriver</string>
-			<key>IOClass</key>
-			<string>org_dungeon_driver_IOSATDriver</string>
-			<key>IOKitDebug</key>
-			<integer>65535</integer>
-			<key>IOProbeScore</key>
-			<integer>2002</integer>
-			<key>IOProviderClass</key>
-			<string>IOSCSIPeripheralDeviceNub</string>
-			<key>Peripheral Device Type</key>
-			<integer>0</integer>
-			<key>Product Identification</key>
-			<string>My Book</string>
-			<key>Vendor Identification</key>
-			<string>WD</string>
-			<key>Permissive</key>
-			<false/>
-			<key>UsePassThrough16</key>
-			<false/>
-		</dict>
-		<key>SATSMARTDriver_Generic_External</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>org.dungeon.driver.SATSMARTDriver</string>
-			<key>IOClass</key>
-			<string>org_dungeon_driver_IOSATDriver</string>
-			<key>IOKitDebug</key>
-			<integer>65535</integer>
-			<key>IOProbeScore</key>
-			<integer>2003</integer>
-			<key>IOProviderClass</key>
-			<string>IOSCSIPeripheralDeviceNub</string>
-			<key>Peripheral Device Type</key>
-			<integer>0</integer>
-			<key>Product Identification</key>
-			<string>External</string>
-			<key>Vendor Identification</key>
-			<string>Generic</string>
-			<key>Permissive</key>
-			<true/>
-			<key>UsePassThrough16</key>
-			<false/>
-		</dict>
-		<key>SATSMARTDriver_Generic_StorageDevice</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>org.dungeon.driver.SATSMARTDriver</string>
-			<key>IOClass</key>
-			<string>org_dungeon_driver_IOSATDriver</string>
-			<key>IOKitDebug</key>
-			<integer>65535</integer>
-			<key>IOProbeScore</key>
-			<integer>2004</integer>
-			<key>IOProviderClass</key>
-			<string>IOSCSIPeripheralDeviceNub</string>
-			<key>Peripheral Device Type</key>
-			<integer>0</integer>
-			<key>Product Identification</key>
-			<string>Storage Device</string>
-			<key>Vendor Identification</key>
-			<string>Generic</string>
-			<key>Permissive</key>
-			<false/>
-			<key>UsePassThrough16</key>
-			<false/>
-		</dict>
-		<key>SATSMARTDriver_ExtHard__Disk</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>org.dungeon.driver.SATSMARTDriver</string>
-			<key>IOClass</key>
-			<string>org_dungeon_driver_IOSATDriver</string>
-			<key>IOKitDebug</key>
-			<integer>65535</integer>
-			<key>IOProbeScore</key>
-			<integer>2005</integer>
-			<key>IOProviderClass</key>
-			<string>IOSCSIPeripheralDeviceNub</string>
-			<key>Peripheral Device Type</key>
-			<integer>0</integer>
-			<key>Product Identification</key>
-			<string> Disk</string>
-			<key>Vendor Identification</key>
-			<string>Ext Hard</string>
-			<key>Permissive</key>
-			<false/>
-			<key>UsePassThrough16</key>
-			<false/>
-		</dict>
-		<key>SATSMARTDriver_Kingston_DataTraveler20</key>
-		<dict>
-			<key>CFBundleIdentifier</key>
-			<string>org.dungeon.driver.SATSMARTDriver</string>
-			<key>IOClass</key>
-			<string>org_dungeon_driver_IOSATDriver</string>
-			<key>IOKitDebug</key>
-			<integer>65535</integer>
-			<key>IOProbeScore</key>
-			<integer>15000</integer>
-			<key>IOProviderClass</key>
-			<string>IOSCSIPeripheralDeviceNub</string>
-			<key>Peripheral Device Type</key>
-			<integer>0</integer>
-			<key>Product Identification</key>
-			<string>DataTraveler 2.0</string>
-			<key>Vendor Identification</key>
-			<string>Kingston</string>
+			<key>PassThroughMode</key>
+			<string>auto</string>
+			<key>Identifiers</key>
+			<dict>
+				<key>JMicronXYZ</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>5421</integer>
+					<key>idProduct</key>
+					<integer>5421</integer>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+				</dict>
+				<key>Kingston DataTraveler 2.0</key>
+				<dict>
+					<key>Product Identification</key>
+					<string>DataTraveler 2.0</string>
+					<key>Vendor Identification</key>
+					<string>Kingston</string>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
+				</dict>
+				<key>SATSMARTDriver_WD_MyBook</key>
+				<dict>
+					<key>Product Identification</key>
+					<string>My Book</string>
+					<key>Vendor Identification</key>
+					<string>WD</string>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+				</dict>
+				<key>Macally G-S350SU</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>2344</integer>
+					<key>idProduct</key>
+					<integer>10</integer>
+					<key>Product Identification</key>
+					<string>1 Disk</string>
+					<key>Vendor Identification</key>
+					<string>Ext Hard</string>
+					<key>Permissive</key>
+					<true/>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+				</dict>
+			</dict>
 		</dict>
 	</dict>
 	<key>OSBundleLibraries</key>

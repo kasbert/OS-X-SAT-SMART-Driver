@@ -18,9 +18,18 @@ class IOBufferMemoryDescriptor;
 
 #define kSATSMARTCapableKey  "SATSMARTCapable"
 #define kPermissiveKey  "Permissive"
-#define kUsePassThrough16  "UsePassThrough16"
+#define kPassThroughMode  "PassThroughMode"
 #define kMyPropertyKey  "MyProperty"
 #define kProductModelKey "Model"
+#define kEnclosureName "Enclosure Name"
+
+enum {
+    kPassThroughModeNone = 0,
+    kPassThroughModeAuto = 1,
+    kPassThroughModeSAT16 = 2,
+    kPassThroughModeSAT12 = 3,
+    kPassThroughModeJMicron = 4,
+};
 
 enum {
     kIOSATTDirectionToDevice = 0,
@@ -71,8 +80,7 @@ char revision[9];
 char model[41];
 
 bool fSATSMARTCapable;
-bool fUsePassThrough16;
-    bool fJMicron; // FIXME enumerate 12/16/Jmicron
+int fPassThroughMode;
     int fPort;
     int fDevice;
 bool fPermissive;
@@ -88,6 +96,7 @@ bool    Send_ATA_STANDBY(UInt8 value);
 bool    Send_ATA_STANDBY_IMMEDIATE(void);
 bool    Send_ATA_CHECK_POWER_MODE(int *);
 bool    Send_ATA_SEND_SOFT_RESET(void);
+    OSObject *getParentProperty(const char *key);
 
     bool JMicron_get_registers(UInt16 address, UInt8 *ptr, UInt16 length );
     bool

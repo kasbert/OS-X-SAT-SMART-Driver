@@ -134,76 +134,100 @@ IOService *org_dungeon_driver_IOSATDriver::probe(IOService *provider,
     //	}
     //if (!fSATSMARTCapable) result = 0;
     //}
+
+    OSNumber *idVendor = OSDynamicCast(OSNumber, getParentProperty("idVendor"));
+    OSNumber *idProduct = OSDynamicCast(OSNumber, getParentProperty("idProduct"));
+    OSString *vendorID = OSDynamicCast ( OSString, getParentProperty("Vendor Identification"));
+    OSString *productID = OSDynamicCast ( OSString, getParentProperty("Product Identification"));
+
+    OSDictionary*   dict= OSDynamicCast ( OSDictionary, getProperty("Identifiers"));
     
-    OSNumber *vendor, *product;
-    
-    vendor = OSDynamicCast ( OSNumber, getProperty("idVendor"));
-    product = OSDynamicCast ( OSNumber, getProperty("idProduct"));
-    if  (vendor != NULL) {
-        IOService *parent = this;
-        OSNumber *idVendor = NULL;
-        OSNumber *idProduct = NULL;
-        while ((parent = parent->getProvider())) {
-            idVendor = OSDynamicCast(OSNumber, parent->getProperty("idVendor"));
-            idProduct = OSDynamicCast(OSNumber, parent->getProperty("idProduct"));
-            if (idVendor && idVendor->unsigned32BitValue() == vendor->unsigned32BitValue()) {
-                if (product) {
-                    if (idProduct && idProduct->unsigned32BitValue() == product->unsigned32BitValue()) {
-                        DEBUG_LOG("%s[%p]::%s parent JIPII %d\n", getClassName(), this, __FUNCTION__, idVendor->unsigned32BitValue());
-                        *score += 5000;
+    if (dict) {
+        OSDictionary* details = 0;
+        OSString *key = 0;
+            OSCollectionIterator *iterator = OSCollectionIterator::withCollection(dict);
+            OSObject *object; 
+            while (object = iterator->getNextObject()) { 
+                key = OSDynamicCast (OSString, object);
+                if (key) {
+                    details= OSDynamicCast ( OSDictionary, dict->getObject(key));
+                    if (details) {
+                        OSNumber *idVendor2 = OSDynamicCast ( OSNumber, details->getObject("idVendor"));
+                        OSNumber *idProduct2 = OSDynamicCast ( OSNumber, details->getObject("idProduct"));
+                        OSString *vendorID2 = OSDynamicCast ( OSString, details->getObject("Vendor Identification"));
+                        OSString *productID2 = OSDynamicCast ( OSString, details->getObject("Product Identification"));
+                        if (idVendor && idVendor2 && idProduct && idProduct2 
+                            && idVendor->unsigned32BitValue() == idVendor2->unsigned32BitValue()
+                                && idProduct->unsigned32BitValue() == idProduct2->unsigned32BitValue()) {
+                            DEBUG_LOG("%s[%p]::%s '%s' MATCH %04x:%04x\n", getClassName(), this, __FUNCTION__, key->getCStringNoCopy(), idVendor->unsigned32BitValue(), idProduct->unsigned32BitValue());
+                            break;
+                        }
+                        if (vendorID && vendorID2 && productID && productID2 
+                            && vendorID->isEqualTo(vendorID2) && productID->isEqualTo(productID2)) {
+                            DEBUG_LOG("%s[%p]::%s '%s' MATCH '%s':'%s'\n", getClassName(), this, __FUNCTION__, key->getCStringNoCopy(), vendorID->getCStringNoCopy(), productID->getCStringNoCopy());
+                            break;
+                        }
+                        details = 0;
                     }
-                } else {
-                    *score += 2000;
                 }
+            } 
+            iterator->release(); 
+        if (details) {
+            setProperty(kEnclosureName, key->getCStringNoCopy());
+            OSString *options = OSDynamicCast ( OSString, details->getObject(kPassThroughMode));
+            if (options) {
+                DEBUG_LOG("%s[%p]::%s '%s' PassThroughMode %s\n", getClassName(), this, __FUNCTION__, key->getCStringNoCopy(), options->getCStringNoCopy());
+                if (options->isEqualTo("DISABLE")) {
+                    DEBUG_LOG("%s[%p]::%s DISABLED\n", getClassName(), this, __FUNCTION__);
+                    *score = -5000;
+                } else {
+                    *score += 5000;
+                }
+                setProperty(kPassThroughMode, options->getCStringNoCopy());
             }
+            OSBoolean *permissive = OSDynamicCast ( OSBoolean, details->getObject(kPermissiveKey));
+            if (permissive) {
+                setProperty(kPermissiveKey, permissive);
+            }
+        } else {
+            char buffer[30];
+            sprintf(buffer, "Unknown %04x:%04x", idVendor ? idVendor->unsigned32BitValue() : 0, idProduct ? idProduct->unsigned32BitValue() : 0);
+            setProperty(kEnclosureName, buffer);
         }
     }
     
-    
-    
     DEBUG_LOG("%s[%p]::%s result %p score %d\n", getClassName(), this,  __FUNCTION__, result, score ? (int)*score : -1);
     return result;
+}
+
+OSObject *org_dungeon_driver_IOSATDriver::getParentProperty(const char *key) {
+    IOService *parent = this;
+    OSObject *value = NULL;
+    while ((parent = parent->getProvider())) {
+        value = parent->getProperty(key);
+        if (value) {
+            return value;
+        }
+    }
+    return 0;
 }
 
 bool org_dungeon_driver_IOSATDriver::start(IOService *provider)
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     bool result = super::start(provider);
+    OSString *name = OSDynamicCast(OSString, getProperty(kEnclosureName));
     require (result, ErrorExit);
-    {
-        UInt8 status;
-        // JMicron needs the port value. Unfortunately this is not reliable
-        IOService *fProvider = getProvider();
-        if (fProvider) {
-            OSNumber *lun = OSDynamicCast ( OSNumber, fProvider->getProperty("IOUnitLUN"));
-            if (lun) {
-                DEBUG_LOG("%s[%p]::%s LUN %d\n", getClassName(), this, __FUNCTION__, lun->unsigned32BitValue());
-                fPort = lun->unsigned32BitValue() & 1;
-            }
-        }
-        // Probe for JMicron
-        if (JMicron_get_registers(0x720f, & status, sizeof status)) {
-            DEBUG_LOG("%s[%p]::%s register value %02x USE JMICRON!\n", getClassName(), this, __FUNCTION__, (int) status);
-            fJMicron = true;
-            if (status & 0x40) {
-                // This does not orwk for me. Status is always 4 in my enclosure
-                fPort = 1;
-            }
-            if (!fSATSMARTCapable) {
-                // retry
-                fSATSMARTCapable = true;
-                IdentifyDevice();
-            }
-        }
-    }
     
     if (fSATSMARTCapable) {
-        IOLog("SATSMARTDriver v%d.%d: disk serial '%s', revision '%s', model '%s'\n",
+        IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk serial '%s', revision '%s', model '%s'\n",
               (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
+              name ? name->getCStringNoCopy() : "unknown",
               serial, revision, model);
     } else {
-        IOLog("SATSMARTDriver v%d.%d: disk is not SAT capable\n",
-              (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10);
+        IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk is not SAT capable\n",
+              (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10,
+              name ? name->getCStringNoCopy() : "unknown");
         //result = false;
     }
     if (!result) {
@@ -283,9 +307,10 @@ IOReturn org_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
             case 12: {
                 //fPort = 0;
                 //fDevice = 0;
-                fJMicron = true; // FIXME race condition
+                int oldPassThroughMode = fPassThroughMode;
+                fPassThroughMode = kPassThroughModeJMicron; // FIXME race condition
                 int ret = Send_ATA_IDENTIFY();
-                fJMicron = false;
+                fPassThroughMode = oldPassThroughMode;
                 IOLog("JMicron identify %d port %d device %d\n", ret, fPort, fDevice);
                 if (ret) {
                     IOLog("JMicron v%d.%d: disk serial '%s', revision '%s', model '%s'\n",
@@ -297,9 +322,10 @@ IOReturn org_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
             case 13: {
                 //fPort = 0;
                 //fDevice = 0;
-                fJMicron = true; // FIXME race condition
+                int oldPassThroughMode = fPassThroughMode;
+                fPassThroughMode = kPassThroughModeJMicron; // FIXME race condition
                 IOLog("JMicron smart read %d\n", Send_ATA_SMART_READ_DATA());
-                fJMicron = false;
+                fPassThroughMode = oldPassThroughMode;
                 break;
             }
             case 14: {
@@ -444,13 +470,16 @@ IOReturn org_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comma
     
     direction = (cmd->getFlags() & mATAFlagIORead) ? 1 : 0;
     count = 0;
-    if (cmd->getBuffer() && cmd->getByteCount() == 512) count = 1;
+    if (cmd->getBuffer() && cmd->getByteCount() == 512) {
+        count = 1;
+    }
     protocol = kIOSATProtocolNonData;
     if (count) {
         protocol = direction ? kIOSATProtocolPIODataIn : kIOSATProtocolPIODataOut;
     }
     DEBUG_LOG("%s[%p]::%s direction %d, count %d, protocol %d\n", getClassName(), this, __FUNCTION__, direction, count, protocol);
-    
+    // FIXME temporarily disable for SAT16, since it is broken
+    if (fPassThroughMode == kPassThroughModeSAT16) goto ErrorExit;
     if ( PASS_THROUGH_12or16 ( request,
                               cmd->getBuffer(),
                               0,               //     MULTIPLE_COUNT,
@@ -626,33 +655,67 @@ org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
 {
     bool result = false;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
-    OSBoolean *value;
+    OSBoolean *permissive;
+    OSString *value;
     
-    value = OSDynamicCast ( OSBoolean, getProperty(kPermissiveKey));
-    if  (value != NULL && value->isTrue()) {
+    permissive = OSDynamicCast ( OSBoolean, getProperty(kPermissiveKey));
+    if  (permissive != NULL && permissive->isTrue()) {
         fPermissive = true;
     } else {
         fPermissive = false;
     }
+    value = OSDynamicCast ( OSString, getProperty(kPassThroughMode));
     if (value) {
-        //value->release();
-    }
-    value = OSDynamicCast ( OSBoolean, getProperty(kUsePassThrough16));
-    if  (value != NULL && value->isTrue()) {
-        fUsePassThrough16 = true;
-    } else {
-        fUsePassThrough16 = false;
-    }
-    if (value) {
-        //value->release();
-    }
+        if (!strcmp(value->getCStringNoCopy(), "sat12")) {
+            fPassThroughMode = kPassThroughModeSAT12;
+        } else if (value->isEqualTo("sat16")) {
+            fPassThroughMode = kPassThroughModeSAT16;
+        } else if (value->isEqualTo("jmicron")) {
+            fPassThroughMode = kPassThroughModeJMicron;
+        } else if (value->isEqualTo("auto")) {
+            fPassThroughMode = kPassThroughModeAuto;
+        } else if (value->isEqualTo("none")) {
+            fPassThroughMode = kPassThroughModeNone;
+        } else {
+            fPassThroughMode = kPassThroughModeAuto;
+        }
+      } else {
+          fPassThroughMode = kPassThroughModeAuto;
+      }
     
     //SendBuiltInINQUIRY ( );
-    if (!Send_ATA_IDENTIFY() && fUsePassThrough16) {
+    boolean_t autodetect = (fPassThroughMode  == kPassThroughModeAuto);
+    if (autodetect) {
+            UInt8 status;
+            // JMicron needs the port value. Unfortunately this is not reliable
+            IOService *fProvider = getProvider();
+            if (fProvider) {
+                OSNumber *lun = OSDynamicCast ( OSNumber, fProvider->getProperty("IOUnitLUN"));
+                if (lun) {
+                    DEBUG_LOG("%s[%p]::%s LUN %d\n", getClassName(), this, __FUNCTION__, lun->unsigned32BitValue());
+                    fPort = lun->unsigned32BitValue() & 1;
+                }
+            }
+            // Probe for JMicron
+            if (JMicron_get_registers(0x720f, & status, sizeof status)) {
+                DEBUG_LOG("%s[%p]::%s register value %02x USE JMICRON!\n", getClassName(), this, __FUNCTION__, (int) status);
+                fPassThroughMode = kPassThroughModeJMicron;
+                setProperty(kPassThroughMode, "jmicron");
+                if (status & 0x40) {
+                    // This does not work for me. Status is always 4 in my enclosure
+                    fPort = 1;
+                }
+            } else {
+                ERROR_LOG("%s[%p]::%s JMicron probe failed, trying with PassThrough16\n", getClassName(), this,  __FUNCTION__);
+                fPassThroughMode = kPassThroughModeSAT16;
+                setProperty(kPassThroughMode, "sat16");
+            }
+    }
+    if (!Send_ATA_IDENTIFY() && autodetect) {
 	ERROR_LOG("%s[%p]::%s SAT PassThrough16 failed, retrying with PassThrough12\n", getClassName(), this,  __FUNCTION__);
 	fSATSMARTCapable = true;
-	fUsePassThrough16 = false;
-	setProperty(kUsePassThrough16, false);
+	fPassThroughMode = kPassThroughModeSAT12;
+        setProperty(kPassThroughMode, "sat12");
 	Send_ATA_IDENTIFY();
     }
     
@@ -674,6 +737,8 @@ org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
 	setProperty ( kIOATASupportedFeaturesKey, number );
 	number->release();
         result = true;
+    } else {
+        //setProperty(kPassThroughMode, "none");
     }
     setProperty(kSATSMARTCapableKey, fSATSMARTCapable);
     
@@ -1581,6 +1646,7 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
                                                  SCSICmdField1Byte CONTROL)
 {
     // TODO the EXTEND is always set to zero, should it be 1?
+    EXTEND = 1;
     
     bool result = false;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
@@ -1664,7 +1730,7 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
 {
     bool result;
     
-    if (fJMicron) {
+    if (fPassThroughMode == kPassThroughModeJMicron) {
         result = PASS_THROUGH_JMicron(request, dataBuffer,
                                  PROTOCOL, T_DIR, 
                                  FEATURES, SECTOR_COUNT,
@@ -1673,7 +1739,7 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
         return result;
     }
     
-    if (fUsePassThrough16) {
+    if (fPassThroughMode == kPassThroughModeSAT16) {
         result = PASS_THROUGH_16( request, dataBuffer,
                                  MULTIPLE_COUNT, PROTOCOL, EXTEND, OFF_LINE, CK_COND, T_DIR, BYT_BLOK, T_LENGTH,
                                  FEATURES, SECTOR_COUNT,
