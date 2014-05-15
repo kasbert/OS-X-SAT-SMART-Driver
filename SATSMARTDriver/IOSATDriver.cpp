@@ -42,6 +42,8 @@ extern const double SATSMARTDriverVersionNumber;
 
 #define kSCSICmd_PASS_THROUGH_16 0x85
 #define kSCSICmd_PASS_THROUGH_12 0xA1
+#define kSCSICmd_PASS_THROUGH_JMicron 0xdf
+
 
 #define super IOSCSIPeripheralDeviceType00
 OSDefineMetaClassAndStructors(org_dungeon_driver_IOSATDriver, IOSCSIPeripheralDeviceType00)
@@ -478,8 +480,6 @@ IOReturn org_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comma
         protocol = direction ? kIOSATProtocolPIODataIn : kIOSATProtocolPIODataOut;
     }
     DEBUG_LOG("%s[%p]::%s direction %d, count %d, protocol %d\n", getClassName(), this, __FUNCTION__, direction, count, protocol);
-    // FIXME temporarily disable for SAT16, since it is broken
-    if (fPassThroughMode == kPassThroughModeSAT16) goto ErrorExit;
     if ( PASS_THROUGH_12or16 ( request,
                               cmd->getBuffer(),
                               0,               //     MULTIPLE_COUNT,
@@ -1474,7 +1474,7 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
     dxfer_len = transferCount;
     
     SetCommandDescriptorBlock ( request,
-                               0xdf,
+                               kSCSICmd_PASS_THROUGH_JMicron,
                                (direction == kSCSIDataTransfer_FromInitiatorToTarget) ? 0 : 0x10,
                                0,
                                dxfer_len >> 8,
@@ -1649,6 +1649,8 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
     EXTEND = 1;
     
     bool result = false;
+    int direction = kSCSIDataTransfer_NoDataTransfer;
+    int transferCount = 0;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     // Validate the parameters here.
@@ -1676,6 +1678,50 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
     require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
     require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
     
+    switch (PROTOCOL) {
+        case kIOSATProtocolHardReset:     // Hard Reset
+        case kIOSATProtocolSRST:     // SRST
+        case kIOSATProtocolDEVICERESET:     // DEVICE RESET
+        case kIOSATProtocolNonData:     // Non-data
+            transferCount = 0;
+            direction = kSCSIDataTransfer_NoDataTransfer;
+            break;
+        case kIOSATProtocolPIODataIn:     // PIO Data-In
+        case kIOSATProtocolUDMADataIn:     // UDMA Data In
+            require (T_DIR == kIOSATTDirectionFromDevice, ErrorExit);
+            require (dataBuffer, ErrorExit);
+            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
+            transferCount = (int) dataBuffer->getLength();
+            direction =  kSCSIDataTransfer_FromTargetToInitiator;
+            break;
+        case kIOSATProtocolPIODataOut:     // PIO Data-Out
+        case kIOSATProtocolUDMADataOut:     // UDMA Data Out
+            require (T_DIR == kIOSATTDirectionToDevice, ErrorExit);
+            require (dataBuffer, ErrorExit);
+            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
+            transferCount = (int) dataBuffer->getLength();
+            direction = kSCSIDataTransfer_FromInitiatorToTarget;
+            break;
+        case kIOSATProtocolDMA:     // DMA
+        case kIOSATProtocolDMAQueued:     // DMA Queued
+        case kIOSATProtocolDeviceDiagnostic:     // Device Diagnostic
+        case kIOSATProtocolFPDMA:     //FPDMA
+        default:
+            if (!dataBuffer) {
+                direction = kSCSIDataTransfer_NoDataTransfer;
+                transferCount = 0;
+            } else {
+                require (dataBuffer, ErrorExit);
+                require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
+                transferCount = (int) dataBuffer->getLength();
+                if (T_DIR == kIOSATTDirectionFromDevice) {
+                    direction = kSCSIDataTransfer_FromTargetToInitiator;
+                } else {
+                    direction = kSCSIDataTransfer_FromInitiatorToTarget;
+                }
+            }
+    }
+
     // This is a 16-byte command: fill out the CDB appropriately
     SetCommandDescriptorBlock ( request,
                                kSCSICmd_PASS_THROUGH_16,
@@ -1695,11 +1741,13 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
                                COMMAND,
                                CONTROL);
     
-    SetDataTransferDirection ( request, kSCSIDataTransfer_FromTargetToInitiator );
     SetTimeoutDuration ( request, 0 );
-    SetDataBuffer ( request, dataBuffer );
-    SetRequestedDataTransferCount ( request, dataBuffer->getLength() );
-    
+    SetDataTransferDirection ( request, direction);
+    SetRequestedDataTransferCount ( request, transferCount );
+    if (transferCount > 0) {
+        SetDataBuffer ( request, dataBuffer );
+    }
+
     result = true;
     
 ErrorExit:
