@@ -44,6 +44,54 @@ extern const double SATSMARTDriverVersionNumber;
 #define kSCSICmd_PASS_THROUGH_12 0xA1
 #define kSCSICmd_PASS_THROUGH_JMicron 0xdf
 
+// S.M.A.R.T command code
+enum
+{
+    kATAcmdSMART    = 0xB0
+};
+
+// S.M.A.R.T command features register codes
+enum
+{
+    kFeaturesRegisterReadData                                       = 0xD0,
+    kFeaturesRegisterReadDataThresholds                     = 0xD1,
+    kFeaturesRegisterEnableDisableAutoSave          = 0xD2,
+    // Reserved
+    kFeaturesRegisterExecuteOfflineImmed            = 0xD4,
+    kFeaturesRegisterReadLogAtAddress                       = 0xD5,
+    kFeaturesRegisterWriteLogAtAddress                      = 0xD6,
+    // Reserved
+    kFeaturesRegisterEnableOperations                       = 0xD8,
+    kFeaturesRegisterDisableOperations                      = 0xD9,
+    kFeaturesRegisterReturnStatus                           = 0xDA
+};
+
+// S.M.A.R.T 'magic' values
+enum
+{
+    kSMARTMagicCylinderLoValue      = 0x4F,
+    kSMARTMagicCylinderHiValue      = 0xC2
+};
+
+// S.M.A.R.T Return Status validity values
+enum
+{
+    kSMARTReturnStatusValidLoValue  = 0xF4,
+    kSMARTReturnStatusValidHiValue  = 0x2C
+};
+
+// S.M.A.R.T Auto-Save values
+enum
+{
+    kSMARTAutoSaveEnable    = 0xF1,
+    kSMARTAutoSaveDisable   = 0x00
+};
+
+enum
+{
+    kATAThirtySecondTimeoutInMS     = 30000
+};
+
 
 #define super IOSCSIPeripheralDeviceType00
 OSDefineMetaClassAndStructors(org_dungeon_driver_IOSATDriver, IOSCSIPeripheralDeviceType00)
@@ -371,6 +419,41 @@ IOReturn org_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
             case 28:
 		IOLog("idle %d\n", Send_ATA_STANDBY_IMMEDIATE());
 		break;
+            case 33:
+		IOLog("standby %d\n", Send_ATA_STANDBY(253));
+		break;
+            case 34:
+		IOLog("idle %d\n", Send_ATA_IDLE(253));
+		break;
+            case 40: {
+                IOSATBusCommand* command= IOSATBusCommand64::allocateCmd32();
+                if ( command == NULL )
+                {
+                    break;
+                }
+                
+                command->setFeatures    ( kFeaturesRegisterReturnStatus );
+                command->setOpcode              ( kATAFnExecIO );
+                command->setTimeoutMS   ( kATAThirtySecondTimeoutInMS );
+                command->setCylLo               ( kSMARTMagicCylinderLoValue );
+                command->setCylHi               ( kSMARTMagicCylinderHiValue );
+                command->setCommand             ( kATAcmdSMART );
+                command->setRegMask             ( ( ataRegMask ) ( mATACylinderHiValid | mATACylinderLoValid ) );
+                command->setFlags               ( mATAFlagTFAccessResult );
+                
+                IOReturn status = sendSMARTCommand ( command );
+                
+                UInt8 lbaMid  = command->getCylLo ( );
+                UInt8 lbaHigh = command->getCylHi ( );
+		IOLog("SMART status %d %02x, %02x\n", status, lbaMid,lbaHigh);
+                
+                if ( status == kIOReturnSuccess )
+                {
+                }
+                command->release();
+                break;
+            }
+
         }
 #endif
         
@@ -601,7 +684,8 @@ org_dungeon_driver_IOSATDriver::JMicron_get_registers ( UInt16 address, UInt8 *p
                               0,               //	LBA_HIGH,
                               0,               //	DEVICE,
                               0xFD,               //	COMMAND
-                              0x00)               // CONTROL
+                              0x00,                // CONTROL
+                              kSCSIDataTransfer_FromTargetToInitiator, length)
         == true)
     {
         serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
@@ -697,10 +781,10 @@ org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
                 }
             }
             // Probe for JMicron
+            fPassThroughMode = kPassThroughModeJMicron;
+            setProperty(kPassThroughMode, "jmicron");
             if (JMicron_get_registers(0x720f, & status, sizeof status)) {
                 DEBUG_LOG("%s[%p]::%s register value %02x USE JMICRON!\n", getClassName(), this, __FUNCTION__, (int) status);
-                fPassThroughMode = kPassThroughModeJMicron;
-                setProperty(kPassThroughMode, "jmicron");
                 if (status & 0x40) {
                     // This does not work for me. Status is always 4 in my enclosure
                     fPort = 1;
@@ -1400,11 +1484,10 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
                                                  SCSICmdField1Byte LBA_HIGH,
                                                  SCSICmdField1Byte DEVICE,
                                                  SCSICmdField1Byte COMMAND,
-                                                 SCSICmdField1Byte CONTROL)
+                                                      SCSICmdField1Byte CONTROL,
+                                                      int direction, int transferCount)
 {
     bool result = false;
-    int direction = kSCSIDataTransfer_NoDataTransfer;
-    int transferCount = 0;
     int dxfer_len;
     dxfer_len = 1; // FIXME in SMART_READ
     
@@ -1428,49 +1511,6 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
     require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
     require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
     
-    switch (PROTOCOL) {
-        case kIOSATProtocolHardReset:     // Hard Reset
-        case kIOSATProtocolSRST:     // SRST
-        case kIOSATProtocolDEVICERESET:     // DEVICE RESET
-        case kIOSATProtocolNonData:     // Non-data
-            transferCount = 0;
-            direction = kSCSIDataTransfer_NoDataTransfer;
-            break;
-        case kIOSATProtocolPIODataIn:     // PIO Data-In
-        case kIOSATProtocolUDMADataIn:     // UDMA Data In
-            require (T_DIR == kIOSATTDirectionFromDevice, ErrorExit);
-            require (dataBuffer, ErrorExit);
-            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-            transferCount = (int) dataBuffer->getLength();
-            direction =  kSCSIDataTransfer_FromTargetToInitiator;
-            break;
-        case kIOSATProtocolPIODataOut:     // PIO Data-Out
-        case kIOSATProtocolUDMADataOut:     // UDMA Data Out
-            require (T_DIR == kIOSATTDirectionToDevice, ErrorExit);
-            require (dataBuffer, ErrorExit);
-            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-            transferCount = (int) dataBuffer->getLength();
-            direction = kSCSIDataTransfer_FromInitiatorToTarget;
-            break;
-        case kIOSATProtocolDMA:     // DMA
-        case kIOSATProtocolDMAQueued:     // DMA Queued
-        case kIOSATProtocolDeviceDiagnostic:     // Device Diagnostic
-        case kIOSATProtocolFPDMA:     //FPDMA
-        default:
-            if (!dataBuffer) {
-                direction = kSCSIDataTransfer_NoDataTransfer;
-                transferCount = 0;
-            } else {
-                require (dataBuffer, ErrorExit);
-                require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-                transferCount = (int) dataBuffer->getLength();
-                if (T_DIR == kIOSATTDirectionFromDevice) {
-                    direction = kSCSIDataTransfer_FromTargetToInitiator;
-                } else {
-                    direction = kSCSIDataTransfer_FromInitiatorToTarget;
-                }
-            }
-    }
     dxfer_len = transferCount;
     
     SetCommandDescriptorBlock ( request,
@@ -1486,13 +1526,6 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
                                (LBA_HIGH & 0xff),
                                fDevice | (fPort ? 0xa0 : 0xb0),
                                COMMAND);
-    
-    SetTimeoutDuration ( request, 0 );
-    SetDataTransferDirection ( request, direction);
-    SetRequestedDataTransferCount ( request, transferCount );
-    if (transferCount > 0) {
-        SetDataBuffer ( request, dataBuffer );
-    }
     
     result = true;
     
@@ -1523,8 +1556,6 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
                                                  SCSICmdField1Byte CONTROL)
 {
     bool result = false;
-    int direction = kSCSIDataTransfer_NoDataTransfer;
-    int transferCount = 0;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     // Validate the parameters here.
@@ -1551,50 +1582,6 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
     require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
     require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
     
-    switch (PROTOCOL) {
-        case kIOSATProtocolHardReset:     // Hard Reset
-        case kIOSATProtocolSRST:     // SRST
-        case kIOSATProtocolDEVICERESET:     // DEVICE RESET
-        case kIOSATProtocolNonData:     // Non-data
-            transferCount = 0;
-            direction = kSCSIDataTransfer_NoDataTransfer;
-            break;
-        case kIOSATProtocolPIODataIn:     // PIO Data-In
-        case kIOSATProtocolUDMADataIn:     // UDMA Data In
-            require (T_DIR == kIOSATTDirectionFromDevice, ErrorExit);
-            require (dataBuffer, ErrorExit);
-            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-            transferCount = (int) dataBuffer->getLength();
-            direction =  kSCSIDataTransfer_FromTargetToInitiator;
-            break;
-        case kIOSATProtocolPIODataOut:     // PIO Data-Out
-        case kIOSATProtocolUDMADataOut:     // UDMA Data Out
-            require (T_DIR == kIOSATTDirectionToDevice, ErrorExit);
-            require (dataBuffer, ErrorExit);
-            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-            transferCount = (int) dataBuffer->getLength();
-            direction = kSCSIDataTransfer_FromInitiatorToTarget;
-            break;
-        case kIOSATProtocolDMA:     // DMA
-        case kIOSATProtocolDMAQueued:     // DMA Queued
-        case kIOSATProtocolDeviceDiagnostic:     // Device Diagnostic
-        case kIOSATProtocolFPDMA:     //FPDMA
-        default:
-            if (!dataBuffer) {
-                direction = kSCSIDataTransfer_NoDataTransfer;
-                transferCount = 0;
-            } else {
-                require (dataBuffer, ErrorExit);
-                require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-                transferCount = (int) dataBuffer->getLength();
-                if (T_DIR == kIOSATTDirectionFromDevice) {
-                    direction = kSCSIDataTransfer_FromTargetToInitiator;
-                } else {
-                    direction = kSCSIDataTransfer_FromInitiatorToTarget;
-                }
-            }
-    }
-
     // This is a 12-byte command: fill out the CDB appropriately
     SetCommandDescriptorBlock ( request,
                                kSCSICmd_PASS_THROUGH_12,
@@ -1609,13 +1596,6 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
                                COMMAND,
                                0,
                                CONTROL);
-    
-    SetTimeoutDuration ( request, 0 );
-    SetDataTransferDirection ( request, direction);
-    SetRequestedDataTransferCount ( request, transferCount );
-    if (transferCount > 0) {
-        SetDataBuffer ( request, dataBuffer );
-    }
     
     result = true;
     
@@ -1649,8 +1629,6 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
     EXTEND = 1;
     
     bool result = false;
-    int direction = kSCSIDataTransfer_NoDataTransfer;
-    int transferCount = 0;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     // Validate the parameters here.
@@ -1676,52 +1654,7 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
     require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
     require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
     require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
     
-    switch (PROTOCOL) {
-        case kIOSATProtocolHardReset:     // Hard Reset
-        case kIOSATProtocolSRST:     // SRST
-        case kIOSATProtocolDEVICERESET:     // DEVICE RESET
-        case kIOSATProtocolNonData:     // Non-data
-            transferCount = 0;
-            direction = kSCSIDataTransfer_NoDataTransfer;
-            break;
-        case kIOSATProtocolPIODataIn:     // PIO Data-In
-        case kIOSATProtocolUDMADataIn:     // UDMA Data In
-            require (T_DIR == kIOSATTDirectionFromDevice, ErrorExit);
-            require (dataBuffer, ErrorExit);
-            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-            transferCount = (int) dataBuffer->getLength();
-            direction =  kSCSIDataTransfer_FromTargetToInitiator;
-            break;
-        case kIOSATProtocolPIODataOut:     // PIO Data-Out
-        case kIOSATProtocolUDMADataOut:     // UDMA Data Out
-            require (T_DIR == kIOSATTDirectionToDevice, ErrorExit);
-            require (dataBuffer, ErrorExit);
-            require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-            transferCount = (int) dataBuffer->getLength();
-            direction = kSCSIDataTransfer_FromInitiatorToTarget;
-            break;
-        case kIOSATProtocolDMA:     // DMA
-        case kIOSATProtocolDMAQueued:     // DMA Queued
-        case kIOSATProtocolDeviceDiagnostic:     // Device Diagnostic
-        case kIOSATProtocolFPDMA:     //FPDMA
-        default:
-            if (!dataBuffer) {
-                direction = kSCSIDataTransfer_NoDataTransfer;
-                transferCount = 0;
-            } else {
-                require (dataBuffer, ErrorExit);
-                require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
-                transferCount = (int) dataBuffer->getLength();
-                if (T_DIR == kIOSATTDirectionFromDevice) {
-                    direction = kSCSIDataTransfer_FromTargetToInitiator;
-                } else {
-                    direction = kSCSIDataTransfer_FromInitiatorToTarget;
-                }
-            }
-    }
-
     // This is a 16-byte command: fill out the CDB appropriately
     SetCommandDescriptorBlock ( request,
                                kSCSICmd_PASS_THROUGH_16,
@@ -1741,12 +1674,6 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
                                COMMAND,
                                CONTROL);
     
-    SetTimeoutDuration ( request, 0 );
-    SetDataTransferDirection ( request, direction);
-    SetRequestedDataTransferCount ( request, transferCount );
-    if (transferCount > 0) {
-        SetDataBuffer ( request, dataBuffer );
-    }
 
     result = true;
     
@@ -1777,30 +1704,81 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
                                                      SCSICmdField1Byte CONTROL)
 {
     bool result;
+    int direction = kSCSIDataTransfer_NoDataTransfer;
+    int transferCount = 0;
+    
+    require ( ( request != NULL ), ErrorExit );
+    
+    switch (PROTOCOL) {
+        case kIOSATProtocolHardReset:     // Hard Reset
+        case kIOSATProtocolSRST:     // SRST
+        case kIOSATProtocolDEVICERESET:     // DEVICE RESET
+        case kIOSATProtocolNonData:     // Non-data
+            require (!dataBuffer, ErrorExit);
+            break;
+        case kIOSATProtocolPIODataIn:     // PIO Data-In
+        case kIOSATProtocolUDMADataIn:     // UDMA Data In
+            require (T_DIR == kIOSATTDirectionFromDevice, ErrorExit);
+            require (dataBuffer, ErrorExit);
+            break;
+        case kIOSATProtocolPIODataOut:     // PIO Data-Out
+        case kIOSATProtocolUDMADataOut:     // UDMA Data Out
+            require (T_DIR == kIOSATTDirectionToDevice, ErrorExit);
+            require (dataBuffer, ErrorExit);
+            break;
+        case kIOSATProtocolDMA:     // DMA
+        case kIOSATProtocolDMAQueued:     // DMA Queued
+        case kIOSATProtocolDeviceDiagnostic:     // Device Diagnostic
+        case kIOSATProtocolFPDMA:     //FPDMA
+        default:
+            break;
+    }
+    if (dataBuffer) {
+        require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
+        transferCount = (int) dataBuffer->getLength();
+        if (T_DIR == kIOSATTDirectionFromDevice) {
+            direction = kSCSIDataTransfer_FromTargetToInitiator;
+        } else {
+            direction = kSCSIDataTransfer_FromInitiatorToTarget;
+        }
+    } else {
+        direction = kSCSIDataTransfer_NoDataTransfer;
+        transferCount = 0;
+    }
     
     if (fPassThroughMode == kPassThroughModeJMicron) {
         result = PASS_THROUGH_JMicron(request, dataBuffer,
                                  PROTOCOL, T_DIR, 
                                  FEATURES, SECTOR_COUNT,
                                  LBA_LOW, LBA_MID, LBA_HIGH,
-                                 DEVICE, COMMAND, CONTROL );
-        return result;
-    }
-    
-    if (fPassThroughMode == kPassThroughModeSAT16) {
+                                 DEVICE, COMMAND, CONTROL,
+                                 direction, transferCount );
+
+    } else if (fPassThroughMode == kPassThroughModeSAT16) {
         result = PASS_THROUGH_16( request, dataBuffer,
                                  MULTIPLE_COUNT, PROTOCOL, EXTEND, OFF_LINE, CK_COND, T_DIR, BYT_BLOK, T_LENGTH,
                                  FEATURES, SECTOR_COUNT,
                                  LBA_LOW, LBA_MID, LBA_HIGH,
-                                 DEVICE, COMMAND, CONTROL );
-        return result;
+                                 DEVICE, COMMAND, CONTROL);
+    } else {
+        result = PASS_THROUGH_12( request, dataBuffer,
+                                 MULTIPLE_COUNT, PROTOCOL, EXTEND, OFF_LINE, CK_COND, T_DIR, BYT_BLOK, T_LENGTH,
+                                 (SCSICmdField1Byte) FEATURES, (SCSICmdField1Byte) SECTOR_COUNT,
+                                 (SCSICmdField1Byte) LBA_LOW, (SCSICmdField1Byte) LBA_MID, (SCSICmdField1Byte) LBA_HIGH,
+                                 DEVICE, COMMAND, CONTROL);
     }
     
-    result = PASS_THROUGH_12( request, dataBuffer,
-                             MULTIPLE_COUNT, PROTOCOL, EXTEND, OFF_LINE, CK_COND, T_DIR, BYT_BLOK, T_LENGTH,
-                             (SCSICmdField1Byte) FEATURES, (SCSICmdField1Byte) SECTOR_COUNT,
-                             (SCSICmdField1Byte) LBA_LOW, (SCSICmdField1Byte) LBA_MID, (SCSICmdField1Byte) LBA_HIGH,
-                             DEVICE, COMMAND, CONTROL );
+    require (result, ErrorExit );
+
+    SetTimeoutDuration ( request, 0 );
+    SetDataTransferDirection ( request, direction);
+    SetRequestedDataTransferCount ( request, transferCount );
+    if (transferCount > 0) {
+        SetDataBuffer ( request, dataBuffer );
+    }
+
+ErrorExit:
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
 }
 

@@ -112,7 +112,7 @@ bool    Send_ATA_SEND_SOFT_RESET(void);
                                                           SCSICmdField1Byte LBA_HIGH,
                                                           SCSICmdField1Byte DEVICE,
                                                           SCSICmdField1Byte COMMAND,
-                                                          SCSICmdField1Byte CONTROL);
+                                                          SCSICmdField1Byte CONTROL, int direction, int transferCount);
     bool    PASS_THROUGH_12 (
     SCSITaskIdentifier request,
     IOMemoryDescriptor *    dataBuffer,
