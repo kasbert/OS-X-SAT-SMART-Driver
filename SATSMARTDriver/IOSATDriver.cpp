@@ -688,6 +688,12 @@ org_dungeon_driver_IOSATDriver::JMicron_get_registers ( UInt16 address, UInt8 *p
                               kSCSIDataTransfer_FromTargetToInitiator, length)
         == true)
     {
+        SetTimeoutDuration ( request, 0 );
+        SetDataTransferDirection ( request, kSCSIDataTransfer_FromTargetToInitiator);
+        SetRequestedDataTransferCount ( request, length );
+        if (length > 0 && buffer) {
+            SetDataBuffer ( request, buffer );
+        }
         serviceResponse = SendCommand ( request, kTenSecondTimeoutInMS );
     }
     if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
