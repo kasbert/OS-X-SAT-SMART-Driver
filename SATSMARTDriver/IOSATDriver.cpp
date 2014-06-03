@@ -773,6 +773,7 @@ org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
           fPassThroughMode = kPassThroughModeAuto;
       }
     
+    fSATSMARTCapable = true;
     //SendBuiltInINQUIRY ( );
     boolean_t autodetect = (fPassThroughMode  == kPassThroughModeAuto);
     if (autodetect) {
@@ -799,14 +800,16 @@ org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
                 ERROR_LOG("%s[%p]::%s JMicron probe failed, trying with PassThrough16\n", getClassName(), this,  __FUNCTION__);
                 fPassThroughMode = kPassThroughModeSAT16;
                 setProperty(kPassThroughMode, "sat16");
+                if (!Send_ATA_IDENTIFY()) {
+                    ERROR_LOG("%s[%p]::%s SAT PassThrough16 failed, retrying with PassThrough12\n", getClassName(), this,  __FUNCTION__);
+                    fPassThroughMode = kPassThroughModeSAT12;
+                    setProperty(kPassThroughMode, "sat12");
+                    fSATSMARTCapable = Send_ATA_IDENTIFY();
+                }
             }
     }
-    if (!Send_ATA_IDENTIFY() && autodetect) {
-	ERROR_LOG("%s[%p]::%s SAT PassThrough16 failed, retrying with PassThrough12\n", getClassName(), this,  __FUNCTION__);
-	fSATSMARTCapable = true;
-	fPassThroughMode = kPassThroughModeSAT12;
-        setProperty(kPassThroughMode, "sat12");
-	Send_ATA_IDENTIFY();
+    if (!autodetect) {
+        fSATSMARTCapable = Send_ATA_IDENTIFY();
     }
     
     if (fSATSMARTCapable) {
@@ -816,7 +819,7 @@ org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
         setProperty (kIOPropertyProductRevisionLevelKey, revision);
         setProperty (kIOPropertyProductSerialNumberKey, serial);
         
-	Send_ATA_SMART_READ_DATA();
+	fSATSMARTCapable = Send_ATA_SMART_READ_DATA();
     }
     
     if (fSATSMARTCapable) {
@@ -979,12 +982,8 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
 	    // Some disk enclosures return success, but data is no good
             ERROR_LOG("%s::%s zero response\n", getClassName(), __FUNCTION__);
             //hexdump16(ataIdentify, 0, buffer->getLength ( ));
-	    fSATSMARTCapable = false;
-	    result = false;
-            
         } else {
 	    capabilities = ataIdentify[kATAIdentifyDriveCapabilities]&0xffff;
-	    fSATSMARTCapable = true;
 	    result = true;
 	}
     }
@@ -1003,7 +1002,6 @@ org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
                       getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
             LogAutoSenseData(request);
         }
-        fSATSMARTCapable = false;
     }
     
     buffer->complete ( );
@@ -1096,7 +1094,6 @@ org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
                       getClassName(), __FUNCTION__, serviceResponse,GetTaskStatus ( request ));
             LogAutoSenseData  (request);
         }
-        fSATSMARTCapable = false;
     }
     
     buffer->complete ( );
@@ -1784,7 +1781,6 @@ org_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
     }
 
 ErrorExit:
-    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
 }
 
