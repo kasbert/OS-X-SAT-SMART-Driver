@@ -586,7 +586,9 @@ IOReturn org_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comma
         serviceResponse = SendCommand ( request, cmd->getTimeoutMS() );
     }
     if ( ( serviceResponse == kSCSIServiceResponse_TASK_COMPLETE ) &&
-        GetTaskStatus ( request ) == kSCSITaskStatus_GOOD )
+        (GetTaskStatus ( request ) == kSCSITaskStatus_GOOD  ||
+         (fPermissive && (GetTaskStatus(request) == kSCSITaskStatus_CHECK_CONDITION))))
+        // TODO senseData.VALID_RESPONSE_CODE == 0x72 && senseData.SENSE_KEY == 5) ?
     {
         DEBUG_LOG("%s[%p]::%s success, service response %d, task status %d\n",
                   getClassName(), this, __FUNCTION__, serviceResponse, GetTaskStatus ( request ));

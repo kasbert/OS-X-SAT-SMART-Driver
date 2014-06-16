@@ -33,7 +33,7 @@
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
 			<key>IOProbeScore</key>
-			<integer>2006</integer>
+			<integer>5005</integer>
 			<key>IOProviderClass</key>
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
