@@ -88,29 +88,29 @@ IOSATCommand::init()
 {
     fExpansionData = (ExpansionData*) IOMalloc( sizeof( ExpansionData) );
     fExpansionData->extLBA = IOSATExtendedLBA::createIOSATExtendedLBA( this );
-
+    
     if( !super::init() || fExpansionData == NULL || fExpansionData->extLBA == NULL )
         return false;
-
+    
     zeroCommand();
-
+    
     return true;
-
+    
 }
 
 /*---------------------------------------------------------------------------
-*	free() - the pseudo destructor. Let go of what we don't need anymore.
-*
-*
-   ---------------------------------------------------------------------------*/
+ *	free() - the pseudo destructor. Let go of what we don't need anymore.
+ *
+ *
+ ---------------------------------------------------------------------------*/
 void
 IOSATCommand::free()
 {
-
+    
     getExtendedLBA()->release();
     IOFree( fExpansionData, sizeof( ExpansionData) );
     super::free();
-
+    
 }
 /*-----------------------------------------------------------------------------
  *
@@ -119,7 +119,7 @@ IOSATCommand::free()
 void
 IOSATCommand::zeroCommand(void)
 {
-
+    
     _opCode = kATANoOp;
     _flags = 0;
     _unit = kATAInvalidDeviceID;
@@ -135,7 +135,7 @@ IOSATCommand::zeroCommand(void)
     _errReg = 0;
     _logicalChunkSize = kATADefaultSectorSize;
     _inUse = false;
-
+    
     _taskFile.ataDataRegister = 0x0000;
     _taskFile.ataAltSDevCReg = 0x00;
     _taskFile.taskFile.ataTFFeatures = 0;
@@ -145,17 +145,17 @@ IOSATCommand::zeroCommand(void)
     _taskFile.taskFile.ataTFCylHigh  = 0;
     _taskFile.taskFile.ataTFSDH  = 0;
     _taskFile.taskFile.ataTFCommand  = 0;
-
-
+    
+    
     for( int i = 0; i < 16; i += 2 )
     {
         _packet.atapiCommandByte[ i ] = 0x000;
     }
-
+    
     _packet.atapiPacketSize = 0;
-
+    
     getExtendedLBA()->zeroData();
-
+    
 }
 
 
@@ -166,9 +166,9 @@ IOSATCommand::zeroCommand(void)
 void
 IOSATCommand::setOpcode( ataOpcode inCode)
 {
-
+    
     _opCode = inCode;
-
+    
 }
 
 
@@ -180,9 +180,9 @@ IOSATCommand::setOpcode( ataOpcode inCode)
 void
 IOSATCommand::setFlags( UInt32 inFlags)
 {
-
+    
     _flags = inFlags;
-
+    
 }
 
 
@@ -194,9 +194,9 @@ IOSATCommand::setFlags( UInt32 inFlags)
 void
 IOSATCommand::setUnit( ataUnitID inUnit)
 {
-
+    
     _unit = inUnit;
-
+    
 }
 
 
@@ -208,9 +208,9 @@ IOSATCommand::setUnit( ataUnitID inUnit)
 void
 IOSATCommand::setTimeoutMS( UInt32 inMS)
 {
-
+    
     _timeoutMS = inMS;
-
+    
 }
 
 
@@ -222,9 +222,9 @@ IOSATCommand::setTimeoutMS( UInt32 inMS)
 void
 IOSATCommand::setCallbackPtr (IOSATCompletionFunction* inCompletion)
 {
-
+    
     _callback = inCompletion;
-
+    
 }
 
 
@@ -235,9 +235,9 @@ IOSATCommand::setCallbackPtr (IOSATCompletionFunction* inCompletion)
 void
 IOSATCommand::setRegMask( ataRegMask mask)
 {
-
+    
     _regMask = mask;
-
+    
 }
 
 /*-----------------------------------------------------------------------------
@@ -248,9 +248,9 @@ IOSATCommand::setRegMask( ataRegMask mask)
 void
 IOSATCommand::setBuffer ( IOMemoryDescriptor* inDesc)
 {
-
+    
     _desc = inDesc;
-
+    
 }
 
 
@@ -263,9 +263,9 @@ IOSATCommand::setBuffer ( IOMemoryDescriptor* inDesc)
 void
 IOSATCommand::setPosition (IOByteCount fromPosition)
 {
-
+    
     _position = fromPosition;
-
+    
 }
 
 
@@ -277,9 +277,9 @@ IOSATCommand::setPosition (IOByteCount fromPosition)
 void
 IOSATCommand::setByteCount (IOByteCount numBytes)
 {
-
+    
     _byteCount = numBytes;
-
+    
 }
 
 /*-----------------------------------------------------------------------------
@@ -290,9 +290,9 @@ IOSATCommand::setByteCount (IOByteCount numBytes)
 void
 IOSATCommand::setTransferChunkSize (IOByteCount numBytes)
 {
-
+    
     _logicalChunkSize = numBytes;
-
+    
 }
 
 
@@ -305,9 +305,9 @@ IOSATCommand::setTransferChunkSize (IOByteCount numBytes)
 void
 IOSATCommand::setFeatures( UInt8 in)
 {
-
+    
     _taskFile.taskFile.ataTFFeatures = in;
-
+    
 }
 
 
@@ -319,9 +319,9 @@ IOSATCommand::setFeatures( UInt8 in)
 UInt8
 IOSATCommand::getErrorReg (void )
 {
-
+    
     return _taskFile.taskFile.ataTFFeatures;
-
+    
 }
 
 
@@ -333,9 +333,9 @@ IOSATCommand::getErrorReg (void )
 void
 IOSATCommand::setSectorCount( UInt8 in)
 {
-
+    
     _taskFile.taskFile.ataTFCount = in;
-
+    
 }
 
 
@@ -347,9 +347,9 @@ IOSATCommand::setSectorCount( UInt8 in)
 UInt8
 IOSATCommand::getSectorCount (void )
 {
-
+    
     return _taskFile.taskFile.ataTFCount;
-
+    
 }
 
 
@@ -361,9 +361,9 @@ IOSATCommand::getSectorCount (void )
 void
 IOSATCommand::setSectorNumber( UInt8 in)
 {
-
+    
     _taskFile.taskFile.ataTFSector = in;
-
+    
 }
 
 
@@ -375,9 +375,9 @@ IOSATCommand::setSectorNumber( UInt8 in)
 UInt8
 IOSATCommand::getSectorNumber (void )
 {
-
+    
     return _taskFile.taskFile.ataTFSector;
-
+    
 }
 
 
@@ -389,9 +389,9 @@ IOSATCommand::getSectorNumber (void )
 void
 IOSATCommand::setCylLo ( UInt8 in)
 {
-
+    
     _taskFile.taskFile.ataTFCylLo = in;
-
+    
 }
 
 
@@ -404,9 +404,9 @@ IOSATCommand::setCylLo ( UInt8 in)
 UInt8
 IOSATCommand::getCylLo (void )
 {
-
+    
     return _taskFile.taskFile.ataTFCylLo;
-
+    
 }
 
 /*-----------------------------------------------------------------------------
@@ -416,9 +416,9 @@ IOSATCommand::getCylLo (void )
 void
 IOSATCommand::setCylHi( UInt8 in)
 {
-
+    
     _taskFile.taskFile.ataTFCylHigh = in;
-
+    
 }
 
 
@@ -430,9 +430,9 @@ IOSATCommand::setCylHi( UInt8 in)
 UInt8
 IOSATCommand::getCylHi (void )
 {
-
+    
     return _taskFile.taskFile.ataTFCylHigh;
-
+    
 }
 
 
@@ -444,9 +444,9 @@ IOSATCommand::getCylHi (void )
 void
 IOSATCommand::setDevice_Head( UInt8 in)
 {
-
+    
     _taskFile.taskFile.ataTFSDH = in;
-
+    
 }
 
 
@@ -458,9 +458,9 @@ IOSATCommand::setDevice_Head( UInt8 in)
 UInt8
 IOSATCommand::getDevice_Head (void )
 {
-
+    
     return _taskFile.taskFile.ataTFSDH;
-
+    
 }
 
 
@@ -472,9 +472,9 @@ IOSATCommand::getDevice_Head (void )
 void
 IOSATCommand::setCommand ( UInt8 in)
 {
-
+    
     _taskFile.taskFile.ataTFCommand = in;
-
+    
 }
 
 
@@ -486,9 +486,9 @@ IOSATCommand::setCommand ( UInt8 in)
 UInt8
 IOSATCommand::getStatus (void )
 {
-
+    
     return _taskFile.taskFile.ataTFCommand;
-
+    
 }
 
 
@@ -502,22 +502,22 @@ IOSATCommand::getStatus (void )
 IOReturn
 IOSATCommand::setPacketCommand( UInt16 packetSizeBytes, UInt8* packetBytes)
 {
-//	IOLog("ATACommand::setPacket size %d  bytePtr = %lx\n", packetSizeBytes, packetBytes);
-
+    //	IOLog("ATACommand::setPacket size %d  bytePtr = %lx\n", packetSizeBytes, packetBytes);
+    
     if( ( packetSizeBytes > 16 ) || (packetBytes == 0L))
         return -1;
-
+    
     UInt8* cmdBytes = (UInt8*) _packet.atapiCommandByte;
-
+    
     for( int i = 0; i < packetSizeBytes; i++ )
     {
         cmdBytes[ i ] = packetBytes[ i ];
     }
-
+    
     _packet.atapiPacketSize = packetSizeBytes;
-
+    
     return kATANoErr;
-
+    
 }
 
 
@@ -530,9 +530,9 @@ IOSATCommand::setPacketCommand( UInt16 packetSizeBytes, UInt8* packetBytes)
 void
 IOSATCommand::setDataReg ( UInt16 in)
 {
-
+    
     _taskFile.ataDataRegister = in;
-
+    
 }
 
 
@@ -545,9 +545,9 @@ IOSATCommand::setDataReg ( UInt16 in)
 UInt16
 IOSATCommand::getDataReg (void )
 {
-
+    
     return _taskFile.ataDataRegister;
-
+    
 }
 
 
@@ -561,9 +561,9 @@ IOSATCommand::getDataReg (void )
 void
 IOSATCommand::setControl ( UInt8 in)
 {
-
+    
     _taskFile.ataAltSDevCReg = in;
-
+    
 }
 
 
@@ -576,9 +576,9 @@ IOSATCommand::setControl ( UInt8 in)
 UInt8
 IOSATCommand::getAltStatus (void )
 {
-
+    
     return _taskFile.ataAltSDevCReg;
-
+    
 }
 
 
@@ -593,9 +593,9 @@ IOSATCommand::getAltStatus (void )
 IOReturn
 IOSATCommand::getResult (void)
 {
-
+    
     return _result;
-
+    
 }
 
 
@@ -608,9 +608,9 @@ IOSATCommand::getResult (void)
 IOMemoryDescriptor*
 IOSATCommand::getBuffer ( void )
 {
-
+    
     return _desc;
-
+    
 }
 
 
@@ -623,9 +623,9 @@ IOSATCommand::getBuffer ( void )
 IOByteCount
 IOSATCommand::getActualTransfer ( void )
 {
-
+    
     return _actualByteCount;
-
+    
 }
 
 
@@ -638,9 +638,9 @@ IOSATCommand::getActualTransfer ( void )
 UInt8
 IOSATCommand::getEndStatusReg (void)
 {
-
+    
     return _status;
-
+    
 }
 
 
@@ -654,9 +654,9 @@ IOSATCommand::getEndStatusReg (void)
 UInt8
 IOSATCommand::getEndErrorReg( void )
 {
-
+    
     return _errReg;
-
+    
 }
 
 
@@ -668,11 +668,11 @@ IOSATCommand::getEndErrorReg( void )
 bool
 IOSATCommand::getCommandInUse( void )
 {
-
-
+    
+    
     return _inUse;
-
-
+    
+    
 }
 
 /*-----------------------------------------------------------------------------
@@ -684,22 +684,22 @@ IOReturn
 IOSATCommand::setLBA28( UInt32 lba, ataUnitID inUnit)
 {
     // param check the inputs
-
+    
     if( (lba & 0xF0000000) != 0x00000000
-        || !(inUnit == kATADevice0DeviceID || inUnit == kATADevice1DeviceID) )
+       || !(inUnit == kATADevice0DeviceID || inUnit == kATADevice1DeviceID) )
     {
         //param out of range
         return -1;
     }
-
-
+    
+    
     setSectorNumber( (lba &      0xFF) );      //LBA 7:0
     setCylLo( ((lba &          0xFF00) >> 8) );         // LBA 15:8
     setCylHi( ((lba &      0x00FF0000) >> 16) );      // LBA 23:16
     setDevice_Head(((lba & 0x0F000000) >> 24 ) |  mATALBASelect |( ((UInt8) inUnit) << 4));      //LBA 27:24
-
+    
     return kATANoErr;
-
+    
 }
 
 void
@@ -714,9 +714,9 @@ IOSATCommand::setEndResult(UInt8 inStatus, UInt8 endError  )
 IOSATExtendedLBA*
 IOSATCommand::getExtendedLBA(void)
 {
-
+    
     return fExpansionData->extLBA;
-
+    
 }
 
 
@@ -747,18 +747,18 @@ OSMetaClassDefineReservedUnused(IOSATExtendedLBA, 10);
 IOSATExtendedLBA*
 IOSATExtendedLBA::createIOSATExtendedLBA(IOSATCommand* inOwner)
 {
-
+    
     IOSATExtendedLBA* me = new IOSATExtendedLBA;
     if( me == NULL)
     {
         return NULL;
     }
-
+    
     me->owner = inOwner;
     me->zeroData();
-
+    
     return me;
-
+    
 }
 
 
@@ -767,22 +767,22 @@ void
 IOSATExtendedLBA::setLBALow16( UInt16 inLBALow)
 {
     lbaLow =  inLBALow;
-
+    
 }
 
 
 UInt16
 IOSATExtendedLBA::getLBALow16 (void)
 {
-
+    
     return lbaLow;
-
+    
 }
 
 void
 IOSATExtendedLBA::setLBAMid16 (UInt16 inLBAMid)
 {
-
+    
     lbaMid =  inLBAMid;
 }
 
@@ -790,10 +790,10 @@ IOSATExtendedLBA::setLBAMid16 (UInt16 inLBAMid)
 UInt16
 IOSATExtendedLBA::getLBAMid16( void )
 {
-
+    
     return lbaMid;
-
-
+    
+    
 }
 
 void
@@ -806,17 +806,17 @@ IOSATExtendedLBA::setLBAHigh16( UInt16 inLBAHigh )
 UInt16
 IOSATExtendedLBA::getLBAHigh16( void )
 {
-
+    
     return lbaHigh;
-
+    
 }
 
 void
 IOSATExtendedLBA::setSectorCount16( UInt16 inSectorCount )
 {
-
+    
     sectorCount =  inSectorCount;
-
+    
 }
 
 UInt16
@@ -834,43 +834,43 @@ IOSATExtendedLBA::setFeatures16( UInt16 inFeatures )
 UInt16
 IOSATExtendedLBA::getFeatures16( void )
 {
-
+    
     return features;
-
+    
 }
 
 void
 IOSATExtendedLBA::setDevice( UInt8 inDevice )
 {
-
+    
     device = inDevice;
-
+    
 }
 
 
 UInt8
 IOSATExtendedLBA::getDevice( void )
 {
-
-
+    
+    
     return device;
-
+    
 }
 
 void
 IOSATExtendedLBA::setCommand( UInt8 inCommand )
 {
-
-
+    
+    
     command = inCommand;
-
+    
 }
 
 
 UInt8
 IOSATExtendedLBA::getCommand( void )
 {
-
+    
     return command;
 }
 
@@ -879,7 +879,7 @@ IOSATExtendedLBA::getCommand( void )
 void
 IOSATExtendedLBA::setExtendedLBA( UInt32 inLBAHi, UInt32 inLBALo, ataUnitID inUnit, UInt16 extendedCount, UInt8 extendedCommand )
 {
-
+    
     UInt8 lba7, lba15, lba23, lba31, lba39, lba47;
     lba7 = (inLBALo & 0xff);
     lba15 = (inLBALo & 0xff00) >> 8;
@@ -887,27 +887,27 @@ IOSATExtendedLBA::setExtendedLBA( UInt32 inLBAHi, UInt32 inLBALo, ataUnitID inUn
     lba31 = (inLBALo & 0xff000000) >> 24;
     lba39 = (inLBAHi & 0xff);
     lba47 = (inLBAHi & 0xff00) >> 8;
-
+    
     setLBALow16(  lba7 | (lba31 << 8) );
     setLBAMid16(  lba15 | (lba39 << 8));
     setLBAHigh16(  lba23 | (lba47 << 8));
-
+    
     setSectorCount16( extendedCount );
     setCommand( extendedCommand );
     setDevice(   mATALBASelect |( ((UInt8) inUnit) << 4));     // set the LBA bit and device select bits. The rest are reserved in extended addressing.
-
+    
 }
 
 void
 IOSATExtendedLBA::getExtendedLBA( UInt32* outLBAHi, UInt32* outLBALo )
 {
-
-
-
+    
+    
+    
     *outLBALo = (getLBALow16() & 0xFF) | ( (getLBAMid16() & 0xff) << 8) | ((getLBAHigh16() & 0xff) << 16) | ((getLBALow16() & 0xff00) << 16);
-
+    
     *outLBAHi = getLBAHigh16() & 0xff00 | ((getLBAMid16() & 0xff00) >> 8);
-
+    
 }
 
 void

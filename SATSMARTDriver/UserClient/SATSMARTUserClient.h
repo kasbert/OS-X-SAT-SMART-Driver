@@ -73,24 +73,24 @@ typedef struct SATSMARTRefCon SATSMARTRefCon;
 
 class SATSMARTUserClient : public IOUserClient
 {
-
-OSDeclareDefaultStructors ( SATSMARTUserClient );
-
+    
+    OSDeclareDefaultStructors ( SATSMARTUserClient );
+    
 public:
-
-virtual bool     initWithTask           ( task_t owningTask, void * securityToken, UInt32 type );
-
-virtual bool         init                           ( OSDictionary * dictionary = NULL );
-virtual bool         start                          ( IOService * provider );
-virtual void     free                           ( void );
-virtual IOReturn message                    ( UInt32 type, IOService * provider, void * arg );
-
-virtual IOReturn clientClose                ( void );
-
-IOReturn        EnableDisableOperations ( UInt32 enable );
-IOReturn        EnableDisableAutoSave   ( UInt32 enable );
-IOReturn        ReturnStatus                    ( UInt32 * exceedsCondition );
-IOReturn        ExecuteOfflineImmediate ( UInt32 extendedTest );
+    
+    virtual bool     initWithTask           ( task_t owningTask, void * securityToken, UInt32 type );
+    
+    virtual bool         init                           ( OSDictionary * dictionary = NULL );
+    virtual bool         start                          ( IOService * provider );
+    virtual void     free                           ( void );
+    virtual IOReturn message                    ( UInt32 type, IOService * provider, void * arg );
+    
+    virtual IOReturn clientClose                ( void );
+    
+    IOReturn        EnableDisableOperations ( UInt32 enable );
+    IOReturn        EnableDisableAutoSave   ( UInt32 enable );
+    IOReturn        ReturnStatus                    ( UInt32 * exceedsCondition );
+    IOReturn        ExecuteOfflineImmediate ( UInt32 extendedTest );
     IOReturn        ReadData                                ( UInt32 * dataOut,
                                                              IOByteCount * outputSize );
     IOReturn        ReadDataThresholds              ( UInt32 * dataOut,
@@ -99,34 +99,34 @@ IOReturn        ExecuteOfflineImmediate ( UInt32 extendedTest );
                                                      void * structOut,
                                                      IOByteCount inStructSize,
                                                      IOByteCount *outStructSize );
-IOReturn        WriteLogAtAddress               ( ATASMARTWriteLogStruct *              writeLogData,
-                                                  UInt32 inStructSize );
- IOReturn        GetIdentifyData                 (UInt32 * dataOut, IOByteCount * outputSize);
-
+    IOReturn        WriteLogAtAddress               ( ATASMARTWriteLogStruct *              writeLogData,
+                                                     UInt32 inStructSize );
+    IOReturn        GetIdentifyData                 (UInt32 * dataOut, IOByteCount * outputSize);
+    
 protected:
-
-static IOExternalMethod sMethods[kIOATASMARTMethodCount];
-
-static IOReturn         sWaitForCommand         ( void * userClient, IOSATCommand * command );
-static void             sCommandCallback        ( IOSATCommand * command );
-
-IOReturn                        GatedWaitForCommand     ( IOSATCommand * command );
-void                            CommandCallback         ( IOSATCommand * command );
-
-task_t fTask;
-IOSATServices *                 fProvider;
-IOCommandGate *                                         fCommandGate;
-IOWorkLoop *                                            fWorkLoop;
-UInt32 fOutstandingCommands;
-
-virtual IOExternalMethod *                      getTargetAndMethodForIndex ( IOService **       target,
-                                                                             UInt32 index );
-
-IOReturn                HandleTerminate         ( IOService * provider );
-IOReturn                SendSMARTCommand        ( IOSATCommand * command );
-IOSATCommand *  AllocateCommand         ( void );
-void                    DeallocateCommand       ( IOSATCommand * command );
-
+    
+    static IOExternalMethod sMethods[kIOATASMARTMethodCount];
+    
+    static IOReturn         sWaitForCommand         ( void * userClient, IOSATCommand * command );
+    static void             sCommandCallback        ( IOSATCommand * command );
+    
+    IOReturn                        GatedWaitForCommand     ( IOSATCommand * command );
+    void                            CommandCallback         ( IOSATCommand * command );
+    
+    task_t fTask;
+    IOSATServices *                 fProvider;
+    IOCommandGate *                                         fCommandGate;
+    IOWorkLoop *                                            fWorkLoop;
+    UInt32 fOutstandingCommands;
+    
+    virtual IOExternalMethod *                      getTargetAndMethodForIndex ( IOService **       target,
+                                                                                UInt32 index );
+    
+    IOReturn                HandleTerminate         ( IOService * provider );
+    IOReturn                SendSMARTCommand        ( IOSATCommand * command );
+    IOSATCommand *  AllocateCommand         ( void );
+    void                    DeallocateCommand       ( IOSATCommand * command );
+    
 };
 
 
