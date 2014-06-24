@@ -12,14 +12,14 @@ version="$4"
 finalDMGName="${title}-${version}.dmg"
 applicationName=applicationName
 
-if ((size==0)); then
+if (($size==0)); then
     size=$(du -ks "$source" | awk '{print $1}')
-    size=$((size+100))
+    size=$(($size+100))
 fi
-if ((size<512)); then
-    size=550
+if (($size<600)); then
+    size=600
 fi
-echo "size $size"
+echo "size $source $size "
  
 #Create a R/W DMG. It must be larger than the result will be. In this example, the bash variable "size" contains the size in Kb and the contents of the folder in the "source" bash variable will be copied into the DMG:
 
