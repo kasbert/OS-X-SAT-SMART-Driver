@@ -53,17 +53,17 @@ enum
 // S.M.A.R.T command features register codes
 enum
 {
-    kFeaturesRegisterReadData                                       = 0xD0,
-    kFeaturesRegisterReadDataThresholds                     = 0xD1,
-    kFeaturesRegisterEnableDisableAutoSave          = 0xD2,
+    kFeaturesRegisterReadData               = 0xD0,
+    kFeaturesRegisterReadDataThresholds     = 0xD1,
+    kFeaturesRegisterEnableDisableAutoSave  = 0xD2,
     // Reserved
-    kFeaturesRegisterExecuteOfflineImmed            = 0xD4,
-    kFeaturesRegisterReadLogAtAddress                       = 0xD5,
-    kFeaturesRegisterWriteLogAtAddress                      = 0xD6,
+    kFeaturesRegisterExecuteOfflineImmed    = 0xD4,
+    kFeaturesRegisterReadLogAtAddress       = 0xD5,
+    kFeaturesRegisterWriteLogAtAddress      = 0xD6,
     // Reserved
-    kFeaturesRegisterEnableOperations                       = 0xD8,
-    kFeaturesRegisterDisableOperations                      = 0xD9,
-    kFeaturesRegisterReturnStatus                           = 0xDA
+    kFeaturesRegisterEnableOperations       = 0xD8,
+    kFeaturesRegisterDisableOperations      = 0xD9,
+    kFeaturesRegisterReturnStatus           = 0xDA
 };
 
 // S.M.A.R.T 'magic' values
@@ -739,7 +739,6 @@ ErrorExit:
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, (int)result);
     return result;
 }
-
 
 
 bool
