@@ -8,7 +8,7 @@ driver, so most existing applications should work.
 
 The driver requires a SAT (SCSI ATA Translation) capable external
 drive enclosure. Check smartmontools list for supported devices:
-http://sourceforge.net/apps/trac/smartmontools/wiki/Supported_USB-Devices 
+http://smartmontools.org/wiki/Supported_USB-Devices 
 If the Option column contains sat or jmicron, the driver should work.
 The driver should work with Snow Leopard and Lion and Mountain Lion. 
 People have reported problems with Lion and Encrypted volumes. 
