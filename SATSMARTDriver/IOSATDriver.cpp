@@ -271,12 +271,12 @@ bool org_dungeon_driver_IOSATDriver::start(IOService *provider)
     
     if (fSATSMARTCapable) {
         IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk serial '%s', revision '%s', model '%s'\n",
-              (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10, 
+              (int)SATSMARTDriverVersionNumber, ((int)(100*SATSMARTDriverVersionNumber))%100, 
               name ? name->getCStringNoCopy() : "unknown",
               serial, revision, model);
     } else {
         IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk is not SAT capable\n",
-              (int)SATSMARTDriverVersionNumber, ((int)(10*SATSMARTDriverVersionNumber))%10,
+              (int)SATSMARTDriverVersionNumber, ((int)(100*SATSMARTDriverVersionNumber))%100,
               name ? name->getCStringNoCopy() : "unknown");
         //result = false;
     }
@@ -788,25 +788,35 @@ org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
                 fPort = lun->unsigned32BitValue() & 1;
             }
         }
-        // Probe for JMicron
-        fPassThroughMode = kPassThroughModeJMicron;
-        setProperty(kPassThroughMode, "jmicron");
-        if (JMicron_get_registers(0x720f, & status, sizeof status)) {
-            DEBUG_LOG("%s[%p]::%s register value %02x USE JMICRON!\n", getClassName(), this, __FUNCTION__, (int) status);
-            if (status & 0x40) {
-                // This does not work for me. Status is always 4 in my enclosure
-                fPort = 1;
-            }
-        } else {
-            ERROR_LOG("%s[%p]::%s JMicron probe failed, trying with PassThrough16\n", getClassName(), this,  __FUNCTION__);
+
+        ERROR_LOG("%s[%p]::%s Trying with PassThrough12\n", getClassName(), this,  __FUNCTION__);
+        fPassThroughMode = kPassThroughModeSAT12;
+        setProperty(kPassThroughMode, "sat12");
+        fSATSMARTCapable = Send_ATA_IDENTIFY();
+        if (!fSATSMARTCapable) {
+            ERROR_LOG("%s[%p]::%s SAT PassThrough12 failed, retrying with PassThrough16\n", getClassName(), this,  __FUNCTION__);
+            fSATSMARTCapable = true;
             fPassThroughMode = kPassThroughModeSAT16;
             setProperty(kPassThroughMode, "sat16");
-            if (!Send_ATA_IDENTIFY()) {
-                ERROR_LOG("%s[%p]::%s SAT PassThrough16 failed, retrying with PassThrough12\n", getClassName(), this,  __FUNCTION__);
-                fPassThroughMode = kPassThroughModeSAT12;
-                setProperty(kPassThroughMode, "sat12");
+            fSATSMARTCapable = Send_ATA_IDENTIFY();
+        }
+        if (!fSATSMARTCapable) {
+            ERROR_LOG("%s[%p]::%s SAT PassThrough12 probe failed, trying with JMicron\n", getClassName(), this,  __FUNCTION__);
+            fSATSMARTCapable = true;
+            fPassThroughMode = kPassThroughModeJMicron;
+            setProperty(kPassThroughMode, "jmicron");
+            
+            if (JMicron_get_registers(0x720f, & status, sizeof status)) {
+                DEBUG_LOG("%s[%p]::%s register value %02x USE JMICRON!\n", getClassName(), this, __FUNCTION__, (int) status);
+                if (status & 0x40) {
+                    // This does not work for me. Status is always 4 in my enclosure
+                    fPort = 1;
+                }
                 fSATSMARTCapable = Send_ATA_IDENTIFY();
             }
+        }
+        if (!fSATSMARTCapable) {
+            setProperty(kPassThroughMode, "none");
         }
     }
     if (!autodetect) {
@@ -831,8 +841,6 @@ org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
 	setProperty ( kIOATASupportedFeaturesKey, number );
 	number->release();
         result = true;
-    } else {
-        //setProperty(kPassThroughMode, "none");
     }
     setProperty(kSATSMARTCapableKey, fSATSMARTCapable);
     
