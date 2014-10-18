@@ -91,7 +91,7 @@
 					<key>idProduct</key>
 					<integer>10</integer>
 					<key>Product Identification</key>
-					<string>1 Disk</string>
+					<string> Disk</string>
 					<key>Vendor Identification</key>
 					<string>Ext Hard</string>
 					<key>Permissive</key>
@@ -1188,7 +1188,7 @@
 					<key>idProduct</key>
 					<integer>20742</integer>
 					<key>PassThroughMode</key>
-					<string>sat16</string>
+					<string>sat12</string>
 				</dict>
 				<key>Icy Box IB-AC603A-U3</key>
 				<dict>
