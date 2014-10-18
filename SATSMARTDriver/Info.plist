@@ -71,6 +71,19 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
+				<key>OWC Mercury Elite-AL Pro mini</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>2344</integer>
+					<key>idProduct</key>
+					<integer>10</integer>
+					<key>Product Identification</key>
+					<string> Disk</string>
+					<key>Vendor Identification</key>
+					<string>Ext Hard</string>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+				</dict>
 				<key>Macally G-S350SU</key>
 				<dict>
 					<key>idVendor</key>
@@ -86,7 +99,6 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-
 				<key>Spyker USB3 Adapter</key>
 				<dict>
 					<key>idVendor</key>
@@ -653,6 +665,15 @@
 					<integer>4184</integer>
 					<key>idProduct</key>
 					<integer>1794</integer>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+				</dict>
+				<key>WD My Passport 0748</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>4184</integer>
+					<key>idProduct</key>
+					<integer>1864</integer>
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
