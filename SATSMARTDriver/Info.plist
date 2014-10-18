@@ -261,6 +261,15 @@
 					<key>PassThroughMode</key>
 					<string>jmicron</string>
 				</dict>
+				<key>Iomega eGo 500GB</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>1435</integer>
+					<key>idProduct</key>
+					<integer>1404</integer>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+				</dict>
 				<key>LaCie Hard Disk (Neil Poulton design)</key>
 				<dict>
 					<key>idVendor</key>
@@ -433,6 +442,24 @@
 					<integer>41124</integer>
 					<key>PassThroughMode</key>
 					<string>sat16</string>
+				</dict>
+				<key>Seagate Backup Plus 2TB Desktop</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>3010</integer>
+					<key>idProduct</key>
+					<integer>43809</integer>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+				</dict>
+				<key>Seagate Desktop HDD 4TB</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>3010</integer>
+					<key>idProduct</key>
+					<integer>13074</integer>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
 				</dict>
 				<key>Seagate FreeAgent Go</key>
 				<dict>
@@ -739,6 +766,15 @@
 					<integer>1864</integer>
 					<key>PassThroughMode</key>
 					<string>sat16</string>
+				</dict>
+				<key>WD My Passport Ultra 2TB</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>4184</integer>
+					<key>idProduct</key>
+					<integer>2080</integer>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
 				</dict>
 				<key>WD My Book ES 320GB</key>
 				<dict>
@@ -1333,6 +1369,24 @@
 					<integer>16</integer>
 					<key>PassThroughMode</key>
 					<string>sat16</string>
+				</dict>
+				<key>Sharkoon Quickstore Portable</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>5325</integer>
+					<key>idProduct</key>
+					<integer>24854</integer>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+				</dict>
+				<key>Icy Box IB-231</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>8053</integer>
+					<key>idProduct</key>
+					<integer>2184</integer>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
 				</dict>
 				<key>(No Name 3)</key>
 				<dict>
