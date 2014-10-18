@@ -77,23 +77,21 @@
 					<integer>2344</integer>
 					<key>idProduct</key>
 					<integer>10</integer>
-					<key>Product Identification</key>
-					<string> Disk</string>
-					<key>Vendor Identification</key>
-					<string>Ext Hard</string>
 					<key>PassThroughMode</key>
 					<string>sat12</string>
 				</dict>
 				<key>Macally G-S350SU</key>
 				<dict>
+                                        <!-- usb -->
 					<key>idVendor</key>
 					<integer>2344</integer>
 					<key>idProduct</key>
 					<integer>10</integer>
-					<key>Product Identification</key>
-					<string> Disk</string>
-					<key>Vendor Identification</key>
-					<string>Ext Hard</string>
+                                        <!-- firewire -->
+					<key>Vendor_ID</key>
+					<integer>12512</integer>
+					<key>Model_ID</key>
+					<integer>0</integer>
 					<key>Permissive</key>
 					<true/>
 					<key>PassThroughMode</key>

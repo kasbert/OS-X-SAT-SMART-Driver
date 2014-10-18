@@ -189,6 +189,8 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
     OSNumber *idProduct = OSDynamicCast(OSNumber, getParentProperty("idProduct"));
     OSString *vendorID = OSDynamicCast ( OSString, getParentProperty("Vendor Identification"));
     OSString *productID = OSDynamicCast ( OSString, getParentProperty("Product Identification"));
+    OSNumber *fwvendorID = OSDynamicCast ( OSNumber, getParentProperty("Vendor_ID"));
+    OSNumber *fwmodelID = OSDynamicCast ( OSNumber, getParentProperty("Model_ID"));
     
     OSDictionary*   dict= OSDynamicCast ( OSDictionary, getProperty("Identifiers"));
     
@@ -206,6 +208,8 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
                     OSNumber *idProduct2 = OSDynamicCast ( OSNumber, details->getObject("idProduct"));
                     OSString *vendorID2 = OSDynamicCast ( OSString, details->getObject("Vendor Identification"));
                     OSString *productID2 = OSDynamicCast ( OSString, details->getObject("Product Identification"));
+                    OSNumber *fwvendorID2 = OSDynamicCast ( OSNumber, details->getObject("Vendor_ID"));
+                    OSNumber *fwmodelID2 = OSDynamicCast ( OSNumber, details->getObject("Model_ID"));
                     if (idVendor && idVendor2 && idProduct && idProduct2 
                         && idVendor->unsigned32BitValue() == idVendor2->unsigned32BitValue()
                         && idProduct->unsigned32BitValue() == idProduct2->unsigned32BitValue()) {
@@ -215,6 +219,12 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
                     if (vendorID && vendorID2 && productID && productID2 
                         && vendorID->isEqualTo(vendorID2) && productID->isEqualTo(productID2)) {
                         DEBUG_LOG("%s[%p]::%s '%s' MATCH '%s':'%s'\n", getClassName(), this, __FUNCTION__, key->getCStringNoCopy(), vendorID->getCStringNoCopy(), productID->getCStringNoCopy());
+                        break;
+                    }
+                    if (fwvendorID && fwvendorID2 && fwmodelID && fwmodelID2 
+                        && fwvendorID->unsigned32BitValue() == fwvendorID2->unsigned32BitValue() 
+                        && fwmodelID->unsigned32BitValue() == fwmodelID2->unsigned32BitValue()) {
+                        DEBUG_LOG("%s[%p]::%s '%s' MATCH %04x:%04x\n", getClassName(), this, __FUNCTION__, key->getCStringNoCopy(), fwvendorID->unsigned32BitValue(), fwmodelID->unsigned32BitValue());
                         break;
                     }
                     details = 0;
@@ -241,7 +251,11 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
             }
         } else {
             char buffer[30];
-            snprintf(buffer, 30, "Unknown %04x:%04x", idVendor ? idVendor->unsigned32BitValue() : 0, idProduct ? idProduct->unsigned32BitValue() : 0);
+            if (!idVendor && !idProduct && fwvendorID && fwmodelID) {
+                snprintf(buffer, 30, "Unknown fw %04x:%04x", fwvendorID->unsigned32BitValue(), fwmodelID->unsigned32BitValue());
+            } else {
+                snprintf(buffer, 30, "Unknown %04x:%04x", idVendor ? idVendor->unsigned32BitValue() : 0, idProduct ? idProduct->unsigned32BitValue() : 0);
+            }
             setProperty(kEnclosureName, buffer);
         }
     }
@@ -270,7 +284,7 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
     require (result, ErrorExit);
     
     char buffer[30];
-    snprintf(buffer, 30, "%lf", SATSMARTDriverVersionNumber);
+    snprintf(buffer, 30, "%d.%d", (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100);
     if (fSATSMARTCapable) {
         IOLog("SATSMARTDriver v%s: enclosure '%s', disk serial '%s', revision '%s', model '%s'\n",
               buffer, name ? name->getCStringNoCopy() : "unknown",
