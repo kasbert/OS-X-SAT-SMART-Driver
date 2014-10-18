@@ -241,7 +241,7 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
             }
         } else {
             char buffer[30];
-            sprintf(buffer, "Unknown %04x:%04x", idVendor ? idVendor->unsigned32BitValue() : 0, idProduct ? idProduct->unsigned32BitValue() : 0);
+            snprintf(buffer, 30, "Unknown %04x:%04x", idVendor ? idVendor->unsigned32BitValue() : 0, idProduct ? idProduct->unsigned32BitValue() : 0);
             setProperty(kEnclosureName, buffer);
         }
     }
@@ -269,15 +269,15 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
     OSString *name = OSDynamicCast(OSString, getProperty(kEnclosureName));
     require (result, ErrorExit);
     
+    char buffer[30];
+    snprintf(buffer, 30, "%lf", SATSMARTDriverVersionNumber);
     if (fSATSMARTCapable) {
-        IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk serial '%s', revision '%s', model '%s'\n",
-              (int)SATSMARTDriverVersionNumber, ((int)(100*SATSMARTDriverVersionNumber))%100, 
-              name ? name->getCStringNoCopy() : "unknown",
+        IOLog("SATSMARTDriver v%s: enclosure '%s', disk serial '%s', revision '%s', model '%s'\n",
+              buffer, name ? name->getCStringNoCopy() : "unknown",
               serial, revision, model);
     } else {
-        IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk is not SAT capable\n",
-              (int)SATSMARTDriverVersionNumber, ((int)(100*SATSMARTDriverVersionNumber))%100,
-              name ? name->getCStringNoCopy() : "unknown");
+        IOLog("SATSMARTDriver v%s: enclosure '%s', disk is not SAT capable\n",
+              buffer, name ? name->getCStringNoCopy() : "unknown");
         //result = false;
     }
     if (!result) {
@@ -540,18 +540,11 @@ IOReturn fi_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comman
     request = GetSCSITask ( );
     require (request, ErrorExit );
     
-    DEBUG_LOG("buffer %p\n", cmd->getBuffer());
-    DEBUG_LOG("bytecount %d\n", (int)cmd->getByteCount());
-    DEBUG_LOG("features %x\n", cmd->getErrorReg());
-    DEBUG_LOG("opcode %x\n", cmd->getOpcode());
-    DEBUG_LOG("timeout %d\n", (int)cmd->getTimeoutMS());
-    DEBUG_LOG("sector count %x\n", cmd->getSectorCount());
-    DEBUG_LOG("sector num %x\n", cmd->getSectorNumber());
-    DEBUG_LOG("cyllo %x\n", cmd->getCylLo());
-    DEBUG_LOG("cylhi %x\n", cmd->getCylHi());
-    DEBUG_LOG("device %x\n", cmd->getDevice_Head());
-    DEBUG_LOG("command %x\n", cmd->getStatus());
-    DEBUG_LOG("flags %x\n", cmd->getFlags());
+    DEBUG_LOG("buffer %p, bytecount %d, features %x, opcode %x, timeout %d, seccnt %x, secnum %x, cyllo %x, cylhi %x, dev %x, cmd %x, flags %x\n"
+              , cmd->getBuffer() , (int)cmd->getByteCount(), cmd->getErrorReg()
+              , cmd->getOpcode(), (int)cmd->getTimeoutMS(), cmd->getSectorCount()
+              , cmd->getSectorNumber(), cmd->getCylLo(), cmd->getCylHi()
+              , cmd->getDevice_Head(), cmd->getStatus(), cmd->getFlags());
     
     direction = (cmd->getFlags() & mATAFlagIORead) ? 1 : 0;
     count = 0;
