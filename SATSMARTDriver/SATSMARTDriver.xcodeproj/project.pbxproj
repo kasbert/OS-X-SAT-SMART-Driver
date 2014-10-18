@@ -568,7 +568,7 @@
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/IOKit.framework/Versions/A/Headers";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
-				MODULE_NAME = org.dungeon.driver.SATSMARTDriver;
+				MODULE_NAME = fi.dungeon.driver.SATSMARTDriver;
 				MODULE_VERSION = 0.10;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SATSMARTDriver;
@@ -591,7 +591,7 @@
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/IOKit.framework/Versions/A/Headers";
 				INFOPLIST_FILE = Info.plist;
 				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
-				MODULE_NAME = org.dungeon.driver.SATSMARTDriver;
+				MODULE_NAME = fi.dungeon.driver.SATSMARTDriver;
 				MODULE_VERSION = 0.10;
 				PRODUCT_NAME = SATSMARTDriver;
 				WRAPPER_EXTENSION = kext;

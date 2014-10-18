@@ -71,9 +71,9 @@ enum  {
     kIOSATTLengthInSTPSIU = 3
 };
 
-class org_dungeon_driver_IOSATDriver : public IOSCSIPeripheralDeviceType00
+class fi_dungeon_driver_IOSATDriver : public IOSCSIPeripheralDeviceType00
 {
-    OSDeclareDefaultStructors(org_dungeon_driver_IOSATDriver)
+    OSDeclareDefaultStructors(fi_dungeon_driver_IOSATDriver)
     
     char serial[21];
     char revision[9];
@@ -203,16 +203,16 @@ protected:
 private:
     
     // Padding for future binary compatibility.
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 0);
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 1);
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 2);
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 3);
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 4);
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 5);
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 6);
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 7);
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 8);
-    OSMetaClassDeclareReservedUnused(org_dungeon_driver_IOSATDriver, 9);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 0);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 1);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 2);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 3);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 4);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 5);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 6);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 7);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 8);
+    OSMetaClassDeclareReservedUnused(fi_dungeon_driver_IOSATDriver, 9);
 };
 
 #endif

@@ -71,8 +71,8 @@ IOSATServices::attach ( IOService * provider )
     require_string ( super::attach ( provider ), ErrorExit,
                     "Superclass didn't attach" );
     
-    org_dungeon_driver_IOSATDriver *            fProvider;
-    fProvider = OSDynamicCast ( org_dungeon_driver_IOSATDriver, provider );
+    fi_dungeon_driver_IOSATDriver *            fProvider;
+    fProvider = OSDynamicCast ( fi_dungeon_driver_IOSATDriver, provider );
     require_string ( fProvider, ErrorExit, "Incorrect provider type\n" );
     
     //setProperty ( kIOPropertyProtocolCharacteristicsKey,
@@ -334,8 +334,8 @@ IOSATServices::sendSMARTCommand ( IOSATCommand * command )
         return kIOReturnInvalid;
     }
     
-    org_dungeon_driver_IOSATDriver *            fSATProvider;
-    fSATProvider = OSDynamicCast ( org_dungeon_driver_IOSATDriver, fProvider );
+    fi_dungeon_driver_IOSATDriver *            fSATProvider;
+    fSATProvider = OSDynamicCast ( fi_dungeon_driver_IOSATDriver, fProvider );
     if ( fSATProvider == NULL )
     {
         ERROR_LOG ( "%s::%s: attach; wrong provider type!\n", getClassName(), __FUNCTION__  );

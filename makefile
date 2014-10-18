@@ -35,6 +35,7 @@ unmount:
 	ioreg -r -c IOSCSIPeripheralDeviceType00 -l | grep "BSD Name" | cut -d'"' -f4 | while read a; do diskutil unmountDisk "$$a" || exit 1; done
 
 unload: unmount
+	-sudo kextunload -v -b fi.dungeon.driver.SATSMARTDriver
 	-sudo kextunload -v -b org.dungeon.driver.SATSMARTDriver
 
 realinstall: unload

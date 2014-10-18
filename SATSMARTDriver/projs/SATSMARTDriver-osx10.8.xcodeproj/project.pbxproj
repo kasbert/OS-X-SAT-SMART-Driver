@@ -569,7 +569,7 @@
 					/System/Library/Frameworks/IOKit.framework/Versions/A/Headers,
 				);
 				INFOPLIST_FILE = Info.plist;
-				MODULE_NAME = org.dungeon.driver.SATSMARTDriver;
+				MODULE_NAME = fi.dungeon.driver.SATSMARTDriver;
 				MODULE_VERSION = 0.7;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_NAME = SATSMARTDriver;
@@ -590,7 +590,7 @@
 					/System/Library/Frameworks/IOKit.framework/Versions/A/Headers,
 				);
 				INFOPLIST_FILE = Info.plist;
-				MODULE_NAME = org.dungeon.driver.SATSMARTDriver;
+				MODULE_NAME = fi.dungeon.driver.SATSMARTDriver;
 				MODULE_VERSION = 0.7;
 				PRODUCT_NAME = SATSMARTDriver;
 				WRAPPER_EXTENSION = kext;

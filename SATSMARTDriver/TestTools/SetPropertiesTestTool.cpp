@@ -128,7 +128,7 @@ int main (int argc, const char *argv[])
         }
         else {
             // We're only interested in the parent object if it's our driver class.
-            if (IOObjectConformsTo(parent, "org_dungeon_driver_IOSATDriver")) {
+            if (IOObjectConformsTo(parent, "fi_dungeon_driver_IOSATDriver")) {
                 // This is the function that results in ::setProperties() being called in our
                 // kernel driver. The dictionary we created is passed to the driver here.
                 kr = IORegistryEntrySetCFProperties(parent, dictRef);

@@ -94,7 +94,7 @@ enum
 
 
 #define super IOSCSIPeripheralDeviceType00
-OSDefineMetaClassAndStructors(org_dungeon_driver_IOSATDriver, IOSCSIPeripheralDeviceType00)
+OSDefineMetaClassAndStructors(fi_dungeon_driver_IOSATDriver, IOSCSIPeripheralDeviceType00)
 
 /////////////
 static void hexdump16(UInt16 *data, int start, int len) {
@@ -154,7 +154,7 @@ UInt8 checksum(IOBufferMemoryDescriptor *        buffer) {
 ///////
 
 
-bool org_dungeon_driver_IOSATDriver::init(OSDictionary *dict)
+bool fi_dungeon_driver_IOSATDriver::init(OSDictionary *dict)
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     bool result = super::init(dict);
@@ -165,13 +165,13 @@ bool org_dungeon_driver_IOSATDriver::init(OSDictionary *dict)
     return result;
 }
 
-void org_dungeon_driver_IOSATDriver::free(void)
+void fi_dungeon_driver_IOSATDriver::free(void)
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     super::free();
 }
 
-IOService *org_dungeon_driver_IOSATDriver::probe(IOService *provider,
+IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
                                                  SInt32 *score)
 {
     DEBUG_LOG("%s[%p]::%s score %d\n", getClassName(), this, __FUNCTION__, score ? (int)*score : -1);
@@ -250,7 +250,7 @@ IOService *org_dungeon_driver_IOSATDriver::probe(IOService *provider,
     return result;
 }
 
-OSObject *org_dungeon_driver_IOSATDriver::getParentProperty(const char *key) {
+OSObject *fi_dungeon_driver_IOSATDriver::getParentProperty(const char *key) {
     IOService *parent = this;
     OSObject *value = NULL;
     while ((parent = parent->getProvider())) {
@@ -262,7 +262,7 @@ OSObject *org_dungeon_driver_IOSATDriver::getParentProperty(const char *key) {
     return 0;
 }
 
-bool org_dungeon_driver_IOSATDriver::start(IOService *provider)
+bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     bool result = super::start(provider);
@@ -290,7 +290,7 @@ ErrorExit:
     return result;
 }
 
-void org_dungeon_driver_IOSATDriver::stop(IOService *provider)
+void fi_dungeon_driver_IOSATDriver::stop(IOService *provider)
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     super::stop(provider);
@@ -298,7 +298,7 @@ void org_dungeon_driver_IOSATDriver::stop(IOService *provider)
 
 // This function will be called when the user process calls IORegistryEntrySetCFProperties on
 // this driver. You can add your custom functionality to this function.
-IOReturn org_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
+IOReturn fi_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
 {
     OSDictionary*   dict;
     OSNumber*       number;
@@ -467,7 +467,7 @@ ErrorExit:
 
 
 bool
-org_dungeon_driver_IOSATDriver::attach ( IOService * provider )
+fi_dungeon_driver_IOSATDriver::attach ( IOService * provider )
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     bool result = false;
@@ -483,7 +483,7 @@ ErrorExit:
 }
 
 void
-org_dungeon_driver_IOSATDriver::detach ( IOService * provider )
+fi_dungeon_driver_IOSATDriver::detach ( IOService * provider )
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     super::detach ( provider );
@@ -491,7 +491,7 @@ org_dungeon_driver_IOSATDriver::detach ( IOService * provider )
 
 
 void
-org_dungeon_driver_IOSATDriver::CreateStorageServiceNub ( void )
+fi_dungeon_driver_IOSATDriver::CreateStorageServiceNub ( void )
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     IOService *         nub = NULL;
@@ -522,7 +522,7 @@ ErrorExit:
     return;
 }
 
-IOReturn org_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * command )
+IOReturn fi_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * command )
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
@@ -658,7 +658,7 @@ ErrorExit:
 
 
 bool
-org_dungeon_driver_IOSATDriver::JMicron_get_registers ( UInt16 address, UInt8 *ptr, UInt16 length )
+fi_dungeon_driver_IOSATDriver::JMicron_get_registers ( UInt16 address, UInt8 *ptr, UInt16 length )
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     IOMemoryDescriptor *        buffer            = NULL;
@@ -742,7 +742,7 @@ ErrorExit:
 
 
 bool
-org_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
+fi_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
 {
     bool result = false;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
@@ -849,7 +849,7 @@ ErrorExit:
     return result;
 }
 
-void org_dungeon_driver_IOSATDriver::LogAutoSenseData (SCSITaskIdentifier request) {
+void fi_dungeon_driver_IOSATDriver::LogAutoSenseData (SCSITaskIdentifier request) {
     SCSI_Sense_Data senseData;
     GetAutoSenseData( request, &senseData, sizeof(senseData) );
     ERROR_LOG( "senseData: VALID_RESPONSE_CODE=%d (7=valid),\n"
@@ -876,7 +876,7 @@ void org_dungeon_driver_IOSATDriver::LogAutoSenseData (SCSITaskIdentifier reques
 }
 
 bool
-org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
+fi_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
 {
     bool result;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
@@ -885,35 +885,35 @@ org_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
     return result;
 }
 
-void org_dungeon_driver_IOSATDriver::TerminateDeviceSupport ( void ) {
+void fi_dungeon_driver_IOSATDriver::TerminateDeviceSupport ( void ) {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     super::TerminateDeviceSupport();
 }
 
 
 char *
-org_dungeon_driver_IOSATDriver::GetVendorString ( void ) {
+fi_dungeon_driver_IOSATDriver::GetVendorString ( void ) {
     //serial[sizeof(serial)-1]=0;
     //if (*serial) return serial;
     return super::GetVendorString();
 }
 
 char *
-org_dungeon_driver_IOSATDriver::GetProductString ( void ) {
+fi_dungeon_driver_IOSATDriver::GetProductString ( void ) {
     model[sizeof(model)-1]=0;
     if (*model) return model;
     return super::GetProductString();
 }
 
 char *
-org_dungeon_driver_IOSATDriver::GetRevisionString ( void ) {
+fi_dungeon_driver_IOSATDriver::GetRevisionString ( void ) {
     revision[sizeof(revision)-1] =0;
     if (*revision) return revision;
     return super::GetRevisionString();
 }
 
 bool
-org_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
+fi_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     IOBufferMemoryDescriptor *        buffer            = NULL;
@@ -1032,7 +1032,7 @@ ErrorExit:
 
 
 bool
-org_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
+fi_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     IOBufferMemoryDescriptor *        buffer            = NULL;
@@ -1124,7 +1124,7 @@ ErrorExit:
 
 
 bool
-org_dungeon_driver_IOSATDriver::Send_ATA_IDLE(UInt8 value)
+fi_dungeon_driver_IOSATDriver::Send_ATA_IDLE(UInt8 value)
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     SCSITaskIdentifier request            = NULL;
@@ -1183,7 +1183,7 @@ ErrorExit:
 }
 
 bool
-org_dungeon_driver_IOSATDriver::Send_ATA_IDLE_IMMEDIATE()
+fi_dungeon_driver_IOSATDriver::Send_ATA_IDLE_IMMEDIATE()
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     SCSITaskIdentifier request            = NULL;
@@ -1242,7 +1242,7 @@ ErrorExit:
 }
 
 bool
-org_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
+fi_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     SCSITaskIdentifier request            = NULL;
@@ -1301,7 +1301,7 @@ ErrorExit:
 }
 
 bool
-org_dungeon_driver_IOSATDriver::Send_ATA_STANDBY_IMMEDIATE()
+fi_dungeon_driver_IOSATDriver::Send_ATA_STANDBY_IMMEDIATE()
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     SCSITaskIdentifier request            = NULL;
@@ -1360,7 +1360,7 @@ ErrorExit:
 }
 
 bool
-org_dungeon_driver_IOSATDriver::Send_ATA_CHECK_POWER_MODE(int *mode)
+fi_dungeon_driver_IOSATDriver::Send_ATA_CHECK_POWER_MODE(int *mode)
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     SCSITaskIdentifier request            = NULL;
@@ -1423,7 +1423,7 @@ ErrorExit:
 }
 
 bool
-org_dungeon_driver_IOSATDriver::Send_ATA_SEND_SOFT_RESET ( void )
+fi_dungeon_driver_IOSATDriver::Send_ATA_SEND_SOFT_RESET ( void )
 {
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
     SCSITaskIdentifier request            = NULL;
@@ -1484,7 +1484,7 @@ ErrorExit:
 //////////////
 
 bool
-org_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
+fi_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
                                                       SCSITaskIdentifier request,
                                                       IOMemoryDescriptor *    dataBuffer,
                                                       SCSICmdField4Bit PROTOCOL,
@@ -1547,7 +1547,7 @@ ErrorExit:
 }
 
 bool
-org_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
+fi_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
                                                  SCSITaskIdentifier request,
                                                  IOMemoryDescriptor *    dataBuffer,
                                                  SCSICmdField3Bit MULTIPLE_COUNT,
@@ -1617,7 +1617,7 @@ ErrorExit:
 }
 
 bool
-org_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
+fi_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
                                                  SCSITaskIdentifier request,
                                                  IOMemoryDescriptor *    dataBuffer,
                                                  SCSICmdField3Bit MULTIPLE_COUNT,
@@ -1695,7 +1695,7 @@ ErrorExit:
 }
 
 bool
-org_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
+fi_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
                                                      SCSITaskIdentifier request,
                                                      IOMemoryDescriptor *    dataBuffer,
                                                      SCSICmdField3Bit MULTIPLE_COUNT,
@@ -1794,7 +1794,7 @@ ErrorExit:
 }
 
 void
-org_dungeon_driver_IOSATDriver::SendBuiltInINQUIRY ( void )
+fi_dungeon_driver_IOSATDriver::SendBuiltInINQUIRY ( void )
 {
     // The Service Response represents the execution status of a service request.
     SCSIServiceResponse serviceResponse = kSCSIServiceResponse_SERVICE_DELIVERY_OR_TARGET_FAILURE;
@@ -1854,14 +1854,14 @@ ErrorExit:
 
 
 // Padding for future binary compatibility.
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 0);
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 1);
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 2);
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 3);
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 4);
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 5);
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 6);
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 7);
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 8);
-OSMetaClassDefineReservedUnused(org_dungeon_driver_IOSATDriver, 9);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 0);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 1);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 2);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 3);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 4);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 5);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 6);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 7);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 8);
+OSMetaClassDefineReservedUnused(fi_dungeon_driver_IOSATDriver, 9);
 
