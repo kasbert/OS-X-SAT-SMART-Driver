@@ -62,6 +62,15 @@
 					<key>PassThroughMode</key>
 					<string>DISABLE</string>
 				</dict>
+				<key>PNY USB 2.0 FD</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>5451</integer>
+					<key>idProduct</key>
+					<integer>91</integer>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
+				</dict>
 				<key>WD MyBook</key>
 				<dict>
 					<key>Product Identification</key>
@@ -1033,7 +1042,7 @@
 					<key>idProduct</key>
 					<integer>9001</integer>
 					<key>PassThroughMode</key>
-					<string>jmicron</string>
+					<string>DISABLE</string>
 				</dict>
 				<key>RaidSonic ICY BOX IB-318StUS2</key>
 				<dict>

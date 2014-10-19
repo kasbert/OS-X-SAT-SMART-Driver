@@ -240,6 +240,10 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
                 if (options->isEqualTo("DISABLE")) {
                     DEBUG_LOG("%s[%p]::%s DISABLED\n", getClassName(), this, __FUNCTION__);
                     *score = -5000;
+                    // TODO Consider removing
+                    IOLog("SATSMARTDriver v%d.%d: enclosure '%s' is not SAT capable, skipping\n",
+                          (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
+                          key->getCStringNoCopy());
                 } else {
                     *score += 5000;
                 }
