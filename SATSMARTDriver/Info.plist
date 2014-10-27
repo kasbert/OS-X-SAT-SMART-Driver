@@ -38,12 +38,25 @@
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
 			<integer>0</integer>
-			<key>Permissive</key>
-			<true/>
+                        <!-- default values -->
 			<key>PassThroughMode</key>
-			<string>auto</string>
+			<string>sat12</string>
+                        <key>Permissive</key>
+                        <true/> <!-- should be false -->
+                        <key>DelayIdentify</key>
+                        <false/>
 			<key>Identifiers</key>
 			<dict>
+                                <!-- unidentified enclosure -->
+				<key>UNKNOWN</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>auto</string>
+                                        <key>Permissive</key>
+                                        <true/>
+                                        <key>DelayIdentify</key>
+                                        <true/>
+				</dict>
 				<key>JMicronXYZ</key>
 				<dict>
 					<key>idVendor</key>
@@ -81,13 +94,14 @@
 					<string>sat16</string>
 				</dict>
 				<key>OWC Mercury Elite-AL Pro mini</key>
-				<dict>
+				<dict><!--
 					<key>idVendor</key>
 					<integer>2344</integer>
 					<key>idProduct</key>
 					<integer>10</integer>
 					<key>PassThroughMode</key>
 					<string>sat12</string>
+                                        -->
 				</dict>
 				<key>Macally G-S350SU</key>
 				<dict>

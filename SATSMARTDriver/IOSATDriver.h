@@ -18,6 +18,7 @@ class IOBufferMemoryDescriptor;
 
 #define kSATSMARTCapableKey  "SATSMARTCapable"
 #define kPermissiveKey  "Permissive"
+#define kDelayIdentifyKey "DelayIdentify"
 #define kPassThroughMode  "PassThroughMode"
 #define kMyPropertyKey  "MyProperty"
 #define kProductModelKey "Model"
@@ -80,14 +81,16 @@ class fi_dungeon_driver_IOSATDriver : public IOSCSIPeripheralDeviceType00
     char model[41];
     
     bool fSATSMARTCapable;
+    bool fPermissive;
+    bool fDelayIdentify;
+    bool fIdentified;
     int fPassThroughMode;
     int fPort;
     int fDevice;
-    bool fPermissive;
-    int capabilities;
+    int fCapabilities;
 protected:
     bool    InitializeDeviceSupport ( void );
-    void	TerminateDeviceSupport ( void );
+    void    TerminateDeviceSupport ( void );
     bool    Send_ATA_IDENTIFY ( void );
     bool    Send_ATA_SMART_READ_DATA(void);
     bool    Send_ATA_IDLE(UInt8 value);
@@ -188,6 +191,9 @@ public:
     
     virtual bool            attach ( IOService * provider );
     virtual void            detach ( IOService * provider );
+    virtual bool open( 	 IOService *	   forClient,
+              IOOptionBits	   options,
+              void *		   arg);
     
     virtual void            CreateStorageServiceNub ( void );
     virtual IOReturn    sendSMARTCommand ( IOSATCommand * command );
