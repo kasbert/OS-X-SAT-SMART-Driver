@@ -354,10 +354,12 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
                   (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
                   name ? name->getCStringNoCopy() : "unknown");
         } else {
+            /*
             IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk serial '%s', revision '%s', model '%s'\n",
                   (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
                   name ? name->getCStringNoCopy() : "unknown",
                   serial, revision, model);
+             */
         }
     } else {
         IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk is not SAT capable\n",
@@ -971,11 +973,23 @@ char *
 fi_dungeon_driver_IOSATDriver::GetVendorString ( void ) {
     //serial[sizeof(serial)-1]=0;
     //if (*serial) return serial;
+    if (!fIdentified && fSATSMARTCapable) {
+        // Query device identification and check SAT capability
+        IdentifyDevice();
+        fIdentified = true;
+        // TODO check. This may identify the drive too early
+    }
     return super::GetVendorString();
 }
 
 char *
 fi_dungeon_driver_IOSATDriver::GetProductString ( void ) {
+    if (!fIdentified && fSATSMARTCapable) {
+        // Query device identification and check SAT capability
+        IdentifyDevice();
+        fIdentified = true;
+        // TODO check. This may identify the drive too early
+    }
     model[sizeof(model)-1]=0;
     if (*model) return model;
     return super::GetProductString();
@@ -983,6 +997,12 @@ fi_dungeon_driver_IOSATDriver::GetProductString ( void ) {
 
 char *
 fi_dungeon_driver_IOSATDriver::GetRevisionString ( void ) {
+    if (!fIdentified && fSATSMARTCapable) {
+        // Query device identification and check SAT capability
+        IdentifyDevice();
+        fIdentified = true;
+        // TODO check. This may identify the drive too early
+    }
     revision[sizeof(revision)-1] =0;
     if (*revision) return revision;
     return super::GetRevisionString();

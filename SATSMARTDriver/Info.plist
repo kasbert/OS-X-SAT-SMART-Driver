@@ -299,6 +299,8 @@
 					<integer>2385</integer>
 					<key>PassThroughMode</key>
 					<string>jmicron</string>
+                                        <key>DelayIdentify</key>
+                                        <true/>
 				</dict>
 				<key>LaCie Rugged Triple Interface</key>
 				<dict>

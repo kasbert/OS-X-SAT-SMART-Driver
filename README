@@ -37,6 +37,36 @@ Uninstall
  * Reboot
 
 
+Adding enclosure identification
+===============================
+
+Check, if the enclosure is identified using shell:
+
+ioreg -r -w 0 -c fi_dungeon_driver_IOSATDriver  | egrep 'Enclosure|PassThroughMode|Capable'|grep -v Identifiers
+  |   "Enclosure Name" = "Unknown 0928:000a"
+  |   "SATSMARTCapable" = Yes
+  |   "PassThroughMode" = "sat16"
+
+If not, try adding the info to /System/Library/Extensions/SATSMARTDriver.kext/Contents/Info.plist . Note that hex numbers must be converted to decimal.
+
+<key>Macally G-S350SU</key>
+<dict>
+ <key>idVendor</key>
+ <integer>2344</integer>
+ <key>idProduct</key>
+ <integer>10</integer>
+ <key>Permissive</key>
+ <true/>
+ <key>PassThroughMode</key>
+ <string>sat16</string>
+</dict>
+
+Unmount all drives and reload the driver:
+
+sudo kextunload -v -b org.dungeon.driver.SATSMARTDriver
+sudo kextutil -t /System/Library/Extensions/SATSMARTDriver.kext
+
+
 Compile
 =======
 
@@ -64,25 +94,5 @@ Compile
  * Reboot
 
  * If you want to limit the driver for certain hardware add product 
-   and vendor identification to SATSMARTDriver/Info.plist. For example:
-			<key>Product Identification</key>
-			<string>External</string>
-			<key>Vendor Identification</key>
-			<string>Generic</string>
-   You can find out the identification string from io registry:
-       ioreg -r -c IOSCSIPeripheralDeviceNub
-..
-+-o IOSCSIPeripheralDeviceNub  <class IOSCSIPeripheralDeviceNub, id 0x100000256$
-  | {
-  |   "IOProviderClass" = "IOSCSIProtocolServices"
-  |   "Protocol Characteristics" = {"Physical Interconnect"="USB","Physical Int$
-  |   "IOMatchCategory" = "SCSITaskUserClientIniter"
-  |   "Product Revision Level" = "2.02"
-  |   "IOProbeScore" = 0
-  |   "Product Identification" = "External"
-  |   "CFBundleIdentifier" = "com.apple.iokit.IOSCSIArchitectureModelFamily"
-  |   "Vendor Identification" = "Generic"
-  |   "IOClass" = "IOSCSIPeripheralDeviceNub"
-  |   "Peripheral Device Type" = 0
-  | }
-..
+   and vendor identification to SATSMARTDriver/Info.plist.
+   Check chapter "Adding enclosure identification"
