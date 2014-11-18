@@ -11,7 +11,7 @@
 #include <IOKit/scsi/SCSICommandOperationCodes.h>
 #include <IOKit/scsi/SCSITask.h>
 #include <IOKit/IOKitKeys.h>
-#include </usr/include/AssertMacros.h>
+#include <AssertMacros.h>
 
 #include <IOKit/storage/IOBlockStorageDriver.h>
 #include <IOKit/scsi/IOSCSIProtocolServices.h>
@@ -202,7 +202,7 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
         const char * name = 0;
         char buffer[30];
         
-        while (object = iterator->getNextObject()) { 
+        while ((object = iterator->getNextObject())) {
             OSString *key = OSDynamicCast (OSString, object);
             if (!key) {
                 continue;
@@ -346,7 +346,7 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
     
     bool result = super::start(provider); // will call CreateStorageServiceNub
     OSString *name = OSDynamicCast(OSString, getProperty(kEnclosureName));
-    require (result, ErrorExit);
+    __Require (result, ErrorExit);
     
     if (fSATSMARTCapable) {
         if (fDelayIdentify) {
@@ -1811,7 +1811,7 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
                                                      SCSICmdField1Byte COMMAND,
                                                      SCSICmdField1Byte CONTROL)
 {
-    bool result;
+    bool result = false;
     int direction = kSCSIDataTransfer_NoDataTransfer;
     int transferCount = 0;
     

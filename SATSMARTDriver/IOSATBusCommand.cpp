@@ -441,7 +441,9 @@ IOSATBusCommand64::executeCallback(void)
         _dmaCmd->complete();
     }
     
-    _dmaCmd->clearMemoryDescriptor();
+    if( _dmaCmd != NULL) {
+        _dmaCmd->clearMemoryDescriptor();
+    }
     
     super::executeCallback();
     

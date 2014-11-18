@@ -34,7 +34,7 @@
 
 #include <IOKit/storage/ata/IOATAStorageDefines.h>
 
-#include </usr/include/AssertMacros.h>
+#include <AssertMacros.h>
 
 #include "IOSATServices.h"
 #include "UserClientLib/SATSMARTLibPriv.h"
@@ -68,12 +68,12 @@ IOSATServices::attach ( IOService * provider )
     bool result = false;
     //OSDictionary *      dictionary = NULL;
     
-    require_string ( super::attach ( provider ), ErrorExit,
+    __Require_String ( super::attach ( provider ), ErrorExit,
                     "Superclass didn't attach" );
     
     fi_dungeon_driver_IOSATDriver *            fProvider;
     fProvider = OSDynamicCast ( fi_dungeon_driver_IOSATDriver, provider );
-    require_string ( fProvider, ErrorExit, "Incorrect provider type\n" );
+    __Require_String ( fProvider, ErrorExit, "Incorrect provider type\n" );
     
     //setProperty ( kIOPropertyProtocolCharacteristicsKey,
     //			 fProvider->GetProtocolCharacteristicsDictionary ( ) );
@@ -139,7 +139,7 @@ ErrorExit:
 void
 IOSATServices::detach ( IOService * provider )
 {
-    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__, provider);
+    DEBUG_LOG("%s[%p]::%s %p\n", getClassName(), this, __FUNCTION__, provider);
     
     if ( fClients != NULL )
     {
@@ -190,7 +190,6 @@ IOReturn IOSATServices::newUserClient (
         err = kIOReturnNoMemory;
 	goto ErrorExit;
     }
-    DEBUG_LOG("%s[%p]::%s client %p\n", getClassName(), this, __FUNCTION__, client);
     
     client = OSDynamicCast(IOUserClient, temp);
     if (!client) {
@@ -199,6 +198,7 @@ IOReturn IOSATServices::newUserClient (
         err =  kIOReturnUnsupported;
 	goto ReleaseClient;
     }
+    DEBUG_LOG("%s[%p]::%s client %p\n", getClassName(), this, __FUNCTION__, client);
     
     if ( !client->initWithTask(owningTask, securityID, type, properties) ) {
         client->release();

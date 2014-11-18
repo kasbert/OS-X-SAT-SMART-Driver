@@ -81,7 +81,7 @@ protected:
     };
     
     // Static functions (C->C++ Glue Code)
-    static UInt32 sFactoryRefCount;
+    static SInt32 sFactoryRefCount;
     static void                     sFactoryAddRef ( void );
     static void                     sFactoryRelease ( void );
     

@@ -79,7 +79,7 @@ enum
 //	Static variable initialization
 //ÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑÑ
 
-UInt32 SATSMARTClient::sFactoryRefCount = 0;
+SInt32 SATSMARTClient::sFactoryRefCount = 0;
 
 
 IOCFPlugInInterface
@@ -779,7 +779,7 @@ SATSMARTClient::SMARTReadLogAtAddress ( UInt32 address,
 Exit:
     
     
-    PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress status = %p\n", (void*)status ) );
+    PRINT ( ( "SATSMARTClient::SMARTReadLogAtAddress status = %x\n", status ) );
     
     return status;
     
@@ -868,7 +868,7 @@ SATSMARTClient::GetATAIdentifyData ( void * buffer, UInt32 inSize, UInt32 * outS
     
     bytesTransferred = kATADefaultSectorSize;
     
-    PRINT ( ( "SATSMARTClient::GetATAIdentifyData %p\n", (void *)inSize ) );
+    PRINT ( ( "SATSMARTClient::GetATAIdentifyData %x\n", inSize ) );
     
     status = IOConnectCallStructMethod ( fConnection,
                                         kIOATASMARTGetIdentifyData,
