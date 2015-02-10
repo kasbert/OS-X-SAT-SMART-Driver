@@ -75,20 +75,9 @@ IOSATServices::attach ( IOService * provider )
     fProvider = OSDynamicCast ( fi_dungeon_driver_IOSATDriver, provider );
     require_string ( fProvider, ErrorExit, "Incorrect provider type\n" );
     
-    //setProperty ( kIOPropertyProtocolCharacteristicsKey,
-    //			 fProvider->GetProtocolCharacteristicsDictionary ( ) );
-    //setProperty ( kIOPropertyDeviceCharacteristicsKey,
-    //			 fProvider->GetDeviceCharacteristicsDictionary ( ) );
-    
-    //setProperty ( "Hola", "Mundo!" );
-    
-    //dictionary = OSDictionary::withDictionary(fProvider->GetDeviceCharacteristicsDictionary ( ),0);
-    //require_string ( dictionary, ErrorExit, "No device characteristics\n" );
-    
     OSNumber *  value;
     UInt32 features;
     
-    //dictionary->setObject ( kIOATASupportedFeaturesKey, fProvider->getProperty ( kIOATASupportedFeaturesKey ) );
     value = OSDynamicCast ( OSNumber, fProvider->getProperty ( kIOATASupportedFeaturesKey ) );
     if ( value != NULL )
     {
@@ -123,8 +112,6 @@ IOSATServices::attach ( IOService * provider )
         
     }
     
-    //setProperty ( "kIOPropertyDeviceCharacteristicsKey", dictionary );
-    //dictionary->release ( );
     result = true;
     
 ErrorExit:
@@ -143,6 +130,11 @@ IOSATServices::detach ( IOService * provider )
     
     if ( fClients != NULL )
     {
+        if ( fClients->getCount ( ) != 0 )
+        {
+            ERROR_LOG ("Detaching and still have client count = %d\n", fClients->getCount ( ) );
+            return;
+        }
         fClients->release ( );
         fClients = NULL;
     }
@@ -158,10 +150,6 @@ IOReturn IOSATServices::newUserClient (
                                        IOUserClient **   handler ) {
     DEBUG_LOG("%s[%p]::%s type %d\n", getClassName(), this, __FUNCTION__, (int)type);
     IOReturn err;
-    
-    //IOReturn err = super::newUserClient(owningTask, securityID, type, properties, handler);
-    //DEBUG_LOG("newUserClient super %x %s\n", err, stringFromReturn(err));
-    
     
     const OSSymbol *userClientClass = NULL;
     IOUserClient *client;
@@ -257,7 +245,7 @@ IOSATServices::handleOpen ( IOService * client, IOOptionBits options, void * acc
             return false;
         
         // Check if we already have too many user clients open
-        if ( fClients->getCount ( ) > 10 )
+        if ( fClients->getCount ( ) > 100 )
         {
             ERROR_LOG ( "User client already open\n" );
             return false;
@@ -286,11 +274,6 @@ IOSATServices::handleClose ( IOService * client, IOOptionBits options )
         
     } else {
         fClients->removeObject ( client );
-        if ( fClients->getCount ( ) != 0 )
-        {
-            ERROR_LOG ("Removed client and still have count = %d\n", fClients->getCount ( ) );
-            return;
-        }
     }
 }
 

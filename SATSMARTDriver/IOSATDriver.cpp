@@ -165,11 +165,13 @@ bool fi_dungeon_driver_IOSATDriver::init(OSDictionary *dict)
     return result;
 }
 
+#ifdef DEBUG
 void fi_dungeon_driver_IOSATDriver::free(void)
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     super::free();
 }
+#endif
 
 IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
                                                  SInt32 *score)
@@ -177,7 +179,7 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
     DEBUG_LOG("%s[%p]::%s score %d\n", getClassName(), this, __FUNCTION__, score ? (int)*score : -1);
     IOService *result = super::probe(provider, score);
     //if (result != NULL) {
-    // the following doesn not work
+    // the following does not work
     //if (start(provider)) {
     //		Send_ATA_IDENTIFY();
     //		stop(provider);
@@ -377,19 +379,22 @@ ErrorExit:
     return result;
 }
 
+#ifdef DEBUG
 void fi_dungeon_driver_IOSATDriver::stop(IOService *provider)
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     super::stop(provider);
 }
+#endif
 
 // This function will be called when the user process calls IORegistryEntrySetCFProperties on
 // this driver. You can add your custom functionality to this function.
 IOReturn fi_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
 {
+    IOReturn result = kIOReturnSuccess;
+#ifdef DEBUG
     OSDictionary*   dict;
     OSNumber*       number;
-    IOReturn result = kIOReturnSuccess;
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     dict = OSDynamicCast(OSDictionary, properties);
@@ -404,7 +409,6 @@ IOReturn fi_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
         DEBUG_LOG("%s[%p]::%s(%p) got value %u\n", getName(), this, __FUNCTION__, properties, (unsigned int)value);
         
         // Some code to experiment the SAT commands
-#if 1
         switch (value) {
             case 1:
                 SendBuiltInINQUIRY ( );
@@ -544,17 +548,17 @@ IOReturn fi_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
             }
                 
         }
-#endif
         
         result = kIOReturnSuccess;
     }
+#endif
     
 ErrorExit:
     DEBUG_LOG("%s[%p]::%s result %d %s\n", getClassName(), this,  __FUNCTION__, result, stringFromReturn(result));
     return result;
 }
 
-
+#ifdef DEBUG
 bool
 fi_dungeon_driver_IOSATDriver::attach ( IOService * provider )
 {
@@ -585,6 +589,7 @@ fi_dungeon_driver_IOSATDriver::open ( IOService *	   forClient,
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     return super::open(forClient, options, arg);
 }
+#endif
 
 void
 fi_dungeon_driver_IOSATDriver::CreateStorageServiceNub ( void )
@@ -953,6 +958,7 @@ void fi_dungeon_driver_IOSATDriver::LogAutoSenseData (SCSITaskIdentifier request
               );
 }
 
+#ifdef DEBUG
 bool
 fi_dungeon_driver_IOSATDriver::InitializeDeviceSupport ( void )
 {
@@ -967,7 +973,7 @@ void fi_dungeon_driver_IOSATDriver::TerminateDeviceSupport ( void ) {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     super::TerminateDeviceSupport();
 }
-
+#endif
 
 char *
 fi_dungeon_driver_IOSATDriver::GetVendorString ( void ) {
