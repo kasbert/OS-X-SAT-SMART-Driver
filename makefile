@@ -62,4 +62,4 @@ clean:
 	rm -fr SATSMARTDriver-*pkg
 
 bump-version:
-	cd SATSMARTDriver; /Developer/usr/bin/agvtool new-version -all 0.10
+	cd SATSMARTDriver; /Developer/usr/bin/agvtool new-version -all 0.11
