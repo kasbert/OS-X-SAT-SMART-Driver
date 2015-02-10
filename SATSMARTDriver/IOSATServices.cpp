@@ -256,8 +256,8 @@ IOSATServices::handleOpen ( IOService * client, IOOptionBits options, void * acc
         if ( fClients == NULL )
             return false;
         
-        // Check if we already have a user client open
-        if ( fClients->getCount ( ) != 0 )
+        // Check if we already have too many user clients open
+        if ( fClients->getCount ( ) > 10 )
         {
             ERROR_LOG ( "User client already open\n" );
             return false;
