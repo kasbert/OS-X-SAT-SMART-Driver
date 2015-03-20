@@ -89,8 +89,10 @@ class fi_dungeon_driver_IOSATDriver : public IOSCSIPeripheralDeviceType00
     int fDevice;
     int fCapabilities;
 protected:
+#ifdef DEBUG
     bool    InitializeDeviceSupport ( void );
     void    TerminateDeviceSupport ( void );
+#endif
     bool    Send_ATA_IDENTIFY ( void );
     bool    Send_ATA_SMART_READ_DATA(void);
     bool    Send_ATA_IDLE(UInt8 value);
@@ -177,10 +179,14 @@ protected:
     
 public:
     virtual bool init(OSDictionary *dictionary = NULL);
+#ifdef DEBUG
     virtual void free(void);
+#endif
     virtual IOService *probe(IOService *provider, SInt32 *score);
     virtual bool start(IOService *provider);
+#ifdef DEBUG
     virtual void stop(IOService *provider);
+#endif
     
     virtual char *          GetVendorString ( void );
     virtual char *          GetProductString ( void );
@@ -189,11 +195,13 @@ public:
     
     virtual IOReturn setProperties(OSObject* properties);
     
+#ifdef DEBUG
     virtual bool            attach ( IOService * provider );
     virtual void            detach ( IOService * provider );
     virtual bool open( 	 IOService *	   forClient,
               IOOptionBits	   options,
               void *		   arg);
+#endif
     
     virtual void            CreateStorageServiceNub ( void );
     virtual IOReturn    sendSMARTCommand ( IOSATCommand * command );

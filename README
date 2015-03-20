@@ -63,7 +63,7 @@ If not, try adding the info to /System/Library/Extensions/SATSMARTDriver.kext/Co
 
 Unmount all drives and reload the driver:
 
-sudo kextunload -v -b org.dungeon.driver.SATSMARTDriver
+sudo kextunload -v -b fi.dungeon.driver.SATSMARTDriver
 sudo kextutil -t /System/Library/Extensions/SATSMARTDriver.kext
 
 
