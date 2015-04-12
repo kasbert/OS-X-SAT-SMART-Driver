@@ -88,6 +88,7 @@ class fi_dungeon_driver_IOSATDriver : public IOSCSIPeripheralDeviceType00
     int fPort;
     int fDevice;
     int fCapabilities;
+
 protected:
 #ifdef DEBUG
     bool    InitializeDeviceSupport ( void );
@@ -177,6 +178,9 @@ protected:
                                  SCSICmdField1Byte CONTROL);
     void    SendBuiltInINQUIRY ( void );
     
+    static void sProcessPoll( void * pdtDriver, void * refCon );
+    thread_call_t					fPollingThread;
+
 public:
     virtual bool init(OSDictionary *dictionary = NULL);
 #ifdef DEBUG
@@ -184,9 +188,7 @@ public:
 #endif
     virtual IOService *probe(IOService *provider, SInt32 *score);
     virtual bool start(IOService *provider);
-#ifdef DEBUG
     virtual void stop(IOService *provider);
-#endif
     
     virtual char *          GetVendorString ( void );
     virtual char *          GetProductString ( void );

@@ -38,24 +38,22 @@
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
 			<integer>0</integer>
-                        <!-- default values -->
 			<key>PassThroughMode</key>
 			<string>sat12</string>
-                        <key>Permissive</key>
-                        <true/> <!-- should be false -->
-                        <key>DelayIdentify</key>
-                        <false/>
+			<key>Permissive</key>
+			<true/>
+			<key>DelayIdentify</key>
+			<true/>
 			<key>Identifiers</key>
 			<dict>
-                                <!-- unidentified enclosure -->
 				<key>UNKNOWN</key>
 				<dict>
 					<key>PassThroughMode</key>
 					<string>auto</string>
-                                        <key>Permissive</key>
-                                        <true/>
-                                        <key>DelayIdentify</key>
-                                        <true/>
+					<key>Permissive</key>
+					<true/>
+					<key>DelayIdentify</key>
+					<true/>
 				</dict>
 				<key>JMicronXYZ</key>
 				<dict>
@@ -93,24 +91,12 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>OWC Mercury Elite-AL Pro mini</key>
-				<dict><!--
-					<key>idVendor</key>
-					<integer>2344</integer>
-					<key>idProduct</key>
-					<integer>10</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-                                        -->
-				</dict>
 				<key>Macally G-S350SU</key>
 				<dict>
-                                        <!-- usb -->
 					<key>idVendor</key>
 					<integer>2344</integer>
 					<key>idProduct</key>
 					<integer>10</integer>
-                                        <!-- firewire -->
 					<key>Vendor_ID</key>
 					<integer>12512</integer>
 					<key>Model_ID</key>
@@ -119,6 +105,21 @@
 					<true/>
 					<key>PassThroughMode</key>
 					<string>sat16</string>
+				</dict>
+				<key>Macally G-S350SU3</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>5421</integer>
+					<key>idProduct</key>
+					<integer>1385</integer>
+					<key>Vendor_ID</key>
+					<integer>7052</integer>
+					<key>Model_ID</key>
+					<integer>13648</integer>
+					<key>Permissive</key>
+					<true/>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
 				</dict>
 				<key>Spyker USB3 Adapter</key>
 				<dict>
@@ -156,7 +157,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Toshiba Canvio Basics 3.0 1TB</key>
+				<key>Toshiba Canvio Basics 3.0 1TB a</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>1152</integer>
@@ -174,7 +175,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Toshiba Canvio Basics 3.0 1TB</key>
+				<key>Toshiba Canvio Basics 3.0 1TB b</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>1152</integer>
@@ -192,7 +193,7 @@
 					<key>PassThroughMode</key>
 					<string>jmicron</string>
 				</dict>
-				<key>Samsung S2 Portable</key>
+				<key>Samsung S2 Portable a</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>1256</integer>
@@ -201,7 +202,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Samsung S2 Portable</key>
+				<key>Samsung S2 Portable b</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>1256</integer>
@@ -299,8 +300,8 @@
 					<integer>2385</integer>
 					<key>PassThroughMode</key>
 					<string>jmicron</string>
-                                        <key>DelayIdentify</key>
-                                        <true/>
+					<key>DelayIdentify</key>
+					<true/>
 				</dict>
 				<key>LaCie Rugged Triple Interface</key>
 				<dict>
@@ -356,7 +357,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>LaCie rikiki</key>
+				<key>LaCie rikiki a</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>1439</integer>
@@ -365,7 +366,7 @@
 					<key>PassThroughMode</key>
 					<string>jmicron</string>
 				</dict>
-				<key>LaCie rikiki</key>
+				<key>LaCie rikiki b</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>1439</integer>
@@ -484,7 +485,7 @@
 					<key>PassThroughMode</key>
 					<string>sat12</string>
 				</dict>
-				<key>Seagate FreeAgent Go</key>
+				<key>Seagate FreeAgent Go a</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -493,7 +494,7 @@
 					<key>PassThroughMode</key>
 					<string>sat12</string>
 				</dict>
-				<key>Seagate FreeAgent Go</key>
+				<key>Seagate FreeAgent Go b</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -511,7 +512,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Seagate Expansion Portable</key>
+				<key>Seagate Expansion Portable a</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -520,7 +521,7 @@
 					<key>PassThroughMode</key>
 					<string>sat12</string>
 				</dict>
-				<key>Seagate Expansion Portable</key>
+				<key>Seagate Expansion Portable b</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -556,7 +557,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Seagate Expansion External</key>
+				<key>Seagate Expansion External a</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -565,7 +566,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Seagate Expansion External</key>
+				<key>Seagate Expansion External b</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -574,7 +575,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Seagate Expansion External</key>
+				<key>Seagate Expansion External c</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -583,7 +584,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Seagate FreeAgent GoFlex</key>
+				<key>Seagate FreeAgent GoFlex a</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -592,7 +593,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Seagate FreeAgent GoFlex</key>
+				<key>Seagate FreeAgent GoFlex b</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -601,7 +602,7 @@
 					<key>PassThroughMode</key>
 					<string>sat12</string>
 				</dict>
-				<key>Seagate FreeAgent GoFlex Desk</key>
+				<key>Seagate FreeAgent GoFlex Desk a</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -610,7 +611,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>Seagate FreeAgent GoFlex Desk</key>
+				<key>Seagate FreeAgent GoFlex Desk b</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>3010</integer>
@@ -844,7 +845,7 @@
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
-				<key>WD Elements 500GB</key>
+				<key>WD Elements 500GB a</key>
 				<dict>
 					<key>idVendor</key>
 					<integer>4184</integer>
@@ -852,6 +853,15 @@
 					<integer>4112</integer>
 					<key>PassThroughMode</key>
 					<string>sat12</string>
+				</dict>
+				<key>WD Elements 500GB b</key>
+				<dict>
+					<key>idVendor</key>
+					<integer>4184</integer>
+					<key>idProduct</key>
+					<integer>4258</integer>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
 				</dict>
 				<key>WD Elements Desktop 2TB</key>
 				<dict>
@@ -868,15 +878,6 @@
 					<integer>4184</integer>
 					<key>idProduct</key>
 					<integer>4162</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD Elements 500GB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4258</integer>
 					<key>PassThroughMode</key>
 					<string>sat16</string>
 				</dict>
@@ -1005,15 +1006,6 @@
 					<integer>4928</integer>
 					<key>PassThroughMode</key>
 					<string>none (sat)</string>
-				</dict>
-				<key>RaidSonic ICY BOX IB-110StUS2-B</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5117</integer>
-					<key>idProduct</key>
-					<integer>4928</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
 				</dict>
 				<key>Intenso Memory Station 2.5&quot;</key>
 				<dict>
@@ -1443,6 +1435,8 @@
 		<key>com.apple.kpi.iokit</key>
 		<string>10.8</string>
 		<key>com.apple.kpi.libkern</key>
+		<string>10.8</string>
+		<key>com.apple.kpi.mach</key>
 		<string>10.8</string>
 	</dict>
 	<key>OSBundleRequired</key>
