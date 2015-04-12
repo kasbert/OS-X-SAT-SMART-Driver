@@ -11,7 +11,7 @@
 #include <IOKit/scsi/SCSICommandOperationCodes.h>
 #include <IOKit/scsi/SCSITask.h>
 #include <IOKit/IOKitKeys.h>
-#include </usr/include/AssertMacros.h>
+#include <AssertMacros.h>
 
 #include <IOKit/storage/IOBlockStorageDriver.h>
 #include <IOKit/scsi/IOSCSIProtocolServices.h>
@@ -284,7 +284,6 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
             if (delayIdentify) {
                 setProperty(kDelayIdentifyKey, delayIdentify);
             }
-            
         }
     }
     
@@ -314,11 +313,14 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
         fPermissive = false;
     }
     OSBoolean *delayIdentify = OSDynamicCast ( OSBoolean, getProperty(kDelayIdentifyKey));
-    if  (delayIdentify != NULL && delayIdentify->isTrue()) {
+    if  (delayIdentify == NULL || delayIdentify->isTrue()) {
         fDelayIdentify = true;
     } else {
         fDelayIdentify = false;
     }
+    
+    fSATSMARTCapable = true;
+    fIdentified = false;
     OSString* value = OSDynamicCast ( OSString, getProperty(kPassThroughMode));
     if (value) {
         if (!strcmp(value->getCStringNoCopy(), "sat12")) {
@@ -331,13 +333,14 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
             fPassThroughMode = kPassThroughModeAuto;
         } else if (value->isEqualTo("none")) {
             fPassThroughMode = kPassThroughModeNone;
+            fSATSMARTCapable = false; // we shouldn't be here anyway
         } else {
             fPassThroughMode = kPassThroughModeAuto;
         }
     } else {
         fPassThroughMode = kPassThroughModeAuto;
     }
-    if (true || fSATSMARTCapable) {
+    if (fSATSMARTCapable) {
 	unsigned long features = kIOATAFeatureSMART;
 	OSNumber *number = OSNumber::withNumber(features, 32);
 	if (number) {
@@ -351,20 +354,29 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
     require (result, ErrorExit);
     
     if (fSATSMARTCapable) {
+        IOLog("SATSMARTDriver v%d.%d: enclosure '%s'\n",
+              (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
+              name ? name->getCStringNoCopy() : "unknown");
         if (fDelayIdentify) {
-            IOLog("SATSMARTDriver v%d.%d: enclosure '%s', identify drive later'\n",
-                  (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
-                  name ? name->getCStringNoCopy() : "unknown");
+            fPollingThread = thread_call_allocate (
+                                                   ( thread_call_func_t ) fi_dungeon_driver_IOSATDriver::sProcessPoll,
+                                                   ( thread_call_param_t ) this );
+            if ( fPollingThread == NULL )
+            {
+                ERROR_LOG ( ( "fPollingThread allocation failed.\n" ) );
+                goto ErrorExit;
+            }
+            retain ( );
+            uint64_t        time;
+            clock_interval_to_deadline ( 1000, kMillisecondScale, &time );
+            thread_call_enter_delayed ( fPollingThread, time );
         } else {
-            /*
-            IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk serial '%s', revision '%s', model '%s'\n",
-                  (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
-                  name ? name->getCStringNoCopy() : "unknown",
-                  serial, revision, model);
-             */
+            // Query device identification and check SAT capability
+            IdentifyDevice();
+            fIdentified = true;
         }
     } else {
-        IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk is not SAT capable\n",
+        IOLog("SATSMARTDriver v%d.%d: enclosure '%s' is not SAT capable\n",
               (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
               name ? name->getCStringNoCopy() : "unknown");
         //result = false;
@@ -379,13 +391,38 @@ ErrorExit:
     return result;
 }
 
-#ifdef DEBUG
 void fi_dungeon_driver_IOSATDriver::stop(IOService *provider)
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    if (fPollingThread &&  thread_call_cancel( fPollingThread ) )
+    {
+        // It was running, so we balance out the retain()
+        // with a release()
+        release();
+    }
     super::stop(provider);
 }
-#endif
+
+#pragma mark -
+#pragma mark Static Class Methods
+
+void
+fi_dungeon_driver_IOSATDriver::sProcessPoll( void * pdtDriver, void * refCon )
+{
+    fi_dungeon_driver_IOSATDriver *             driver;
+    
+    driver = (fi_dungeon_driver_IOSATDriver *) pdtDriver;
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), pdtDriver, __FUNCTION__);
+
+    driver->IdentifyDevice();
+    driver->fIdentified = true;
+    
+    // drop the retain associated with this poll
+    driver->release();
+}
+
+#pragma mark -
+
 
 // This function will be called when the user process calls IORegistryEntrySetCFProperties on
 // this driver. You can add your custom functionality to this function.
@@ -596,15 +633,6 @@ fi_dungeon_driver_IOSATDriver::CreateStorageServiceNub ( void )
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     IOService *         nub = NULL;
-    
-    if (fDelayIdentify) {
-        fSATSMARTCapable = true; // for now
-        fIdentified = false;
-    } else {
-        // Query device identification and check SAT capability
-        IdentifyDevice();
-        fIdentified = true;
-    }
     
     if (!fSATSMARTCapable) {
         super::CreateStorageServiceNub();
@@ -915,13 +943,12 @@ fi_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
     
     setProperty(kSATSMARTCapableKey, fSATSMARTCapable);
     if (fSATSMARTCapable) {
-        IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk serial '%s', revision '%s', model '%s'\n",
+        IOLog("SATSMARTDriver v%d.%d: disk serial '%s', revision '%s', model '%s'\n",
               (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
-              name ? name->getCStringNoCopy() : "unknown",
               serial, revision, model);
               result = true;
     } else {
-        IOLog("SATSMARTDriver v%d.%d: enclosure '%s', disk is not SAT capable\n",
+        IOLog("SATSMARTDriver v%d.%d: enclosure '%s', cannot identify disk\n",
               (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
               name ? name->getCStringNoCopy() : "unknown");
         result = false;
@@ -979,23 +1006,11 @@ char *
 fi_dungeon_driver_IOSATDriver::GetVendorString ( void ) {
     //serial[sizeof(serial)-1]=0;
     //if (*serial) return serial;
-    if (!fIdentified && fSATSMARTCapable) {
-        // Query device identification and check SAT capability
-        IdentifyDevice();
-        fIdentified = true;
-        // TODO check. This may identify the drive too early
-    }
     return super::GetVendorString();
 }
 
 char *
 fi_dungeon_driver_IOSATDriver::GetProductString ( void ) {
-    if (!fIdentified && fSATSMARTCapable) {
-        // Query device identification and check SAT capability
-        IdentifyDevice();
-        fIdentified = true;
-        // TODO check. This may identify the drive too early
-    }
     model[sizeof(model)-1]=0;
     if (*model) return model;
     return super::GetProductString();
@@ -1003,12 +1018,6 @@ fi_dungeon_driver_IOSATDriver::GetProductString ( void ) {
 
 char *
 fi_dungeon_driver_IOSATDriver::GetRevisionString ( void ) {
-    if (!fIdentified && fSATSMARTCapable) {
-        // Query device identification and check SAT capability
-        IdentifyDevice();
-        fIdentified = true;
-        // TODO check. This may identify the drive too early
-    }
     revision[sizeof(revision)-1] =0;
     if (*revision) return revision;
     return super::GetRevisionString();
@@ -1817,7 +1826,7 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
                                                      SCSICmdField1Byte COMMAND,
                                                      SCSICmdField1Byte CONTROL)
 {
-    bool result;
+    bool result = false;
     int direction = kSCSIDataTransfer_NoDataTransfer;
     int transferCount = 0;
     
