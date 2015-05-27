@@ -115,11 +115,10 @@ static const char *getStatus(int status) {
     return "INVALID";
 }
 
-static void PrintStatusForDevice( CFStringRef name, UInt8 status )
+static char * GetStatusForDevice(UInt8 status )
 {
 #define CBUFLEN 128
     char buf[CBUFLEN];
-    CFStringGetCString( name, buf, CBUFLEN, kCFStringEncodingUTF8 );
     
     char * msg = "<unknown>";
     switch ( status )
@@ -139,7 +138,7 @@ static void PrintStatusForDevice( CFStringRef name, UInt8 status )
         case kATASMARTSelfTestStatusFatalError:
             msg = "Fatal error prevented test completion";
             break;
-            
+            		
         case kATASMARTSelfTestStatusPreviousTestUnknownFailure:
             msg = "Error in unknown test module";
             break;
@@ -164,7 +163,7 @@ static void PrintStatusForDevice( CFStringRef name, UInt8 status )
             break;
     }
     
-    fprintf( stdout, "%s: %s\n", buf, msg );
+    return msg;
 }
 
 static CFStringRef BSDNameForBlockStorageDevice( io_registry_entry_t service )
@@ -172,7 +171,7 @@ static CFStringRef BSDNameForBlockStorageDevice( io_registry_entry_t service )
     // This should be an IOBlockStorageDevice. It'll have one child, an IOBlockStorageDriver,
     // which will have one child of its own, an IOMedia. We get the BSD name from the IOMedia.
     
-    static CFStringRef kUnknownDiskBSDName = CFSTR("disk[??]");
+    static CFStringRef kUnknownDiskBSDName = 0;
     kern_return_t kr = KERN_SUCCESS;
     
     io_registry_entry_t driver = MACH_PORT_NULL;
@@ -200,7 +199,14 @@ static CFStringRef BSDNameForBlockStorageDevice( io_registry_entry_t service )
     return ( str );
 }
 
-static void CheckSMARTStatus( io_service_t service )
+void _apply(const void *key, void *val, void *context) {
+   const char *cs1 = CFStringGetCStringPtr(key, kCFStringEncodingMacRoman ) ;
+   //const char *cs2 = CFStringGetCStringPtr(val, kCFStringEncodingMacRoman ) ;
+    printf ("%s = \n", cs1);
+    CFShow(val);
+}
+
+static void CheckSMARTStatus( io_service_t service, uint64_t id, const char *mode)
 {
     IOCFPlugInInterface ** pluginInterface = NULL;
     IOReturn kr = kIOReturnSuccess;
@@ -210,11 +216,137 @@ static void CheckSMARTStatus( io_service_t service )
     CFStringRef bsdName;
     char buf[CBUFLEN];
     
+    CFMutableDictionaryRef dict            = NULL;
+    CFDictionaryRef deviceDict      = NULL;
+    IOReturn err                     = kIOReturnNoResources;
+    Boolean result          = false;
+    
+    
+    //kern_return_t kr;
+    io_registry_entry_t parent;
+    
+    // Now that our child has been found we can traverse the I/O Registry to find our driver.
+    kr = IORegistryEntryGetParentEntry(service, kIOServicePlane, &parent);
+    if (KERN_SUCCESS != kr) {
+        fprintf(stderr, "IORegistryEntryGetParentEntry returned 0x%08x.\n", kr);
+        return;
+    }
+    uint64_t oid = 0;
+    if (IORegistryEntryGetRegistryEntryID(parent, &oid) == kIOReturnSuccess) {
+        printf("ID              : 0x%llx\n", oid);
+    }
+    if (id && oid != id) {
+        goto ReleaseParent;
+    }
+    
+    io_name_t devName;
+    IORegistryEntryGetName(parent, devName);
+    printf("Class           : %s\n", devName);
+    
+    // We're only interested in the parent object if it's our driver class.
+    if (mode && IOObjectConformsTo(parent, "fi_dungeon_driver_IOSATDriver")) {
+        CFMutableDictionaryRef dictRef;
+        dictRef = CFDictionaryCreateMutable(kCFAllocatorDefault, 0,
+                                            &kCFTypeDictionaryKeyCallBacks,
+                                            &kCFTypeDictionaryValueCallBacks);
+        const char *property = "PassThroughMode";
+        printf("Set %s = %s\n", property, mode);
+        
+        CFStringRef mutStr = CFStringCreateWithCString(NULL, property, kCFStringEncodingMacRoman);
+        CFStringRef mutStr2 = CFStringCreateWithCString(NULL, mode, kCFStringEncodingMacRoman);;
+        CFDictionarySetValue(dictRef, mutStr, mutStr2);
+        CFRelease(mutStr2);
+        CFRelease(mutStr);
+        // This is the function that results in ::setProperties() being called in our
+        // kernel driver. The dictionary we created is passed to the driver here.
+        kr = IORegistryEntrySetCFProperties(parent, dictRef);
+        if (KERN_SUCCESS != kr) {
+            fprintf(stderr, "IORegistryEntrySetCFProperties returned 0x%08x.\n", kr);
+        }
+        CFRelease(dictRef);
+    }
+
+    err = IORegistryEntryCreateCFProperties ( parent,
+                                             &dict,
+                                             kCFAllocatorDefault,
+                                             kNilOptions );
+    if (kIOReturnSuccess != kr) {
+        fprintf(stderr, "IORegistryEntrySetCFProperties returned 0x%08x.\n", kr);
+        goto ReleaseParent;
+    }
+    CFBooleanRef flag=0;
+    CFStringRef str=0;
+    
+    if( CFDictionaryGetValueIfPresent ( dict,
+                                       CFSTR ( "SATSMARTCapable" ),
+                                       ( const void ** ) &flag )) {
+        printf ("SMART Capable   : %s\n", CFBooleanGetValue(flag) ? "true" : "false");
+    }
+    if (CFDictionaryGetValueIfPresent ( dict,
+                                       CFSTR ( "PassThroughMode" ),
+                                       ( const void ** ) &str )) {
+        printf ("PassThroughMode : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
+    }
+    if (CFDictionaryGetValueIfPresent ( dict,
+                                       CFSTR ( "Enclosure Name" ),
+                                       ( const void ** ) &str )) {
+        printf ("Enclosure Name  : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
+    }
+    if (CFDictionaryGetValueIfPresent ( dict,
+                                       CFSTR ( "Product Name" ),
+                                       ( const void ** ) &str )) {
+        printf ("Product Name    : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
+    }
+    if (CFDictionaryGetValueIfPresent ( dict,
+                                       CFSTR ( "Model" ),
+                                       ( const void ** ) &str )) {
+        printf ("Model           : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
+    }
+    if (CFDictionaryGetValueIfPresent ( dict,
+                                       CFSTR ( "Serial Number" ),
+                                       ( const void ** ) &str )) {
+        printf ("Serial Number   : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
+    }
+    // got data, now get a BSD name
+    bsdName = BSDNameForBlockStorageDevice( service );
+    if (bsdName) {
+        printf ("Device File     : %s\n", CFStringGetCStringPtr(bsdName, kCFStringEncodingMacRoman));
+        CFRelease( bsdName );
+    }
+    
+//    CFDictionaryApplyFunction(dict, _apply, 0);
+    CFRelease(dict);
+
+    
+    
+    
+    
+    
+    err = IORegistryEntryCreateCFProperties ( service,
+                                             &dict,
+                                             kCFAllocatorDefault,
+                                             kNilOptions );
+    
+    require ( ( err == kIOReturnSuccess ), ErrorExit );
+
+    
+    result = CFDictionaryGetValueIfPresent ( dict,
+                                            CFSTR ( kIOPropertyDeviceCharacteristicsKey ),
+                                            ( const void ** ) &deviceDict );
+    require_action ( result, ReleaseProperties, err = kIOReturnError );
+    
+    //CFDictionaryApplyFunction(dict, _apply, 0);
+
+    CFRelease(dict);
+     
+    
     // create the interface object
     kr = IOCreatePlugInInterfaceForService( service, kIOATASMARTUserClientTypeID, kIOCFPlugInInterfaceID,
                                            &pluginInterface, &score );
-    if ( kr != kIOReturnSuccess )
+    if ( kr != kIOReturnSuccess ) {
+        printf("SMART Query     : FAILED, ");
         goto ErrorExit;
+    }
     
     // get the right type of interface
     IOATASMARTInterface **ppSmart = NULL;
@@ -222,6 +354,7 @@ static void CheckSMARTStatus( io_service_t service )
                                             (LPVOID) &ppSmart );
     (*pluginInterface)->Release( pluginInterface );
     
+    printf("SMART Query     : %s\n", hr == S_OK ? "ok" : "FAILED");
     if ( hr != S_OK )
         goto ErrorExit;
     
@@ -230,36 +363,68 @@ static void CheckSMARTStatus( io_service_t service )
     kr = (*ppSmart)->SMARTReadData( ppSmart, &smartData );
     (*ppSmart)->Release( ppSmart );
     
+    printf("SMART Read      : %s\n", kr == kIOReturnSuccess ? "ok" : "FAILED");
     if ( kr != kIOReturnSuccess )
         goto ErrorExit;
+    //printf("Status          : %s\n", GetStatusForDevice(smartData.selfTestExecutionStatus ));
+
+    Boolean conditionExceeded = FALSE;
+    err = ( *ppSmart )->SMARTReturnStatus ( ppSmart, &conditionExceeded );
+    require ( ( err == kIOReturnSuccess ), ReleaseParent );
+    printf("SMART Status    : %s\n", conditionExceeded ? "FAIL" : "OK");
     
-    // got data, now get a BSD name
-    bsdName = BSDNameForBlockStorageDevice( service );
-    PrintStatusForDevice( bsdName, smartData.selfTestExecutionStatus );
-    CFRelease( bsdName );
+ReleaseParent:
+    // Done with the parent object.
+    IOObjectRelease(parent);
+ReleaseProperties:
+
+    printf("\n");
     return;
     
 ErrorExit:
     msg = getStatus(kr);
     bsdName = BSDNameForBlockStorageDevice( service );
-    CFStringGetCString( bsdName, buf, CBUFLEN, kCFStringEncodingUTF8 );
-    fprintf( stdout, "%s: %s (%x)\n", buf, msg, kr );
-    CFRelease( bsdName );
+    if (bsdName) {
+        CFStringGetCString( bsdName, buf, CBUFLEN, kCFStringEncodingUTF8 );
+        fprintf( stdout, "%s: %s (%x)\n", buf, msg, kr );
+        CFRelease( bsdName );
+    } else {
+        fprintf( stdout, "%s (%x)\n", msg, kr );
+    }
+    printf("\n");
+
 }
+
+#define kIOATABlockStorageDeviceClass   "IOBlockStorageDevice"
 
 int main (int argc, const char * argv[])
 {
+    uint64_t id = 0;
+    const char *mode = 0; 
+    
+    if (argc > 1) {
+        id = strtoll(argv[1], 0, 0);
+    }
+    if (argc > 2) {
+        mode = argv[2];
+    }
+
     CFMutableDictionaryRef match = IOServiceMatching( kIOBlockStorageDeviceClass );
-    CFDictionaryAddValue( match, CFSTR("SMART Capable"), kCFBooleanTrue );
+    //CFDictionaryAddValue( match, CFSTR("SMART Capable"), kCFBooleanTrue );
     
     io_iterator_t iterator = MACH_PORT_NULL;
-    if ( IOServiceGetMatchingServices(kIOMasterPortDefault, match, &iterator) != kIOReturnSuccess )
+    if (IOServiceGetMatchingServices (  kIOMasterPortDefault,
+                                          IOServiceMatching ( kIOATABlockStorageDeviceClass ),
+                                      &iterator )!= kIOReturnSuccess )
         return ( EX_OSERR );
+    
+    //if ( IOServiceGetMatchingServices(kIOMasterPortDefault, match, &iterator) != kIOReturnSuccess )
+    //    return ( EX_OSERR );
     
     io_service_t service = MACH_PORT_NULL;
     while ( (service = IOIteratorNext(iterator)) != MACH_PORT_NULL )
     {
-        CheckSMARTStatus( service );
+        CheckSMARTStatus( service, id, mode );
         IOObjectRelease( service );
     }
     
