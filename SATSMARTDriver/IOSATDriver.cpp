@@ -43,6 +43,7 @@ extern const double SATSMARTDriverVersionNumber;
 #define kSCSICmd_PASS_THROUGH_16 0x85
 #define kSCSICmd_PASS_THROUGH_12 0xA1
 #define kSCSICmd_PASS_THROUGH_JMicron 0xdf
+#define kSCSICmd_PASS_THROUGH_Sunplus 0xf8
 
 // S.M.A.R.T command code
 enum
@@ -161,6 +162,13 @@ bool fi_dungeon_driver_IOSATDriver::init(OSDictionary *dict)
     memset(serial, 0, sizeof(serial));
     memset(model, 0, sizeof(model));
     memset(revision, 0, sizeof(revision));
+    
+    fSATSMARTCapable = true;
+    fDelayIdentify = true;
+    fPermissive = true;
+    fIdentified = false;
+    fPassThroughMode = kPassThroughModeAuto;
+
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
 }
@@ -276,6 +284,7 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
                           name);
                 }
             }
+	    /*
             OSBoolean *permissive = OSDynamicCast ( OSBoolean, details->getObject(kPermissiveKey));
             if (permissive) {
                 setProperty(kPermissiveKey, permissive);
@@ -284,7 +293,18 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
             if (delayIdentify) {
                 setProperty(kDelayIdentifyKey, delayIdentify);
             }
+	    */
+            OSCollectionIterator * keyIterator = OSCollectionIterator::withCollection(details);
+            OSSymbol * key;
+            while ( key = OSDynamicCast(OSSymbol,keyIterator->getNextObject())) {
+                OSObject * value = details->getObject(key);
+                setProperty(key, value);
+		// FIXME ?
+            }
+            keyIterator->release();
+            // not needed anymore
         }
+        removeProperty("Identifiers");
     }
     
     DEBUG_LOG("%s[%p]::%s result %p score %d\n", getClassName(), this,  __FUNCTION__, result, score ? (int)*score : -1);
@@ -303,25 +323,21 @@ OSObject *fi_dungeon_driver_IOSATDriver::getParentProperty(const char *key) {
     return 0;
 }
 
-bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
-{
-    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
-    OSBoolean *permissive = OSDynamicCast ( OSBoolean, getProperty(kPermissiveKey));
-    if  (permissive != NULL && permissive->isTrue()) {
-        fPermissive = true;
-    } else {
-        fPermissive = false;
-    }
-    OSBoolean *delayIdentify = OSDynamicCast ( OSBoolean, getProperty(kDelayIdentifyKey));
-    if  (delayIdentify == NULL || delayIdentify->isTrue()) {
-        fDelayIdentify = true;
-    } else {
-        fDelayIdentify = false;
+void fi_dungeon_driver_IOSATDriver::parseProperties () {
+    OSString*       value;
+    OSBoolean *     flag;
+    
+    flag = OSDynamicCast ( OSBoolean, getProperty(kPermissiveKey));
+    if  (flag != NULL) {
+        fPermissive = flag->isTrue();
     }
     
-    fSATSMARTCapable = true;
-    fIdentified = false;
-    OSString* value = OSDynamicCast ( OSString, getProperty(kPassThroughMode));
+    flag = OSDynamicCast ( OSBoolean, getProperty(kDelayIdentifyKey));
+    if  (flag != NULL) {
+        fDelayIdentify = flag->isTrue();
+    }
+    
+    value = OSDynamicCast ( OSString, getProperty(kPassThroughMode));
     if (value) {
         if (!strcmp(value->getCStringNoCopy(), "sat12")) {
             fPassThroughMode = kPassThroughModeSAT12;
@@ -329,6 +345,8 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
             fPassThroughMode = kPassThroughModeSAT16;
         } else if (value->isEqualTo("jmicron")) {
             fPassThroughMode = kPassThroughModeJMicron;
+        } else if (value->isEqualTo("sunplus")) {
+            fPassThroughMode = kPassThroughModeSunplus;
         } else if (value->isEqualTo("auto")) {
             fPassThroughMode = kPassThroughModeAuto;
         } else if (value->isEqualTo("none")) {
@@ -337,9 +355,15 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
         } else {
             fPassThroughMode = kPassThroughModeAuto;
         }
-    } else {
-        fPassThroughMode = kPassThroughModeAuto;
     }
+}
+
+bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
+{
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    
+    parseProperties();
+    
     if (fSATSMARTCapable) {
 	unsigned long features = kIOATAFeatureSMART;
 	OSNumber *number = OSNumber::withNumber(features, 32);
@@ -386,7 +410,7 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
         //TerminateDeviceSupport();
         //stop(provider);
     }
-ErrorExit:
+ErrorExit:		
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
 }
@@ -423,28 +447,57 @@ fi_dungeon_driver_IOSATDriver::sProcessPoll( void * pdtDriver, void * refCon )
 
 #pragma mark -
 
-
 // This function will be called when the user process calls IORegistryEntrySetCFProperties on
 // this driver. You can add your custom functionality to this function.
 IOReturn fi_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
 {
     IOReturn result = kIOReturnSuccess;
-#ifdef DEBUG
     OSDictionary*   dict;
     OSNumber*       number;
+    int oldValue = fPassThroughMode;
+    OSCollectionIterator * keyIterator;
+    OSString * str;
+    
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     dict = OSDynamicCast(OSDictionary, properties);
     require_action(dict, ErrorExit, result = kIOReturnBadArgument);
-    
+
+    keyIterator = OSCollectionIterator::withCollection(dict);
+    while (OSString *key = OSDynamicCast(OSString,keyIterator->getNextObject())) {
+        OSString * value = OSDynamicCast(OSString,dict->getObject(key));
+        DEBUG_LOG("%s = %s\n", key->getCStringNoCopy(), value->getCStringNoCopy());
+        // FIXME ?
+    }
+    keyIterator->release();
+
     number = OSDynamicCast(OSNumber, dict->getObject(kMyPropertyKey));
     if (!number) {
-        result = super::setProperties(properties);
+        str = OSDynamicCast(OSString, dict->getObject(kPassThroughMode));
+        if (str) {                      
+            setProperty(kPassThroughMode, str);
+            //str->release();
+            fSATSMARTCapable = true;	
+            parseProperties();
+            fIdentified = false;
+            //§ if started	
+            IOLog("setProperties %d %d\n", oldValue, fPassThroughMode);
+            if (fSATSMARTCapable && fPassThroughMode != oldValue) {
+                IOLog("setProperties %d %d\n", oldValue, fPassThroughMode);
+                IdentifyDevice();
+                fIdentified = true;
+            }
+            result = kIOReturnSuccess;
+        } else {
+            result = super::setProperties(properties);
+        }
+        
     } else {
         UInt32 value= number->unsigned32BitValue();
         
         DEBUG_LOG("%s[%p]::%s(%p) got value %u\n", getName(), this, __FUNCTION__, properties, (unsigned int)value);
         
+#ifdef DEBUG
         // Some code to experiment the SAT commands
         switch (value) {
             case 1:
@@ -583,12 +636,10 @@ IOReturn fi_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
                 command->release();
                 break;
             }
-                
         }
-        
-        result = kIOReturnSuccess;
-    }
 #endif
+        
+    }
     
 ErrorExit:
     DEBUG_LOG("%s[%p]::%s result %d %s\n", getClassName(), this,  __FUNCTION__, result, stringFromReturn(result));
@@ -811,8 +862,6 @@ fi_dungeon_driver_IOSATDriver::JMicron_get_registers ( UInt16 address, UInt8 *pt
     
     if ( PASS_THROUGH_JMicron( request,
                               buffer,
-                              kIOSATProtocolPIODataIn,               //     PROTOCOL,
-                              kIOSATTDirectionFromDevice,               //     T_DIR,
                               0,               //	FEATURES,
                               address >> 8,               //	SECTOR_COUNT,
                               address & 0xff,               //	LBA_LOW,
@@ -1598,8 +1647,6 @@ bool
 fi_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
                                                       SCSITaskIdentifier request,
                                                       IOMemoryDescriptor *    dataBuffer,
-                                                      SCSICmdField4Bit PROTOCOL,
-                                                      SCSICmdField1Bit T_DIR,
                                                       SCSICmdField1Byte FEATURES,
                                                       SCSICmdField1Byte SECTOR_COUNT,
                                                       SCSICmdField1Byte LBA_LOW,
@@ -1611,8 +1658,6 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
                                                       int direction, int transferCount)
 {
     bool result = false;
-    int dxfer_len;
-    dxfer_len = 1; // FIXME in SMART_READ
     
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
@@ -1623,8 +1668,6 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
     // The helper functions ensure that the parameters fit within the
     // CDB fields and that the buffer passed in is large enough for
     // the transfer length.
-    require ( IsParameterValid ( PROTOCOL, kSCSICmdFieldMask4Bit ), ErrorExit );
-    require ( IsParameterValid ( T_DIR, kSCSICmdFieldMask1Bit ), ErrorExit );
     require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask1Byte ), ErrorExit );
     require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask1Byte ), ErrorExit );
     require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask1Byte ), ErrorExit );
@@ -1634,14 +1677,12 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
     require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
     require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
     
-    dxfer_len = transferCount;
-    
     SetCommandDescriptorBlock ( request,
                                kSCSICmd_PASS_THROUGH_JMicron,
                                (direction == kSCSIDataTransfer_FromInitiatorToTarget) ? 0 : 0x10,
                                0,
-                               dxfer_len >> 8,
-                               dxfer_len & 0xff,
+			       transferCount >> 8,
+                               transferCount & 0xff,
                                (FEATURES & 0xff),
                                (SECTOR_COUNT & 0xff),
                                (LBA_LOW & 0xff),
@@ -1649,6 +1690,74 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
                                (LBA_HIGH & 0xff),
                                fDevice | (fPort ? 0xa0 : 0xb0),
                                COMMAND);
+    
+    result = true;
+    
+ErrorExit:
+    DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
+    return result;
+}
+
+bool
+fi_dungeon_driver_IOSATDriver::PASS_THROUGH_Sunplus (
+                                                 SCSITaskIdentifier request,
+                                                 IOMemoryDescriptor *    dataBuffer,
+                                                 SCSICmdField1Byte FEATURES,
+                                                 SCSICmdField1Byte SECTOR_COUNT,
+                                                 SCSICmdField1Byte LBA_LOW,
+                                                 SCSICmdField1Byte LBA_MID,
+                                                 SCSICmdField1Byte LBA_HIGH,
+                                                 SCSICmdField1Byte DEVICE,
+                                                 SCSICmdField1Byte COMMAND,
+                                                 SCSICmdField1Byte CONTROL,
+						 int direction, int transferCount)
+{
+    bool result = false;
+    DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
+    UInt8 protocol;
+    
+    // Validate the parameters here.
+    require ( ( request != NULL ), ErrorExit );
+    require ( ResetForNewTask ( request ), ErrorExit );
+    
+    // The helper functions ensure that the parameters fit within the
+    // CDB fields and that the buffer passed in is large enough for
+    // the transfer length.
+    require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
+    require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
+    
+    switch (direction) {
+    case kSCSIDataTransfer_FromTargetToInitiator:
+	protocol = 0x10;
+	break;
+    case kSCSIDataTransfer_FromInitiatorToTarget:
+	protocol = 0x11;
+	break;
+    case kSCSIDataTransfer_NoDataTransfer:
+	protocol = 0x00;
+	break;
+    }
+
+    // This is a 12-byte command: fill out the CDB appropriately
+    SetCommandDescriptorBlock ( request,
+				kSCSICmd_PASS_THROUGH_Sunplus,
+				0,
+				0x22, // Subcommand: Pass through
+				protocol,
+				(transferCount >> 9),
+				(FEATURES & 0xff),
+				(SECTOR_COUNT & 0xff),
+				(LBA_LOW & 0xff),
+				(LBA_MID & 0xff),
+				(LBA_HIGH & 0xff),
+				(DEVICE & 0x01) | 0xa0,
+				COMMAND);
     
     result = true;
     
@@ -1871,7 +1980,13 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
     
     if (fPassThroughMode == kPassThroughModeJMicron) {
         result = PASS_THROUGH_JMicron(request, dataBuffer,
-                                      PROTOCOL, T_DIR, 
+                                      FEATURES, SECTOR_COUNT,
+                                      LBA_LOW, LBA_MID, LBA_HIGH,
+                                      DEVICE, COMMAND, CONTROL,
+                                      direction, transferCount );
+        
+    } else if (fPassThroughMode == kPassThroughModeSunplus) {
+        result = PASS_THROUGH_Sunplus(request, dataBuffer,
                                       FEATURES, SECTOR_COUNT,
                                       LBA_LOW, LBA_MID, LBA_HIGH,
                                       DEVICE, COMMAND, CONTROL,

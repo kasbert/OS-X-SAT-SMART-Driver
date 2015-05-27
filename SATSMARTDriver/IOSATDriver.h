@@ -30,6 +30,7 @@ enum {
     kPassThroughModeSAT16 = 2,
     kPassThroughModeSAT12 = 3,
     kPassThroughModeJMicron = 4,
+    kPassThroughModeSunplus = 5,
 };
 
 enum {
@@ -103,14 +104,25 @@ protected:
     bool    Send_ATA_CHECK_POWER_MODE(int *);
     bool    Send_ATA_SEND_SOFT_RESET(void);
     OSObject *getParentProperty(const char *key);
+    void    parseProperties();
     
     bool JMicron_get_registers(UInt16 address, UInt8 *ptr, UInt16 length );
     bool
     PASS_THROUGH_JMicron (
                           SCSITaskIdentifier request,
                           IOMemoryDescriptor *    dataBuffer,
-                          SCSICmdField4Bit PROTOCOL,
-                          SCSICmdField1Bit T_DIR,
+                          SCSICmdField1Byte FEATURES,
+                          SCSICmdField1Byte SECTOR_COUNT,
+                          SCSICmdField1Byte LBA_LOW,
+                          SCSICmdField1Byte LBA_MID,
+                          SCSICmdField1Byte LBA_HIGH,
+                          SCSICmdField1Byte DEVICE,
+                          SCSICmdField1Byte COMMAND,
+                          SCSICmdField1Byte CONTROL, int direction, int transferCount);
+    bool
+    PASS_THROUGH_Sunplus (
+                          SCSITaskIdentifier request,
+                          IOMemoryDescriptor *    dataBuffer,
                           SCSICmdField1Byte FEATURES,
                           SCSICmdField1Byte SECTOR_COUNT,
                           SCSICmdField1Byte LBA_LOW,
