@@ -906,7 +906,7 @@ IOSATExtendedLBA::getExtendedLBA( UInt32* outLBAHi, UInt32* outLBALo )
     
     *outLBALo = (getLBALow16() & 0xFF) | ( (getLBAMid16() & 0xff) << 8) | ((getLBAHigh16() & 0xff) << 16) | ((getLBALow16() & 0xff00) << 16);
     
-    *outLBAHi = getLBAHigh16() & 0xff00 | ((getLBAMid16() & 0xff00) >> 8);
+    *outLBAHi = (getLBAHigh16() & 0xff00) | ((getLBAMid16() & 0xff00) >> 8);
     
 }
 

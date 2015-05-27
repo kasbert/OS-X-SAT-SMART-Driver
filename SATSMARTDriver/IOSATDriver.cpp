@@ -212,7 +212,7 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
         const char * name = 0;
         char buffer[30];
         
-        while (object = iterator->getNextObject()) { 
+        while ((object = iterator->getNextObject())) {
             OSString *key = OSDynamicCast (OSString, object);
             if (!key) {
                 continue;
@@ -375,7 +375,7 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
     
     bool result = super::start(provider); // will call CreateStorageServiceNub
     OSString *name = OSDynamicCast(OSString, getProperty(kEnclosureName));
-    require (result, ErrorExit);
+    __Require (result, ErrorExit);
     
     if (fSATSMARTCapable) {
         IOLog("SATSMARTDriver v%d.%d: enclosure '%s'\n",

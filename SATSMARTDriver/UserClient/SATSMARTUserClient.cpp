@@ -813,7 +813,7 @@ SATSMARTUserClient::ReadData (UInt32 * dataOut,
     }
     
     status = buffer->prepare ( );
-    DEBUG_LOG("%s[%p]::%s prepare %p\n", getClassName(), this,  __FUNCTION__, (void*)status);
+    DEBUG_LOG("%s[%p]::%s prepare %x\n", getClassName(), this,  __FUNCTION__, status);
     if ( status != kIOReturnSuccess )
     {
         
@@ -1065,7 +1065,7 @@ SATSMARTUserClient::ReadLogAtAddress ( ATASMARTReadLogStruct * structIn,
     }
     
     status = buffer->prepare ( );
-    DEBUG_LOG("%s[%p]::%s status %p\n", getClassName(), this, __FUNCTION__, (void *)status);
+    DEBUG_LOG("%s[%p]::%s status %x\n", getClassName(), this, __FUNCTION__, status);
     if ( status != kIOReturnSuccess )
     {
         
@@ -1276,7 +1276,6 @@ SATSMARTUserClient::GetIdentifyData (UInt32 * dataOut,
     IOReturn status                  = kIOReturnSuccess;
     IOSATCommand *                          command                 = NULL;
     IOMemoryDescriptor *      buffer                  = NULL;
-    UInt8 *                                         identifyDataPtr = NULL;
     DEBUG_LOG("%s[%p]::%s %p(%ld)\n", getClassName(), this, __FUNCTION__, dataOut, (long)(outputSize));
     
     if (!dataOut || !outputSize || *outputSize < kATADefaultSectorSize ) {
@@ -1313,8 +1312,6 @@ SATSMARTUserClient::GetIdentifyData (UInt32 * dataOut,
         
     }
     
-    identifyDataPtr = ( UInt8 * )dataOut;
-    
     status = buffer->prepare ( );
     if ( status != kIOReturnSuccess )
     {
@@ -1348,6 +1345,7 @@ SATSMARTUserClient::GetIdentifyData (UInt32 * dataOut,
         IOByteCount index;
         UInt8 temp;
         UInt8 *                 firstBytePtr;
+        UInt8 *                 identifyDataPtr = ( UInt8 * )dataOut;
         
         for ( index = 0; index < buffer->getLength ( ); index += 2 )
         {
@@ -1396,7 +1394,7 @@ ErrorExit:
     
     fOutstandingCommands--;
     
-    DEBUG_LOG("%s[%p]::%s result %p\n", getClassName(), this,  __FUNCTION__, (void*)status);
+    DEBUG_LOG("%s[%p]::%s result %x\n", getClassName(), this,  __FUNCTION__, status);
     return status;
     
 }
