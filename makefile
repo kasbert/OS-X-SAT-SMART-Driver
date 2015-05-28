@@ -20,12 +20,18 @@ version:
 	$(eval PKG := $(TITLE)-$(VERSION)-$(CONFIGURATION).pkg)
 	echo PKG $(PKG)
 
+#pkgbuild --analyze   --root Root   SATSMARTDriver.plist
+#productbuild --synthesize     --package SATSMARTDriver.pkg    Distribution.xml
+
 pkg: version
 	rm -rf Root $(PKG)
-	mkdir -p Root/System/Library/Extensions/
-	ditto --rsrc SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTDriver.kext Root/System/Library/Extensions/SATSMARTDriver.kext
-	ditto --rsrc SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin Root/System/Library/Extensions/SATSMARTLib.plugin
-	/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc --out $(PKG)
+	mkdir Root
+	(cd SATSMARTDriver; xcodebuild -configuration $(CONFIGURATION) -project SATSMARTDriver.xcodeproj install DSTROOT=../Root)
+	rm -f Root/usr/local/bin/smart_sample
+	rm -f Root/usr/local/bin/set_properties
+	pkgbuild --root Root  --component-plist SATSMARTDriver.plist --scripts Resources --identifier fi.dungeon.SATSMARTDriver SATSMARTDriver.pkg
+	productbuild --distribution ./Distribution.xml --package-path . $(PKG)
+	#/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc --out $(PKG)
 
 dmg: version
 	echo VERSION $(VERSION)$(VERSIONPOSTFIX)

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>BundleIsVersionChecked</key>
+		<true/>
+		<key>BundleOverwriteAction</key>
+		<string>upgrade</string>
+		<key>ChildBundles</key>
+		<array>
+			<dict>
+				<key>BundleOverwriteAction</key>
+				<string></string>
+				<key>RootRelativeBundlePath</key>
+				<string>System/Library/Extensions/SATSMARTDriver.kext/Contents/PlugIns/SATSMARTLib.plugin</string>
+			</dict>
+		</array>
+		<key>RootRelativeBundlePath</key>
+		<string>System/Library/Extensions/SATSMARTDriver.kext</string>
+	</dict>
+</array>
+</plist>
