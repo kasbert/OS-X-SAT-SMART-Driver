@@ -117,9 +117,7 @@ static const char *getStatus(int status) {
 
 static char * GetStatusForDevice(UInt8 status )
 {
-#define CBUFLEN 128
-    char buf[CBUFLEN];
-    
+#define CBUFLEN 128    
     char * msg = "<unknown>";
     switch ( status )
     {
@@ -233,10 +231,10 @@ static void CheckSMARTStatus( io_service_t service, uint64_t id, const char *mod
     }
     uint64_t oid = 0;
     if (IORegistryEntryGetRegistryEntryID(parent, &oid) == kIOReturnSuccess) {
+        if (id && oid != id) {
+            goto ReleaseParent;
+        }
         printf("ID              : 0x%llx\n", oid);
-    }
-    if (id && oid != id) {
-        goto ReleaseParent;
     }
     
     io_name_t devName;
@@ -277,6 +275,11 @@ static void CheckSMARTStatus( io_service_t service, uint64_t id, const char *mod
     CFBooleanRef flag=0;
     CFStringRef str=0;
     
+    if (CFDictionaryGetValueIfPresent ( dict,
+                                       CFSTR ( "Enclosure Name" ),
+                                       ( const void ** ) &str )) {
+        printf ("Enclosure Name  : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
+    }
     if( CFDictionaryGetValueIfPresent ( dict,
                                        CFSTR ( "SATSMARTCapable" ),
                                        ( const void ** ) &flag )) {
@@ -286,11 +289,6 @@ static void CheckSMARTStatus( io_service_t service, uint64_t id, const char *mod
                                        CFSTR ( "PassThroughMode" ),
                                        ( const void ** ) &str )) {
         printf ("PassThroughMode : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
-    }
-    if (CFDictionaryGetValueIfPresent ( dict,
-                                       CFSTR ( "Enclosure Name" ),
-                                       ( const void ** ) &str )) {
-        printf ("Enclosure Name  : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
     }
     if (CFDictionaryGetValueIfPresent ( dict,
                                        CFSTR ( "Product Name" ),
@@ -303,10 +301,17 @@ static void CheckSMARTStatus( io_service_t service, uint64_t id, const char *mod
         printf ("Model           : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
     }
     if (CFDictionaryGetValueIfPresent ( dict,
+                                       CFSTR ( "Revision" ),
+                                       ( const void ** ) &str )) {
+        printf ("Revision        : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
+    }
+    /*
+    if (CFDictionaryGetValueIfPresent ( dict,
                                        CFSTR ( "Serial Number" ),
                                        ( const void ** ) &str )) {
         printf ("Serial Number   : %s\n", CFStringGetCStringPtr(str, kCFStringEncodingMacRoman));
-    }
+    }*/
+     
     // got data, now get a BSD name
     bsdName = BSDNameForBlockStorageDevice( service );
     if (bsdName) {
@@ -358,6 +363,10 @@ static void CheckSMARTStatus( io_service_t service, uint64_t id, const char *mod
     if ( hr != S_OK )
         goto ErrorExit;
     
+    kr = ( *ppSmart )->SMARTEnableDisableOperations ( ppSmart, true );
+    if ( kr != kIOReturnSuccess )
+        goto ErrorExit;
+
     ATASMARTData smartData;
     bzero( &smartData, sizeof(ATASMARTData) );
     kr = (*ppSmart)->SMARTReadData( ppSmart, &smartData );

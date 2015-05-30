@@ -167,7 +167,7 @@ bool fi_dungeon_driver_IOSATDriver::init(OSDictionary *dict)
     fDelayIdentify = true;
     fPermissive = true;
     fIdentified = false;
-    fPassThroughMode = kPassThroughModeAuto;
+    fPassThroughMode = kPassThroughModeNone;
 
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
     return result;
@@ -194,6 +194,8 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
     //	}
     //if (!fSATSMARTCapable) result = 0;
     //}
+    const char * name = 0;
+    char buffer[30];
     
     OSNumber *idVendor = OSDynamicCast(OSNumber, getParentProperty("idVendor"));
     OSNumber *idProduct = OSDynamicCast(OSNumber, getParentProperty("idProduct"));
@@ -203,14 +205,12 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
     OSNumber *fwmodelID = OSDynamicCast ( OSNumber, getParentProperty("Model_ID"));
     
     OSDictionary*   dict= OSDynamicCast ( OSDictionary, getProperty("Identifiers"));
-    
+
     if (dict) {
         OSDictionary* details = 0;
         OSDictionary* unknown = 0;
         OSCollectionIterator *iterator = OSCollectionIterator::withCollection(dict);
         OSObject *object; 
-        const char * name = 0;
-        char buffer[30];
         
         while ((object = iterator->getNextObject())) {
             OSString *key = OSDynamicCast (OSString, object);
@@ -237,20 +237,20 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
                 && idVendor->unsigned32BitValue() == idVendor2->unsigned32BitValue()
                 && idProduct->unsigned32BitValue() == idProduct2->unsigned32BitValue()) {
                 DEBUG_LOG("%s[%p]::%s '%s' MATCH %04x:%04x\n", getClassName(), this, __FUNCTION__, name, idVendor->unsigned32BitValue(), idProduct->unsigned32BitValue());
-                *score += 5000;
+                *score += 1000;
                 break;
             }
             if (vendorID && vendorID2 && productID && productID2 
                 && vendorID->isEqualTo(vendorID2) && productID->isEqualTo(productID2)) {
                 DEBUG_LOG("%s[%p]::%s '%s' MATCH '%s':'%s'\n", getClassName(), this, __FUNCTION__, name, vendorID->getCStringNoCopy(), productID->getCStringNoCopy());
-                *score += 5000;
+                *score += 1000;
                 break;
             }
             if (fwvendorID && fwvendorID2 && fwmodelID && fwmodelID2 
                 && fwvendorID->unsigned32BitValue() == fwvendorID2->unsigned32BitValue() 
                 && fwmodelID->unsigned32BitValue() == fwmodelID2->unsigned32BitValue()) {
                 DEBUG_LOG("%s[%p]::%s '%s' MATCH %04x:%04x\n", getClassName(), this, __FUNCTION__, name, fwvendorID->unsigned32BitValue(), fwmodelID->unsigned32BitValue());
-                *score += 5000;
+                *score += 1000;
                 break;
             }
             details = 0;
@@ -260,15 +260,6 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
             details = unknown;
             name = 0;
         }
-        if (!name) {
-            if (!idVendor && !idProduct && fwvendorID && fwmodelID) {
-                snprintf(buffer, 30, "Unknown fw %04x:%04x", fwvendorID->unsigned32BitValue(), fwmodelID->unsigned32BitValue());
-            } else {
-                snprintf(buffer, 30, "Unknown %04x:%04x", idVendor ? idVendor->unsigned32BitValue() : 0, idProduct ? idProduct->unsigned32BitValue() : 0);
-            }
-            name = buffer;
-        }
-        setProperty(kEnclosureName, name);
         
         if (details) {
             OSString *options = OSDynamicCast ( OSString, details->getObject(kPassThroughMode));
@@ -302,10 +293,19 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
 		// FIXME ?
             }
             keyIterator->release();
-            // not needed anymore
         }
+        // not needed anymore
         removeProperty("Identifiers");
     }
+    if (!name) {
+        if (!idVendor && !idProduct && fwvendorID && fwmodelID) {
+            snprintf(buffer, 30, "Unknown fw %04x:%04x", fwvendorID->unsigned32BitValue(), fwmodelID->unsigned32BitValue());
+        } else {
+            snprintf(buffer, 30, "Unknown %04x:%04x", idVendor ? idVendor->unsigned32BitValue() : 0, idProduct ? idProduct->unsigned32BitValue() : 0);
+        }
+        name = buffer;
+    }
+    setProperty(kEnclosureName, name);
     
     DEBUG_LOG("%s[%p]::%s result %p score %d\n", getClassName(), this,  __FUNCTION__, result, score ? (int)*score : -1);
     return result;
@@ -351,7 +351,7 @@ void fi_dungeon_driver_IOSATDriver::parseProperties () {
             fPassThroughMode = kPassThroughModeAuto;
         } else if (value->isEqualTo("none")) {
             fPassThroughMode = kPassThroughModeNone;
-            fSATSMARTCapable = false; // we shouldn't be here anyway
+            fSATSMARTCapable = false;
         } else {
             fPassThroughMode = kPassThroughModeAuto;
         }
@@ -364,51 +364,39 @@ bool fi_dungeon_driver_IOSATDriver::start(IOService *provider)
     
     parseProperties();
     
-    if (fSATSMARTCapable) {
-	unsigned long features = kIOATAFeatureSMART;
-	OSNumber *number = OSNumber::withNumber(features, 32);
-	if (number) {
-            setProperty ( kIOATASupportedFeaturesKey, number );
-            number->release();
-        }
+    unsigned long features = kIOATAFeatureSMART;
+    OSNumber *number = OSNumber::withNumber(features, 32);
+    if (number) {
+        setProperty ( kIOATASupportedFeaturesKey, number );
+        number->release();
     }
     
     bool result = super::start(provider); // will call CreateStorageServiceNub
     OSString *name = OSDynamicCast(OSString, getProperty(kEnclosureName));
     __Require (result, ErrorExit);
     
-    if (fSATSMARTCapable) {
-        IOLog("SATSMARTDriver v%d.%d: enclosure '%s'\n",
-              (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
-              name ? name->getCStringNoCopy() : "unknown");
+    IOLog("SATSMARTDriver v%d.%d: enclosure '%s'\n",
+          (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
+          name ? name->getCStringNoCopy() : "unknown");
+    if (fSATSMARTCapable && fPassThroughMode  != kPassThroughModeNone) {
         if (fDelayIdentify) {
-            fPollingThread = thread_call_allocate (
-                                                   ( thread_call_func_t ) fi_dungeon_driver_IOSATDriver::sProcessPoll,
-                                                   ( thread_call_param_t ) this );
-            if ( fPollingThread == NULL )
-            {
-                ERROR_LOG ( ( "fPollingThread allocation failed.\n" ) );
-                goto ErrorExit;
-            }
-            retain ( );
-            uint64_t        time;
-            clock_interval_to_deadline ( 1000, kMillisecondScale, &time );
-            thread_call_enter_delayed ( fPollingThread, time );
-        } else {
-            // Query device identification and check SAT capability
-            IdentifyDevice();
-            fIdentified = true;
+        fPollingThread = thread_call_allocate (
+                                               ( thread_call_func_t ) fi_dungeon_driver_IOSATDriver::sProcessPoll,
+                                               ( thread_call_param_t ) this );
+        if ( fPollingThread == NULL )
+        {
+            ERROR_LOG ( ( "fPollingThread allocation failed.\n" ) );
+            goto ErrorExit;
         }
+        retain ( );
+        uint64_t        time;
+        clock_interval_to_deadline ( 1000, kMillisecondScale, &time );
+        thread_call_enter_delayed ( fPollingThread, time );
     } else {
-        IOLog("SATSMARTDriver v%d.%d: enclosure '%s' is not SAT capable\n",
-              (int)SATSMARTDriverVersionNumber, ((int)(SATSMARTDriverVersionNumber * 100))%100,
-              name ? name->getCStringNoCopy() : "unknown");
-        //result = false;
+        // Query device identification and check SAT capability
+        IdentifyDevice();
+        fIdentified = true;
     }
-    if (!result) {
-        // Stop is not called on failure
-        //TerminateDeviceSupport();
-        //stop(provider);
     }
 ErrorExit:		
     DEBUG_LOG("%s[%p]::%s result %d\n", getClassName(), this,  __FUNCTION__, result);
@@ -480,12 +468,16 @@ IOReturn fi_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
             fSATSMARTCapable = true;	
             parseProperties();
             fIdentified = false;
-            //§ if started	
-            IOLog("setProperties %d %d\n", oldValue, fPassThroughMode);
+            // if started	
             if (fSATSMARTCapable && fPassThroughMode != oldValue) {
-                IOLog("setProperties %d %d\n", oldValue, fPassThroughMode);
-                IdentifyDevice();
-                fIdentified = true;
+                IOLog("Identify %d\n", fPassThroughMode);
+                if (IdentifyDevice()) {
+                    fSATSMARTCapable = true;
+                    fIdentified = true;
+                } else {
+                    setProperty(kPassThroughMode, "none");
+                    fSATSMARTCapable = false;
+                }
             }
             result = kIOReturnSuccess;
         } else {
@@ -684,12 +676,7 @@ fi_dungeon_driver_IOSATDriver::CreateStorageServiceNub ( void )
 {
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     IOService *         nub = NULL;
-    
-    if (!fSATSMARTCapable) {
-        super::CreateStorageServiceNub();
-        return;
-    }
-    //nub = OSTypeAlloc ( IOBlockStorageServices );
+   
     nub = OSTypeAlloc ( IOSATServices );
     require_quiet ( nub, ErrorExit );
     
@@ -717,12 +704,6 @@ IOReturn fi_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comman
     int ataResult = kATAErrUnknownType;
     IOReturn err = kIOReturnInvalid;
     int direction, count, protocol;
-    
-    if (!fIdentified) {
-        // Query device identification and check SAT capability
-        IdentifyDevice();
-        fIdentified = true;
-    }
     
     IOSATBusCommand* cmd = OSDynamicCast( IOSATBusCommand, command);
     require_action_string(cmd, ErrorExit, err = kIOReturnBadArgument, "Command is not a IOSATBusCommand");
@@ -931,6 +912,11 @@ fi_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     OSString *name = OSDynamicCast(OSString, getProperty(kEnclosureName));
     
+    removeProperty (kProductModelKey);
+    removeProperty (kIOPropertyProductNameKey);
+    removeProperty (kIOPropertyProductRevisionLevelKey);
+    removeProperty (kIOPropertyProductSerialNumberKey);
+
     fSATSMARTCapable = true;
     //SendBuiltInINQUIRY ( );
     boolean_t autodetect = (fPassThroughMode  == kPassThroughModeAuto);

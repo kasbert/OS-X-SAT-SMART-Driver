@@ -33,13 +33,13 @@
 			<key>IOKitDebug</key>
 			<integer>65535</integer>
 			<key>IOProbeScore</key>
-			<integer>5005</integer>
+			<integer>4004</integer>
 			<key>IOProviderClass</key>
 			<string>IOSCSIPeripheralDeviceNub</string>
 			<key>Peripheral Device Type</key>
 			<integer>0</integer>
 			<key>PassThroughMode</key>
-			<string>sat12</string>
+			<string>none</string>
 			<key>Permissive</key>
 			<true/>
 			<key>DelayIdentify</key>
@@ -49,7 +49,7 @@
 				<key>UNKNOWN</key>
 				<dict>
 					<key>PassThroughMode</key>
-					<string>auto</string>
+					<string>none</string>
 					<key>Permissive</key>
 					<true/>
 					<key>DelayIdentify</key>
@@ -299,7 +299,7 @@
 					<key>idProduct</key>
 					<integer>2385</integer>
 					<key>PassThroughMode</key>
-					<string>jmicron</string>
+					<string>DISABLE</string>
 					<key>DelayIdentify</key>
 					<true/>
 				</dict>
@@ -328,7 +328,7 @@
 					<key>idProduct</key>
 					<integer>4121</integer>
 					<key>PassThroughMode</key>
-					<string>jmicron</string>
+					<string>DISABLE</string>
 				</dict>
 				<key>LaCie Rugged USB</key>
 				<dict>
@@ -337,7 +337,7 @@
 					<key>idProduct</key>
 					<integer>4125</integer>
 					<key>PassThroughMode</key>
-					<string>jmicron</string>
+					<string>DISABLE</string>
 				</dict>
 				<key>LaCie Little Disk</key>
 				<dict>
@@ -346,7 +346,7 @@
 					<key>idProduct</key>
 					<integer>4129</integer>
 					<key>PassThroughMode</key>
-					<string>jmicron</string>
+					<string>DISABLE</string>
 				</dict>
 				<key>LaCie hard disk</key>
 				<dict>
@@ -364,7 +364,7 @@
 					<key>idProduct</key>
 					<integer>4138</integer>
 					<key>PassThroughMode</key>
-					<string>jmicron</string>
+					<string>DISABLE</string>
 				</dict>
 				<key>LaCie rikiki b</key>
 				<dict>
