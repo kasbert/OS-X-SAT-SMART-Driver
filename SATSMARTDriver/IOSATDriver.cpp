@@ -468,6 +468,11 @@ IOReturn fi_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
             fSATSMARTCapable = true;	
             parseProperties();
             fIdentified = false;
+            removeProperty (kProductModelKey);
+            removeProperty (kIOPropertyProductNameKey);
+            removeProperty (kIOPropertyProductRevisionLevelKey);
+            removeProperty (kIOPropertyProductSerialNumberKey);
+            
             // if started	
             if (fSATSMARTCapable && fPassThroughMode != oldValue) {
                 IOLog("Identify %d\n", fPassThroughMode);
@@ -912,11 +917,6 @@ fi_dungeon_driver_IOSATDriver::IdentifyDevice ( void )
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     OSString *name = OSDynamicCast(OSString, getProperty(kEnclosureName));
     
-    removeProperty (kProductModelKey);
-    removeProperty (kIOPropertyProductNameKey);
-    removeProperty (kIOPropertyProductRevisionLevelKey);
-    removeProperty (kIOPropertyProductSerialNumberKey);
-
     fSATSMARTCapable = true;
     //SendBuiltInINQUIRY ( );
     boolean_t autodetect = (fPassThroughMode  == kPassThroughModeAuto);
