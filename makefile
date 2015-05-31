@@ -45,15 +45,15 @@ unload: unmount
 	-sudo kextunload -v -b org.dungeon.driver.SATSMARTDriver
 
 realinstall: unload
-	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin /System/Library/Extensions
 	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTDriver.kext /System/Library/Extensions
+	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin /System/Library/Extensions
 	sync
 	sudo kextutil -t /System/Library/Extensions/SATSMARTDriver.kext
 
 install: unload
-	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin /System/Library/Extensions
 	sudo rm -rf /tmp/SATSMARTDriver.kext
 	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTDriver.kext /tmp
+	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin /System/Library/Extensions
 	sync
 	sudo kextutil -t /tmp/SATSMARTDriver.kext
 

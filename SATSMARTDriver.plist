@@ -13,7 +13,7 @@
 				<key>BundleOverwriteAction</key>
 				<string></string>
 				<key>RootRelativeBundlePath</key>
-				<string>System/Library/Extensions/SATSMARTDriver.kext/Contents/PlugIns/SATSMARTLib.plugin</string>
+				<string>System/Library/Extensions/SATSMARTLib.plugin</string>
 			</dict>
 		</array>
 		<key>RootRelativeBundlePath</key>

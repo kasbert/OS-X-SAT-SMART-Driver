@@ -58,6 +58,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		A85FE9AD1B1AEC19000F39C1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = A8CDBA1114E53D3E00881848 /* SATSMARTLib */;
+			remoteInfo = SATSMARTLib;
+		};
 		A86A787814F57CAD0067035C /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 089C1669FE841209C02AAC07 /* Project object */;
@@ -300,6 +307,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				A85FE9AE1B1AEC19000F39C1 /* PBXTargetDependency */,
 			);
 			name = SATSMARTDriver;
 			productInstallPath = "$(SYSTEM_LIBRARY_DIR)/Extensions";
@@ -495,6 +503,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		A85FE9AE1B1AEC19000F39C1 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = A8CDBA1114E53D3E00881848 /* SATSMARTLib */;
+			targetProxy = A85FE9AD1B1AEC19000F39C1 /* PBXContainerItemProxy */;
+		};
 		A86A787914F57CAD0067035C /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 32D94FC30562CBF700B6AF17 /* SATSMARTDriver */;
@@ -766,7 +779,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/";
 				INFOPLIST_FILE = "UserClientLib/SATSMARTLib-Info.plist";
-				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions/SATSMARTDriver.kext/Contents/PlugIns";
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Carbon,
@@ -795,7 +808,7 @@
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/Carbon.framework/Headers/Carbon.h";
 				HEADER_SEARCH_PATHS = "$(SDKROOT)/System/Library/Frameworks/IOKit.framework/Versions/A/Headers/";
 				INFOPLIST_FILE = "UserClientLib/SATSMARTLib-Info.plist";
-				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions/SATSMARTDriver.kext/Contents/PlugIns";
+				INSTALL_PATH = "$(SYSTEM_LIBRARY_DIR)/Extensions";
 				OTHER_LDFLAGS = (
 					"-framework",
 					Carbon,
