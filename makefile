@@ -9,6 +9,7 @@ endif
 ifneq ($(SDK),macosx10.6)
   VERSIONPOSTFIX := $(VERSIONPOSTFIX)-$(SDK)
 endif
+KEXTDIR=/Library/Extensions
 
 build:
 	rm -rf SATSMARTDriver/build
@@ -29,6 +30,7 @@ pkg: version
 	(cd SATSMARTDriver; xcodebuild -configuration $(CONFIGURATION) -project SATSMARTDriver.xcodeproj install DSTROOT=../Root)
 	rm -f Root/usr/local/bin/smart_sample
 	rm -f Root/usr/local/bin/set_properties
+	mv Root/System/Library/Extensions/SATSMARTLib.plugin Root/Library/Extensions/
 	pkgbuild --root Root  --component-plist SATSMARTDriver.plist --scripts Resources --identifier fi.dungeon.SATSMARTDriver SATSMARTDriver.pkg
 	productbuild --distribution ./Distribution.xml --package-path . $(PKG)
 	#/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc --out $(PKG)
@@ -45,21 +47,21 @@ unload: unmount
 	-sudo kextunload -v -b org.dungeon.driver.SATSMARTDriver
 
 realinstall: unload
-	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTDriver.kext /System/Library/Extensions
-	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin /System/Library/Extensions
+	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTDriver.kext $(KEXTDIR)
+	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin $(KEXTDIR)
 	sync
-	sudo kextutil -t /System/Library/Extensions/SATSMARTDriver.kext
+	sudo kextutil -t $(KEXTDIR)/SATSMARTDriver.kext
 
 install: unload
 	sudo rm -rf /tmp/SATSMARTDriver.kext
 	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTDriver.kext /tmp
-	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin /System/Library/Extensions
+	sudo cp -R SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTLib.plugin $(KEXTDIR)
 	sync
 	sudo kextutil -t /tmp/SATSMARTDriver.kext
 
 uninstall: unload
-	sudo rm -rf /System/Library/Extensions/SATSMARTDriver.kext
-	sudo rm -rf /System/Library/Extensions/SATSMARTLib.plugin
+	sudo rm -rf $(KEXTDIR)/SATSMARTDriver.kext
+	sudo rm -rf $(KEXTDIR)/SATSMARTLib.plugin
 	sudo rm -rf /tmp/SATSMARTDriver.kext
 
 clean:

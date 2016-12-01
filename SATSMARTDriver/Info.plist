@@ -9,7 +9,7 @@
 	<key>CFBundleIconFile</key>
 	<string></string>
 	<key>CFBundleIdentifier</key>
-	<string>fi.dungeon.driver.SATSMARTDriver</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -28,6 +28,8 @@
 		<dict>
 			<key>CFBundleIdentifier</key>
 			<string>fi.dungeon.driver.SATSMARTDriver</string>
+			<key>DelayIdentify</key>
+			<true/>
 			<key>IOClass</key>
 			<string>fi_dungeon_driver_IOSATDriver</string>
 			<key>IOKitDebug</key>
@@ -36,1392 +38,1390 @@
 			<integer>4004</integer>
 			<key>IOProviderClass</key>
 			<string>IOSCSIPeripheralDeviceNub</string>
-			<key>Peripheral Device Type</key>
-			<integer>0</integer>
-			<key>PassThroughMode</key>
-			<string>none</string>
-			<key>Permissive</key>
-			<true/>
-			<key>DelayIdentify</key>
-			<true/>
 			<key>Identifiers</key>
 			<dict>
-				<key>UNKNOWN</key>
+				<key>(No Name 1)</key>
 				<dict>
 					<key>PassThroughMode</key>
-					<string>none</string>
+					<string>sat16</string>
 					<key>Permissive</key>
 					<true/>
-					<key>DelayIdentify</key>
-					<true/>
+					<key>idProduct</key>
+					<integer>1816</integer>
+					<key>idVendor</key>
+					<integer>1507</integer>
+				</dict>
+				<key>(No Name 2)</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9481</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>(No Name 3)</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9479</integer>
+					<key>idVendor</key>
+					<integer>1659</integer>
+				</dict>
+				<key>(No Name 4)</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1569</integer>
+					<key>idVendor</key>
+					<integer>8053</integer>
+				</dict>
+				<key>AixCase AIX-ESU35CD</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9014</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>AixCase AIX-SUB3A1</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9017</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>AixCase AIX-USB2SI-PS</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9016</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Apricorn SATA Wire (2.5")</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>64</integer>
+					<key>idVendor</key>
+					<integer>2436</integer>
+				</dict>
+				<key>Buffalo JustStore Portable HD-PVU2</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>385</integer>
+					<key>idVendor</key>
+					<integer>1041</integer>
+				</dict>
+				<key>CROSU2 SATA Docking Station</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>4672</integer>
+					<key>idVendor</key>
+					<integer>5117</integer>
+				</dict>
+				<key>Cavalry CAXM</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>4928</integer>
+					<key>idVendor</key>
+					<integer>5117</integer>
+				</dict>
+				<key>Chieftec  2.5" case</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1841</integer>
+					<key>idVendor</key>
+					<integer>1507</integer>
+				</dict>
+				<key>Conceptronic CHD3UL</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9016</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>DeLock SUPERSPEED USB TO SATA ADAPTER</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20742</integer>
+					<key>idVendor</key>
+					<integer>5964</integer>
+				</dict>
+				<key>Digitus DA-70148-1</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9016</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Fibrionic PE-3264</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9016</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Freecom HD 500GB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>64730</integer>
+					<key>idVendor</key>
+					<integer>1963</integer>
+				</dict>
+				<key>Freecom HD Classic 500GB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>64726</integer>
+					<key>idVendor</key>
+					<integer>1963</integer>
+				</dict>
+				<key>Gembird AUSI01</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9016</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Generic JMicron adapter</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9015</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>HP Desktop HD BD07</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>48391</integer>
+					<key>idVendor</key>
+					<integer>1008</integer>
+				</dict>
+				<key>Hitachi Touro Desk 3.0 2TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4117</integer>
+					<key>idVendor</key>
+					<integer>18801</integer>
+				</dict>
+				<key>Hitachi Touro Desk 3TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>4113</integer>
+					<key>idVendor</key>
+					<integer>18801</integer>
+				</dict>
+				<key>Hitachi/SimpleTech 1TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>52759</integer>
+					<key>idVendor</key>
+					<integer>18801</integer>
+				</dict>
+				<key>Icy Box IB-231</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
+					<key>idProduct</key>
+					<integer>2184</integer>
+					<key>idVendor</key>
+					<integer>8053</integer>
+				</dict>
+				<key>Icy Box IB-AC603A-U3</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20790</integer>
+					<key>idVendor</key>
+					<integer>5964</integer>
+				</dict>
+				<key>Inki1-837</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9016</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Intenso 3,5" Portable Hard Drive</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>1793</integer>
+					<key>idVendor</key>
+					<integer>8457</integer>
+				</dict>
+				<key>Intenso Memory Station 2.5"</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>6208</integer>
+					<key>idVendor</key>
+					<integer>5117</integer>
+				</dict>
+				<key>Iomega</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>1141</integer>
+					<key>idVendor</key>
+					<integer>1435</integer>
+				</dict>
+				<key>Iomega MDHD-UE</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>631</integer>
+					<key>idVendor</key>
+					<integer>1435</integer>
+				</dict>
+				<key>Iomega eGo 500GB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>1404</integer>
+					<key>idVendor</key>
+					<integer>1435</integer>
+				</dict>
+				<key>JMicron controller</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>1337</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
 				</dict>
 				<key>JMicronXYZ</key>
 				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>5421</integer>
 					<key>PassThroughMode</key>
 					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>5421</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
 				</dict>
 				<key>Kingston DataTraveler 2.0</key>
 				<dict>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
 					<key>Product Identification</key>
 					<string>DataTraveler 2.0</string>
 					<key>Vendor Identification</key>
 					<string>Kingston</string>
+				</dict>
+				<key>Kingston SNA-DC/U</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>25240</integer>
+					<key>idVendor</key>
+					<integer>4528</integer>
+				</dict>
+				<key>LaCie Hard Disk</key>
+				<dict>
 					<key>PassThroughMode</key>
 					<string>DISABLE</string>
+					<key>idProduct</key>
+					<integer>4121</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie Hard Disk (Neil Poulton design)</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4120</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie Hard Disk (Neil Poulton design) 1TB</key>
+				<dict>
+					<key>DelayIdentify</key>
+					<true/>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
+					<key>idProduct</key>
+					<integer>2385</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie Little Disk</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
+					<key>idProduct</key>
+					<integer>4129</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie Porsche design Desktop drive</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4179</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie Rugged Triple Interface</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4108</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie Rugged USB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
+					<key>idProduct</key>
+					<integer>4125</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie hard disk</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4137</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie minimus</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4170</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie rikiki a</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
+					<key>idProduct</key>
+					<integer>4138</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LaCie rikiki b</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4169</integer>
+					<key>idVendor</key>
+					<integer>1439</integer>
+				</dict>
+				<key>LogiLink AU0009</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20742</integer>
+					<key>idVendor</key>
+					<integer>5964</integer>
+				</dict>
+				<key>MEDION HDDrive-n-GO</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>21930</integer>
+					<key>idVendor</key>
+					<integer>5964</integer>
+				</dict>
+				<key>Macally G-S350SU</key>
+				<dict>
+					<key>Model_ID</key>
+					<integer>0</integer>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>Permissive</key>
+					<true/>
+					<key>Vendor_ID</key>
+					<integer>12512</integer>
+					<key>idProduct</key>
+					<integer>10</integer>
+					<key>idVendor</key>
+					<integer>2344</integer>
+				</dict>
+				<key>Macally G-S350SU3</key>
+				<dict>
+					<key>Model_ID</key>
+					<integer>13648</integer>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>Permissive</key>
+					<true/>
+					<key>Vendor_ID</key>
+					<integer>7052</integer>
+					<key>idProduct</key>
+					<integer>1385</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Manhattan SUPERSPEED USB TO SATA ADAPTER</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20742</integer>
+					<key>idVendor</key>
+					<integer>5964</integer>
+				</dict>
+				<key>Maxtor Basics Desktop</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>29712</integer>
+					<key>idVendor</key>
+					<integer>3401</integer>
+				</dict>
+				<key>Maxtor Basics Portable</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>29776</integer>
+					<key>idVendor</key>
+					<integer>3401</integer>
+				</dict>
+				<key>Maxtor BlackArmor Portable</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>30032</integer>
+					<key>idVendor</key>
+					<integer>3401</integer>
+				</dict>
+				<key>Maxtor OneTouch</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>29440</integer>
+					<key>idVendor</key>
+					<integer>3401</integer>
+				</dict>
+				<key>Maxtor OneTouch 4</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>29456</integer>
+					<key>idVendor</key>
+					<integer>3401</integer>
+				</dict>
+				<key>Maxtor OneTouch 4 Mini</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>29520</integer>
+					<key>idVendor</key>
+					<integer>3401</integer>
+				</dict>
+				<key>Mediasonic Pro Box 4 Bay Enclosure</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>1361</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Oyen Digital MiniPro</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>522</integer>
+					<key>idVendor</key>
+					<integer>3524</integer>
 				</dict>
 				<key>PNY USB 2.0 FD</key>
 				<dict>
-					<key>idVendor</key>
-					<integer>5451</integer>
-					<key>idProduct</key>
-					<integer>91</integer>
 					<key>PassThroughMode</key>
 					<string>DISABLE</string>
+					<key>idProduct</key>
+					<integer>91</integer>
+					<key>idVendor</key>
+					<integer>5451</integer>
+				</dict>
+				<key>RaidSonic ICY BOX IB-110StUS2-B</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>none (sat)</string>
+					<key>idProduct</key>
+					<integer>4928</integer>
+					<key>idVendor</key>
+					<integer>5117</integer>
+				</dict>
+				<key>RaidSonic ICY BOX IB-221StU</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>DISABLE</string>
+					<key>idProduct</key>
+					<integer>9001</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>RaidSonic ICY BOX IB-250StU3-BH</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>20742</integer>
+					<key>idVendor</key>
+					<integer>5964</integer>
+				</dict>
+				<key>RaidSonic ICY BOX IB-318StUS2</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9001</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>RaidSonic ICY BOX IB-3218StU-B</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9014</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>RaidSonic ICY BOX IB-360UE-BL</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>13575</integer>
+					<key>idVendor</key>
+					<integer>1659</integer>
+				</dict>
+				<key>SK-3500 SUPER-S3</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>528</integer>
+					<key>idVendor</key>
+					<integer>3524</integer>
+				</dict>
+				<key>Safecom 3.5" External Box</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>13575</integer>
+					<key>idVendor</key>
+					<integer>1659</integer>
+				</dict>
+				<key>Samsung G2 Portable</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>24626</integer>
+					<key>idVendor</key>
+					<integer>1256</integer>
+				</dict>
+				<key>Samsung M2 Portable 3</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>24773</integer>
+					<key>idVendor</key>
+					<integer>1256</integer>
+				</dict>
+				<key>Samsung M3 Portable 1TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>25014</integer>
+					<key>idVendor</key>
+					<integer>1256</integer>
+				</dict>
+				<key>Samsung M3 Portable 500GB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>25011</integer>
+					<key>idVendor</key>
+					<integer>1256</integer>
+				</dict>
+				<key>Samsung S1 Portable</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>12035</integer>
+					<key>idVendor</key>
+					<integer>1256</integer>
+				</dict>
+				<key>Samsung S2 Portable a</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>7942</integer>
+					<key>idVendor</key>
+					<integer>1256</integer>
+				</dict>
+				<key>Samsung S2 Portable b</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>7944</integer>
+					<key>idVendor</key>
+					<integer>1256</integer>
+				</dict>
+				<key>Samsung Story Station</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>24326</integer>
+					<key>idVendor</key>
+					<integer>1256</integer>
+				</dict>
+				<key>Samsung Story Station 3.0</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>24660</integer>
+					<key>idVendor</key>
+					<integer>1256</integer>
+				</dict>
+				<key>Seagate Backup Plus 2TB Desktop</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>43809</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate Backup Plus 3 TB Desktop</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>41124</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate Desktop HDD 4TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>13074</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate Expansion External a</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>13056</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate Expansion External b</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>13088</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate Expansion External c</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>13106</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate Expansion Portable a</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>8960</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate Expansion Portable b</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>8978</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent Desk</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>12289</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent Desktop</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>12288</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent Go FW</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>8704</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent Go a</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>8448</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent Go b</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>8449</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent GoFlex Desk  4TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>20645</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent GoFlex Desk a</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20592</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent GoFlex Desk b</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>20641</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent GoFlex a</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20513</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent GoFlex b</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>20529</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Seagate FreeAgent XTreme</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>12545</integer>
+					<key>idVendor</key>
+					<integer>3010</integer>
+				</dict>
+				<key>Sharkoon 2-Bay RAID Box</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>10070</integer>
+					<key>idVendor</key>
+					<integer>26517</integer>
+				</dict>
+				<key>Sharkoon Quickstore Portable</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>24854</integer>
+					<key>idVendor</key>
+					<integer>5325</integer>
+				</dict>
+				<key>Sharkoon SATA QuickPort</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20480</integer>
+					<key>idVendor</key>
+					<integer>5977</integer>
+				</dict>
+				<key>Sharkoon SATA QuickPort H3</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20480</integer>
+					<key>idVendor</key>
+					<integer>5977</integer>
+				</dict>
+				<key>Sharkoon SATA QuickPort PRO</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>4928</integer>
+					<key>idVendor</key>
+					<integer>5117</integer>
+				</dict>
+				<key>SilverStone TS04B</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20742</integer>
+					<key>idVendor</key>
+					<integer>5964</integer>
+				</dict>
+				<key>Spyker USB3 Adapter</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>22136</integer>
+					<key>idVendor</key>
+					<integer>4660</integer>
+				</dict>
+				<key>Tevion HDDrive2GO</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>9041</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Thermaltake BlacX Duet ST0014U</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9042</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Toshiba Canvio 3.0 1TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>40967</integer>
+					<key>idVendor</key>
+					<integer>1152</integer>
+				</dict>
+				<key>Toshiba Canvio Basics 3.0 1TB a</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>40966</integer>
+					<key>idVendor</key>
+					<integer>1152</integer>
+				</dict>
+				<key>Toshiba Canvio Basics 3.0 1TB b</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>40973</integer>
+					<key>idVendor</key>
+					<integer>1152</integer>
+				</dict>
+				<key>Transcend StoreJet 25M</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9001</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>Transcend StoreJet 25M3</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>20742</integer>
+					<key>idVendor</key>
+					<integer>5964</integer>
+				</dict>
+				<key>TrekStor DataStation maxi light</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>80</integer>
+					<key>idVendor</key>
+					<integer>7784</integer>
+				</dict>
+				<key>TrekStor DataStation maxi t.u</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>9016</integer>
+					<key>idVendor</key>
+					<integer>5421</integer>
+				</dict>
+				<key>UNKNOWN</key>
+				<dict>
+					<key>DelayIdentify</key>
+					<true/>
+					<key>PassThroughMode</key>
+					<string>none</string>
+					<key>Permissive</key>
+					<true/>
+				</dict>
+				<key>Vantec NexStar CX - NST-300SU-BK</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>7744</integer>
+					<key>idVendor</key>
+					<integer>5117</integer>
+				</dict>
+				<key>Verbatim External Hard Drive 2TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>554</integer>
+					<key>idVendor</key>
+					<integer>6309</integer>
+				</dict>
+				<key>Verbatim External Hard Drive 3TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1024</integer>
+					<key>idVendor</key>
+					<integer>6309</integer>
+				</dict>
+				<key>Verbatim FW/USB 160</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>533</integer>
+					<key>idVendor</key>
+					<integer>6309</integer>
+				</dict>
+				<key>Verbatim Pocket Hard Drive</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>jmicron</string>
+					<key>idProduct</key>
+					<integer>551</integer>
+					<key>idVendor</key>
+					<integer>6309</integer>
+				</dict>
+				<key>Verbatim Pocket Hard Drive 1TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>567</integer>
+					<key>idVendor</key>
+					<integer>6309</integer>
+				</dict>
+				<key>ViPowER VPA7-25038</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>56</integer>
+					<key>idVendor</key>
+					<integer>848</integer>
+				</dict>
+				<key>WD Elements 1TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4264</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD Elements 500GB a</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>4112</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD Elements 500GB b</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4258</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD Elements Desktop</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4099</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD Elements Desktop 2TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4129</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD Elements Desktop WD5000E035</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4097</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD Elements Portable 1TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4162</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD Essential 500GB WD5000AAK</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>2320</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Book</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4354</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Book ES 320GB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>2304</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Book ES 500GB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>2310</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Book Essential 1.5TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4368</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Book Essential 3TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4400</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Book Essential 500GB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4352</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Book Mirror Edition (2x500MB)</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4356</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Book Office Edition 1TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4353</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Book Studio II 2x1TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>4357</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport  1TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1864</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport 0702</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1794</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport 070A</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1802</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport 0730</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1840</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport 0748</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1864</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport Elite WDML3200TE</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1797</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport Essential</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1796</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport Essential SE</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1858</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport Essential SE  500GB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
+					<key>idProduct</key>
+					<integer>1856</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
+				</dict>
+				<key>WD My Passport Ultra 2TB</key>
+				<dict>
+					<key>PassThroughMode</key>
+					<string>sat12</string>
+					<key>idProduct</key>
+					<integer>2080</integer>
+					<key>idVendor</key>
+					<integer>4184</integer>
 				</dict>
 				<key>WD MyBook</key>
 				<dict>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
 					<key>Product Identification</key>
 					<string>My Book</string>
 					<key>Vendor Identification</key>
 					<string>WD</string>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Macally G-S350SU</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>2344</integer>
-					<key>idProduct</key>
-					<integer>10</integer>
-					<key>Vendor_ID</key>
-					<integer>12512</integer>
-					<key>Model_ID</key>
-					<integer>0</integer>
-					<key>Permissive</key>
-					<true/>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Macally G-S350SU3</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>1385</integer>
-					<key>Vendor_ID</key>
-					<integer>7052</integer>
-					<key>Model_ID</key>
-					<integer>13648</integer>
-					<key>Permissive</key>
-					<true/>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Spyker USB3 Adapter</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4660</integer>
-					<key>idProduct</key>
-					<integer>22136</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>ViPowER VPA7-25038</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>848</integer>
-					<key>idProduct</key>
-					<integer>56</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>HP Desktop HD BD07</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1008</integer>
-					<key>idProduct</key>
-					<integer>48391</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Buffalo JustStore Portable HD-PVU2</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1041</integer>
-					<key>idProduct</key>
-					<integer>385</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Toshiba Canvio Basics 3.0 1TB a</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1152</integer>
-					<key>idProduct</key>
-					<integer>40966</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Toshiba Canvio 3.0 1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1152</integer>
-					<key>idProduct</key>
-					<integer>40967</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Toshiba Canvio Basics 3.0 1TB b</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1152</integer>
-					<key>idProduct</key>
-					<integer>40973</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Samsung S1 Portable</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1256</integer>
-					<key>idProduct</key>
-					<integer>12035</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Samsung S2 Portable a</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1256</integer>
-					<key>idProduct</key>
-					<integer>7942</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Samsung S2 Portable b</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1256</integer>
-					<key>idProduct</key>
-					<integer>7944</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Samsung Story Station</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1256</integer>
-					<key>idProduct</key>
-					<integer>24326</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Samsung G2 Portable</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1256</integer>
-					<key>idProduct</key>
-					<integer>24626</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Samsung Story Station 3.0</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1256</integer>
-					<key>idProduct</key>
-					<integer>24660</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Samsung M2 Portable 3</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1256</integer>
-					<key>idProduct</key>
-					<integer>24773</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Samsung M3 Portable 500GB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1256</integer>
-					<key>idProduct</key>
-					<integer>25011</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Samsung M3 Portable 1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1256</integer>
-					<key>idProduct</key>
-					<integer>25014</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Iomega MDHD-UE</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1435</integer>
-					<key>idProduct</key>
-					<integer>631</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Iomega</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1435</integer>
-					<key>idProduct</key>
-					<integer>1141</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Iomega eGo 500GB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1435</integer>
-					<key>idProduct</key>
-					<integer>1404</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>LaCie Hard Disk (Neil Poulton design) 1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>2385</integer>
-					<key>PassThroughMode</key>
-					<string>DISABLE</string>
-					<key>DelayIdentify</key>
-					<true/>
-				</dict>
-				<key>LaCie Rugged Triple Interface</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4108</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>LaCie Hard Disk (Neil Poulton design)</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4120</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>LaCie Hard Disk</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4121</integer>
-					<key>PassThroughMode</key>
-					<string>DISABLE</string>
-				</dict>
-				<key>LaCie Rugged USB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4125</integer>
-					<key>PassThroughMode</key>
-					<string>DISABLE</string>
-				</dict>
-				<key>LaCie Little Disk</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4129</integer>
-					<key>PassThroughMode</key>
-					<string>DISABLE</string>
-				</dict>
-				<key>LaCie hard disk</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4137</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>LaCie rikiki a</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4138</integer>
-					<key>PassThroughMode</key>
-					<string>DISABLE</string>
-				</dict>
-				<key>LaCie rikiki b</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4169</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>LaCie minimus</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4170</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>LaCie Porsche design Desktop drive</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1439</integer>
-					<key>idProduct</key>
-					<integer>4179</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>(No Name 1)</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1507</integer>
-					<key>idProduct</key>
-					<integer>1816</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-					<key>Permissive</key>
-					<true/>
-				</dict>
-				<key>Chieftec  2.5&quot; case</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1507</integer>
-					<key>idProduct</key>
-					<integer>1841</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>RaidSonic ICY BOX IB-360UE-BL</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1659</integer>
-					<key>idProduct</key>
-					<integer>13575</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Safecom 3.5&quot; External Box</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1659</integer>
-					<key>idProduct</key>
-					<integer>13575</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Freecom HD 500GB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1963</integer>
-					<key>idProduct</key>
-					<integer>64730</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Freecom HD Classic 500GB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1963</integer>
-					<key>idProduct</key>
-					<integer>64726</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Apricorn SATA Wire (2.5&quot;)</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>2436</integer>
-					<key>idProduct</key>
-					<integer>64</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate Backup Plus 3 TB Desktop</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>41124</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate Backup Plus 2TB Desktop</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>43809</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Seagate Desktop HDD 4TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>13074</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Seagate FreeAgent Go a</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>8448</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Seagate FreeAgent Go b</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>8449</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Seagate FreeAgent Go FW</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>8704</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate Expansion Portable a</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>8960</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Seagate Expansion Portable b</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>8978</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate FreeAgent Desktop</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>12288</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate FreeAgent Desk</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>12289</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate FreeAgent XTreme</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>12545</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate Expansion External a</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>13056</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate Expansion External b</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>13088</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate Expansion External c</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>13106</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate FreeAgent GoFlex a</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>20513</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate FreeAgent GoFlex b</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>20529</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Seagate FreeAgent GoFlex Desk a</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>20592</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Seagate FreeAgent GoFlex Desk b</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>20641</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Seagate FreeAgent GoFlex Desk  4TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3010</integer>
-					<key>idProduct</key>
-					<integer>20645</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>TrekStor DataStation maxi light</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>7784</integer>
-					<key>idProduct</key>
-					<integer>80</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Maxtor OneTouch</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3401</integer>
-					<key>idProduct</key>
-					<integer>29440</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Maxtor OneTouch 4</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3401</integer>
-					<key>idProduct</key>
-					<integer>29456</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Maxtor OneTouch 4 Mini</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3401</integer>
-					<key>idProduct</key>
-					<integer>29520</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Maxtor Basics Desktop</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3401</integer>
-					<key>idProduct</key>
-					<integer>29712</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Maxtor Basics Portable</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3401</integer>
-					<key>idProduct</key>
-					<integer>29776</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Maxtor BlackArmor Portable</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3401</integer>
-					<key>idProduct</key>
-					<integer>30032</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Oyen Digital MiniPro</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3524</integer>
-					<key>idProduct</key>
-					<integer>522</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>SK-3500 SUPER-S3</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>3524</integer>
-					<key>idProduct</key>
-					<integer>528</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport 0702</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>1794</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport 0748</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>1864</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport Essential</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>1796</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport Elite WDML3200TE</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>1797</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport 070A</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>1802</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport 0730</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>1840</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport Essential SE  500GB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>1856</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport Essential SE</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>1858</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport  1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>1864</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Passport Ultra 2TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>2080</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>WD My Book ES 320GB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>2304</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Book ES 500GB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>2310</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD Essential 500GB WD5000AAK</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>2320</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD Elements Desktop WD5000E035</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4097</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD Elements Desktop</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4099</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD Elements 500GB a</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4112</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>WD Elements 500GB b</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4258</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD Elements Desktop 2TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4129</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD Elements Portable 1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4162</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD Elements 1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4264</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Book Essential 500GB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4352</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Book Office Edition 1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4353</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Book</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4354</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Book Mirror Edition (2x500MB)</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4356</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Book Studio II 2x1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4357</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Book Essential 1.5TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4368</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>WD My Book Essential 3TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
-					<key>idProduct</key>
-					<integer>4400</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
 				</dict>
 				<key>Western Digital My Book Essential 3000GB</key>
 				<dict>
-					<key>idVendor</key>
-					<integer>4184</integer>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
 					<key>idProduct</key>
 					<integer>4416</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Kingston SNA-DC/U</key>
-				<dict>
 					<key>idVendor</key>
-					<integer>4528</integer>
-					<key>idProduct</key>
-					<integer>25240</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>CROSU2 SATA Docking Station</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5117</integer>
-					<key>idProduct</key>
-					<integer>4672</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Cavalry CAXM</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5117</integer>
-					<key>idProduct</key>
-					<integer>4928</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Sharkoon SATA QuickPort PRO</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5117</integer>
-					<key>idProduct</key>
-					<integer>4928</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>RaidSonic ICY BOX IB-110StUS2-B</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5117</integer>
-					<key>idProduct</key>
-					<integer>4928</integer>
-					<key>PassThroughMode</key>
-					<string>none (sat)</string>
-				</dict>
-				<key>Intenso Memory Station 2.5&quot;</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5117</integer>
-					<key>idProduct</key>
-					<integer>6208</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Vantec NexStar CX - NST-300SU-BK</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5117</integer>
-					<key>idProduct</key>
-					<integer>7744</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>JMicron controller</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>1337</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Mediasonic Pro Box 4 Bay Enclosure</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>1361</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>RaidSonic ICY BOX IB-221StU</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9001</integer>
-					<key>PassThroughMode</key>
-					<string>DISABLE</string>
-				</dict>
-				<key>RaidSonic ICY BOX IB-318StUS2</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9001</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Transcend StoreJet 25M</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9001</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>RaidSonic ICY BOX IB-3218StU-B</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9014</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>AixCase AIX-ESU35CD</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9014</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Generic JMicron adapter</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9015</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Conceptronic CHD3UL</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9016</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Digitus DA-70148-1</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9016</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Fibrionic PE-3264</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9016</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>AixCase AIX-USB2SI-PS</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9016</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Gembird AUSI01</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9016</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Inki1-837</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9016</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>TrekStor DataStation maxi t.u</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9016</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>AixCase AIX-SUB3A1</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9017</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Tevion HDDrive2GO</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9041</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Thermaltake BlacX Duet ST0014U</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9042</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>(No Name 2)</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5421</integer>
-					<key>idProduct</key>
-					<integer>9481</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>RaidSonic ICY BOX IB-250StU3-BH</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5964</integer>
-					<key>idProduct</key>
-					<integer>20742</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Icy Box IB-AC603A-U3</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5964</integer>
-					<key>idProduct</key>
-					<integer>20790</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Manhattan SUPERSPEED USB TO SATA ADAPTER</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5964</integer>
-					<key>idProduct</key>
-					<integer>20742</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>DeLock SUPERSPEED USB TO SATA ADAPTER</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5964</integer>
-					<key>idProduct</key>
-					<integer>20742</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>SilverStone TS04B</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5964</integer>
-					<key>idProduct</key>
-					<integer>20742</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Transcend StoreJet 25M3</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5964</integer>
-					<key>idProduct</key>
-					<integer>20742</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>LogiLink AU0009</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5964</integer>
-					<key>idProduct</key>
-					<integer>20742</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>MEDION HDDrive-n-GO</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5964</integer>
-					<key>idProduct</key>
-					<integer>21930</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Sharkoon SATA QuickPort H3</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5977</integer>
-					<key>idProduct</key>
-					<integer>20480</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Sharkoon SATA QuickPort</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>5977</integer>
-					<key>idProduct</key>
-					<integer>20480</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Verbatim FW/USB 160</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>6309</integer>
-					<key>idProduct</key>
-					<integer>533</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Verbatim External Hard Drive 2TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>6309</integer>
-					<key>idProduct</key>
-					<integer>554</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Verbatim Pocket Hard Drive</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>6309</integer>
-					<key>idProduct</key>
-					<integer>551</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Verbatim External Hard Drive 3TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>6309</integer>
-					<key>idProduct</key>
-					<integer>1024</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Verbatim Pocket Hard Drive 1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>6309</integer>
-					<key>idProduct</key>
-					<integer>567</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Intenso 3,5&quot; Portable Hard Drive</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>8457</integer>
-					<key>idProduct</key>
-					<integer>1793</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Hitachi/SimpleTech 1TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>18801</integer>
-					<key>idProduct</key>
-					<integer>52759</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Hitachi Touro Desk 3TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>18801</integer>
-					<key>idProduct</key>
-					<integer>4113</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>Hitachi Touro Desk 3.0 2TB</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>18801</integer>
-					<key>idProduct</key>
-					<integer>4117</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Sharkoon 2-Bay RAID Box</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>26517</integer>
-					<key>idProduct</key>
-					<integer>10070</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
+					<integer>4184</integer>
 				</dict>
 				<key>Zalman ZM-VE200</key>
 				<dict>
-					<key>idVendor</key>
-					<integer>2344</integer>
+					<key>PassThroughMode</key>
+					<string>sat16</string>
 					<key>idProduct</key>
 					<integer>16</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
-				</dict>
-				<key>Sharkoon Quickstore Portable</key>
-				<dict>
 					<key>idVendor</key>
-					<integer>5325</integer>
-					<key>idProduct</key>
-					<integer>24854</integer>
-					<key>PassThroughMode</key>
-					<string>sat12</string>
-				</dict>
-				<key>Icy Box IB-231</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>8053</integer>
-					<key>idProduct</key>
-					<integer>2184</integer>
-					<key>PassThroughMode</key>
-					<string>DISABLE</string>
-				</dict>
-				<key>(No Name 3)</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>1659</integer>
-					<key>idProduct</key>
-					<integer>9479</integer>
-					<key>PassThroughMode</key>
-					<string>jmicron</string>
-				</dict>
-				<key>(No Name 4)</key>
-				<dict>
-					<key>idVendor</key>
-					<integer>8053</integer>
-					<key>idProduct</key>
-					<integer>1569</integer>
-					<key>PassThroughMode</key>
-					<string>sat16</string>
+					<integer>2344</integer>
 				</dict>
 			</dict>
+			<key>PassThroughMode</key>
+			<string>none</string>
+			<key>Peripheral Device Type</key>
+			<integer>0</integer>
+			<key>Permissive</key>
+			<true/>
 		</dict>
 	</dict>
 	<key>OSBundleLibraries</key>

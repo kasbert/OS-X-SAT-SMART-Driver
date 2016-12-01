@@ -40,6 +40,8 @@ Uninstall
  * Remove driver and plugin
     sudo rm -r /System/Library/Extensions/SATSMARTDriver.kext
     sudo rm -r /System/Library/Extensions/SATSMARTLib.plugin
+    sudo rm -r /Library/Extensions/SATSMARTDriver.kext
+    sudo rm -r /Library/Extensions/SATSMARTLib.plugin
  * Reboot
 
 
@@ -53,25 +55,7 @@ ioreg -r -w 0 -c fi_dungeon_driver_IOSATDriver  | egrep 'Enclosure|PassThroughMo
   |   "SATSMARTCapable" = Yes
   |   "PassThroughMode" = "sat16"
 
-If not, try adding the info to /System/Library/Extensions/SATSMARTDriver.kext/Contents/Info.plist . Note that hex numbers must be converted to decimal.
-
-<key>Macally G-S350SU</key>
-<dict>
- <key>idVendor</key>
- <integer>2344</integer>
- <key>idProduct</key>
- <integer>10</integer>
- <key>Permissive</key>
- <true/>
- <key>PassThroughMode</key>
- <string>sat16</string>
-</dict>
-
-Unmount all drives and reload the driver:
-
-sudo kextunload -v -b fi.dungeon.driver.SATSMARTDriver
-sudo kextutil -t /System/Library/Extensions/SATSMARTDriver.kext
-
+Add an issue to GitHub.
 
 Compile
 =======

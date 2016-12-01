@@ -1,7 +1,8 @@
 #!/bin/sh
-chmod -R go-w /System/Library/Extensions/SATSMARTDriver.kext 
-chown -R root:wheel /System/Library/Extensions/SATSMARTDriver.kext 
-chmod -R go-w /System/Library/Extensions/SATSMARTLib.plugin
-chown -R root:wheel /System/Library/Extensions/SATSMARTLib.plugin
-kextutil /System/Library/Extensions/SATSMARTDriver.kext
+KEXTDIR=/Library/Extensions
+chmod -R go-w $KEXTDIR/SATSMARTDriver.kext 
+chown -R root:wheel $KEXTDIR/SATSMARTDriver.kext 
+chmod -R go-w $KEXTDIR/SATSMARTLib.plugin
+chown -R root:wheel $KEXTDIR/SATSMARTLib.plugin
+kextutil $KEXTDIR/SATSMARTDriver.kext
 exit 0

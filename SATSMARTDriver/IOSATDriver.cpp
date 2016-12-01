@@ -287,7 +287,7 @@ IOService *fi_dungeon_driver_IOSATDriver::probe(IOService *provider,
 	    */
             OSCollectionIterator * keyIterator = OSCollectionIterator::withCollection(details);
             OSSymbol * key;
-            while ( key = OSDynamicCast(OSSymbol,keyIterator->getNextObject())) {
+            while ( (key = OSDynamicCast(OSSymbol,keyIterator->getNextObject()))) {
                 OSObject * value = details->getObject(key);
                 setProperty(key, value);
 		// FIXME ?

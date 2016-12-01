@@ -7,21 +7,19 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>fi.dungeon.driver.SATSMARTLib</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>SATSMARTLib</string>
 	<key>CFBundlePackageType</key>
 	<string>BNDL</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
-	<key>CFBundleName</key>
-	<string>SATSMARTLib</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>0.11</string>
-	<key>CSResourcesFileMapped</key>
-	<string>yes</string>
 	<key>CFPlugInFactories</key>
 	<dict>
 		<key>3AD527ED-62A3-4F94-8889-0FD92DEC32C5</key>
@@ -34,5 +32,7 @@
 			<string>3AD527ED-62A3-4F94-8889-0FD92DEC32C5</string>
 		</array>
 	</dict>
+	<key>CSResourcesFileMapped</key>
+	<string>yes</string>
 </dict>
 </plist>

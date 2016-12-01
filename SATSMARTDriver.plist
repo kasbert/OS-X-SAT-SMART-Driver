@@ -13,11 +13,11 @@
 				<key>BundleOverwriteAction</key>
 				<string></string>
 				<key>RootRelativeBundlePath</key>
-				<string>System/Library/Extensions/SATSMARTLib.plugin</string>
+				<string>Library/Extensions/SATSMARTLib.plugin</string>
 			</dict>
 		</array>
 		<key>RootRelativeBundlePath</key>
-		<string>System/Library/Extensions/SATSMARTDriver.kext</string>
+		<string>Library/Extensions/SATSMARTDriver.kext</string>
 	</dict>
 </array>
 </plist>
