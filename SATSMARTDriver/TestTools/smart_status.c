@@ -332,13 +332,13 @@ static void CheckSMARTStatus( io_service_t service, uint64_t id, const char *mod
                                              kCFAllocatorDefault,
                                              kNilOptions );
     
-    require ( ( err == kIOReturnSuccess ), ErrorExit );
+    __Require(( err == kIOReturnSuccess ), ErrorExit);
 
     
     result = CFDictionaryGetValueIfPresent ( dict,
                                             CFSTR ( kIOPropertyDeviceCharacteristicsKey ),
                                             ( const void ** ) &deviceDict );
-    require_action ( result, ReleaseProperties, err = kIOReturnError );
+    __Require_Action(result, ReleaseProperties, err = kIOReturnError);
     
     //CFDictionaryApplyFunction(dict, _apply, 0);
 
@@ -379,7 +379,7 @@ static void CheckSMARTStatus( io_service_t service, uint64_t id, const char *mod
 
     Boolean conditionExceeded = FALSE;
     err = ( *ppSmart )->SMARTReturnStatus ( ppSmart, &conditionExceeded );
-    require ( ( err == kIOReturnSuccess ), ReleaseParent );
+    __Require(( err == kIOReturnSuccess ), ReleaseParent);
     printf("SMART Status    : %s\n", conditionExceeded ? "FAIL" : "OK");
     
 ReleaseParent:
