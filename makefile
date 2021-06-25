@@ -13,7 +13,7 @@ KEXTDIR=/Library/Extensions
 
 build:
 	rm -rf SATSMARTDriver/build
-	(cd SATSMARTDriver; xcodebuild -configuration $(CONFIGURATION) -project SATSMARTDriver.xcodeproj)
+	(cd SATSMARTDriver; xcodebuild -configuration $(CONFIGURATION) -project SATSMARTDriver.xcodeproj -UseModernBuildSystem=NO)
 
 version:
 	$(eval VERSION := $(shell cat SATSMARTDriver/build/$(CONFIGURATION)/SATSMARTDriver.kext/Contents/Info.plist | xpath "//string[preceding-sibling::key[1]='CFBundleVersion']/text()"))
@@ -27,11 +27,13 @@ version:
 pkg: version
 	rm -rf Root $(PKG)
 	mkdir Root
-	(cd SATSMARTDriver; xcodebuild -configuration $(CONFIGURATION) -project SATSMARTDriver.xcodeproj install DSTROOT=../Root)
+	(cd SATSMARTDriver; xcodebuild -configuration $(CONFIGURATION) -project SATSMARTDriver.xcodeproj -UseModernBuildSystem=NO install DSTROOT=../Root)
 	rm -f Root/usr/local/bin/smart_sample
 	rm -f Root/usr/local/bin/set_properties
+	mkdir -p Root/Library/Extensions/
 	mv Root/System/Library/Extensions/SATSMARTLib.plugin Root/Library/Extensions/
-	pkgbuild --root Root  --component-plist SATSMARTDriver.plist --scripts Resources --identifier fi.dungeon.SATSMARTDriver SATSMARTDriver.pkg
+	mv Root/System/Library/Extensions/SATSMARTDriver.kext Root/Library/Extensions/
+	pkgbuild --root Root  --component-plist SATSMARTDriver.plist --scripts Resources --identifier fi.dungeon.SATSMARTDriver SATSMARTDriver.pkg --install-location /usr/local
 	productbuild --distribution ./Distribution.xml --package-path . $(PKG)
 	#/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker --doc SATSMARTDriver.pmdoc --out $(PKG)
 

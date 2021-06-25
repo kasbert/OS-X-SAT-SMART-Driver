@@ -61,7 +61,7 @@ Compile
 =======
 
  * Compile all targets
-    make package
+    make pkg
 
  * Unmount all existing external drives.
 
