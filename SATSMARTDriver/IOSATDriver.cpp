@@ -449,7 +449,7 @@ IOReturn fi_dungeon_driver_IOSATDriver::setProperties(OSObject* properties)
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     dict = OSDynamicCast(OSDictionary, properties);
-    require_action(dict, ErrorExit, result = kIOReturnBadArgument);
+    __Require_Action(dict, ErrorExit, result = kIOReturnBadArgument);
 
     keyIterator = OSCollectionIterator::withCollection(dict);
     while (OSString *key = OSDynamicCast(OSString,keyIterator->getNextObject())) {
@@ -650,7 +650,7 @@ fi_dungeon_driver_IOSATDriver::attach ( IOService * provider )
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     bool result = false;
     
-    require_string ( super::attach ( provider ), ErrorExit,
+    __Require_String ( super::attach ( provider ), ErrorExit,
                     "Superclass didn't attach" );
     
     result = true;
@@ -683,10 +683,10 @@ fi_dungeon_driver_IOSATDriver::CreateStorageServiceNub ( void )
     IOService *         nub = NULL;
    
     nub = OSTypeAlloc ( IOSATServices );
-    require_quiet ( nub, ErrorExit );
+    __Require_Quiet ( nub, ErrorExit );
     
     nub->init ( );
-    require ( nub->attach ( this ), ReleaseNub );
+    __Require ( nub->attach ( this ), ReleaseNub );
     nub->registerService ( );
     nub->release ( );
     return;
@@ -711,12 +711,12 @@ IOReturn fi_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comman
     int direction, count, protocol;
     
     IOSATBusCommand* cmd = OSDynamicCast( IOSATBusCommand, command);
-    require_action_string(cmd, ErrorExit, err = kIOReturnBadArgument, "Command is not a IOSATBusCommand");
+    __Require_Action_String(cmd, ErrorExit, err = kIOReturnBadArgument, "Command is not a IOSATBusCommand");
     
-    require (fSATSMARTCapable, ErrorExit );
+    __Require (fSATSMARTCapable, ErrorExit );
     
     request = GetSCSITask ( );
-    require (request, ErrorExit );
+    __Require (request, ErrorExit );
     
     DEBUG_LOG("buffer %p, bytecount %d, features %x, opcode %x, timeout %d, seccnt %x, secnum %x, cyllo %x, cylhi %x, dev %x, cmd %x, flags %x\n"
               , cmd->getBuffer() , (int)cmd->getByteCount(), cmd->getErrorReg()
@@ -812,7 +812,7 @@ IOReturn fi_dungeon_driver_IOSATDriver::sendSMARTCommand ( IOSATCommand * comman
     }
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ErrorExit );
+    __Require_Quiet ( ( request != NULL ), ErrorExit );
     ReleaseSCSITask ( request );
     request = NULL;
     
@@ -840,11 +840,11 @@ fi_dungeon_driver_IOSATDriver::JMicron_get_registers ( UInt16 address, UInt8 *pt
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     buffer = IOMemoryDescriptor::withAddress(ptr, length, kIODirectionIn);
-    require ( ( buffer != NULL ), ErrorExit );
+    __Require ( ( buffer != NULL ), ErrorExit );
     bzero ( ptr, buffer->getLength ( ) );
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
-    require ( ( buffer->prepare ( ) == kIOReturnSuccess ), ReleaseTask );
+    __Require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( buffer->prepare ( ) == kIOReturnSuccess ), ReleaseTask );
     
     if ( PASS_THROUGH_JMicron( request,
                               buffer,
@@ -895,12 +895,12 @@ fi_dungeon_driver_IOSATDriver::JMicron_get_registers ( UInt16 address, UInt8 *pt
     buffer->complete ( );
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
 ReleaseBuffer:
-    require_quiet ( ( buffer != NULL ), ErrorExit );
+    __Require_Quiet ( ( buffer != NULL ), ErrorExit );
     buffer->release ( );
     buffer = NULL;
     
@@ -1077,7 +1077,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
     buffer = IOBufferMemoryDescriptor::withCapacity ( 512, kIODirectionIn, false );
     
     // Return immediately if the buffer wasn't created.
-    require ( ( buffer != NULL ), ErrorExit );
+    __Require ( ( buffer != NULL ), ErrorExit );
     
     // Get the address of the beginning of the buffer and zero-fill the buffer.
     ptr = ( UInt8 * ) buffer->getBytesNoCopy ( );
@@ -1085,12 +1085,12 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
     
     // Create a new SCSITask object; if unsuccessful, release the buffer and return.
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( request != NULL ), ReleaseBuffer );
     
     // Prepare the buffer for an I/O transaction. This call must be
     // balanced by a call to the complete method (shown just before
     // ReleaseTask).
-    require ( ( buffer->prepare ( ) == kIOReturnSuccess ), ReleaseTask );
+    __Require ( ( buffer->prepare ( ) == kIOReturnSuccess ), ReleaseTask );
     
     // The BuildINQUIRY function shows how you can design and use a
     // command-building function to create a custom command to send
@@ -1162,12 +1162,12 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_IDENTIFY ( void )
     buffer->complete ( );
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
 ReleaseBuffer:
-    require_quiet ( ( buffer != NULL ), ErrorExit );
+    __Require_Quiet ( ( buffer != NULL ), ErrorExit );
     buffer->release ( );
     buffer = NULL;
     
@@ -1192,14 +1192,14 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
     
     buffer = IOBufferMemoryDescriptor::withCapacity ( 512, kIODirectionIn, false );
     
-    require ( ( buffer != NULL ), ErrorExit );
+    __Require ( ( buffer != NULL ), ErrorExit );
     ptr = ( UInt8 * ) buffer->getBytesNoCopy ( );
     bzero ( ptr, buffer->getLength ( ) );
     ptr16 = ( UInt16 * ) buffer->getBytesNoCopy ( );
     
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
-    require ( ( buffer->prepare ( ) == kIOReturnSuccess ), ReleaseTask );
+    __Require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( buffer->prepare ( ) == kIOReturnSuccess ), ReleaseTask );
     
     if ( PASS_THROUGH_12or16 ( request,
                               buffer,
@@ -1254,12 +1254,12 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_SMART_READ_DATA ( void )
     buffer->complete ( );
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
 ReleaseBuffer:
-    require_quiet ( ( buffer != NULL ), ErrorExit );
+    __Require_Quiet ( ( buffer != NULL ), ErrorExit );
     buffer->release ( );
     buffer = NULL;
     
@@ -1279,7 +1279,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_IDLE(UInt8 value)
     DEBUG_LOG("%s[%p]::%s value %d\n", getClassName(), this, __FUNCTION__, (int) value);
     
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( request != NULL ), ReleaseBuffer );
     
     if ( PASS_THROUGH_12or16 ( request,
                               0,               // buffer
@@ -1317,7 +1317,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_IDLE(UInt8 value)
     }
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
@@ -1338,7 +1338,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_IDLE_IMMEDIATE()
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( request != NULL ), ReleaseBuffer );
     
     if ( PASS_THROUGH_12or16 ( request,
                               0,               // buffer
@@ -1376,7 +1376,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_IDLE_IMMEDIATE()
     }
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
@@ -1397,7 +1397,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
     DEBUG_LOG("%s[%p]::%s value %d\n", getClassName(), this, __FUNCTION__, (int) value);
     
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( request != NULL ), ReleaseBuffer );
     
     if ( PASS_THROUGH_12or16 ( request,
                               0,               // buffer
@@ -1435,7 +1435,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_STANDBY(UInt8 value)
     }
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
@@ -1456,7 +1456,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_STANDBY_IMMEDIATE()
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( request != NULL ), ReleaseBuffer );
     
     if ( PASS_THROUGH_12or16 ( request,
                               0,               // buffer
@@ -1494,7 +1494,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_STANDBY_IMMEDIATE()
     }
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
@@ -1515,7 +1515,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_CHECK_POWER_MODE(int *mode)
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( request != NULL ), ReleaseBuffer );
     
     if ( PASS_THROUGH_12or16 ( request,
                               0,               // buffer
@@ -1557,7 +1557,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_CHECK_POWER_MODE(int *mode)
     }
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
@@ -1578,7 +1578,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_SEND_SOFT_RESET ( void )
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( request != NULL ), ReleaseBuffer );
     
     if ( PASS_THROUGH_12or16 ( request,
                               0,               // buffer
@@ -1616,7 +1616,7 @@ fi_dungeon_driver_IOSATDriver::Send_ATA_SEND_SOFT_RESET ( void )
     }
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
@@ -1648,20 +1648,20 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_JMicron (
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     // Validate the parameters here.
-    require ( ( request != NULL ), ErrorExit );
-    require ( ResetForNewTask ( request ), ErrorExit );
+    __Require ( ( request != NULL ), ErrorExit );
+    __Require ( ResetForNewTask ( request ), ErrorExit );
     
     // The helper functions ensure that the parameters fit within the
     // CDB fields and that the buffer passed in is large enough for
     // the transfer length.
-    require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
     
     SetCommandDescriptorBlock ( request,
                                kSCSICmd_PASS_THROUGH_JMicron,
@@ -1703,20 +1703,20 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_Sunplus (
     UInt8 protocol;
     
     // Validate the parameters here.
-    require ( ( request != NULL ), ErrorExit );
-    require ( ResetForNewTask ( request ), ErrorExit );
+    __Require ( ( request != NULL ), ErrorExit );
+    __Require ( ResetForNewTask ( request ), ErrorExit );
     
     // The helper functions ensure that the parameters fit within the
     // CDB fields and that the buffer passed in is large enough for
     // the transfer length.
-    require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
     
     switch (direction) {
     case kSCSIDataTransfer_FromTargetToInitiator:
@@ -1777,28 +1777,28 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_12 (
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     // Validate the parameters here.
-    require ( ( request != NULL ), ErrorExit );
-    require ( ResetForNewTask ( request ), ErrorExit );
+    __Require ( ( request != NULL ), ErrorExit );
+    __Require ( ResetForNewTask ( request ), ErrorExit );
     
     // The helper functions ensure that the parameters fit within the
     // CDB fields and that the buffer passed in is large enough for
     // the transfer length.
-    require ( IsParameterValid ( MULTIPLE_COUNT, kSCSICmdFieldMask3Bit ), ErrorExit );
-    require ( IsParameterValid ( PROTOCOL, kSCSICmdFieldMask4Bit ), ErrorExit );
-    require ( IsParameterValid ( EXTEND, kSCSICmdFieldMask1Bit ), ErrorExit );
-    require ( IsParameterValid ( OFF_LINE, kSCSICmdFieldMask2Bit ), ErrorExit );
-    require ( IsParameterValid ( CK_COND, kSCSICmdFieldMask1Bit ), ErrorExit );
-    require ( IsParameterValid ( T_DIR, kSCSICmdFieldMask1Bit ), ErrorExit );
-    require ( IsParameterValid ( BYT_BLOK, kSCSICmdFieldMask1Bit ), ErrorExit );
-    require ( IsParameterValid ( T_LENGTH, kSCSICmdFieldMask2Bit ), ErrorExit );
-    require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( MULTIPLE_COUNT, kSCSICmdFieldMask3Bit ), ErrorExit );
+    __Require ( IsParameterValid ( PROTOCOL, kSCSICmdFieldMask4Bit ), ErrorExit );
+    __Require ( IsParameterValid ( EXTEND, kSCSICmdFieldMask1Bit ), ErrorExit );
+    __Require ( IsParameterValid ( OFF_LINE, kSCSICmdFieldMask2Bit ), ErrorExit );
+    __Require ( IsParameterValid ( CK_COND, kSCSICmdFieldMask1Bit ), ErrorExit );
+    __Require ( IsParameterValid ( T_DIR, kSCSICmdFieldMask1Bit ), ErrorExit );
+    __Require ( IsParameterValid ( BYT_BLOK, kSCSICmdFieldMask1Bit ), ErrorExit );
+    __Require ( IsParameterValid ( T_LENGTH, kSCSICmdFieldMask2Bit ), ErrorExit );
+    __Require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
     
     // This is a 12-byte command: fill out the CDB appropriately
     SetCommandDescriptorBlock ( request,
@@ -1850,28 +1850,28 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_16 (
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     
     // Validate the parameters here.
-    require ( ( request != NULL ), ErrorExit );
-    require ( ResetForNewTask ( request ), ErrorExit );
+    __Require ( ( request != NULL ), ErrorExit );
+    __Require ( ResetForNewTask ( request ), ErrorExit );
     
     // The helper functions ensure that the parameters fit within the
     // CDB fields and that the buffer passed in is large enough for
     // the transfer length.
-    require ( IsParameterValid ( MULTIPLE_COUNT, kSCSICmdFieldMask3Bit ), ErrorExit );
-    require ( IsParameterValid ( PROTOCOL, kSCSICmdFieldMask4Bit ), ErrorExit );
-    require ( IsParameterValid ( EXTEND, kSCSICmdFieldMask1Bit ), ErrorExit );
-    require ( IsParameterValid ( OFF_LINE, kSCSICmdFieldMask2Bit ), ErrorExit );
-    require ( IsParameterValid ( CK_COND, kSCSICmdFieldMask1Bit ), ErrorExit );
-    require ( IsParameterValid ( T_DIR, kSCSICmdFieldMask1Bit ), ErrorExit );
-    require ( IsParameterValid ( BYT_BLOK, kSCSICmdFieldMask1Bit ), ErrorExit );
-    require ( IsParameterValid ( T_LENGTH, kSCSICmdFieldMask2Bit ), ErrorExit );
-    require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask2Byte ), ErrorExit );
-    require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask2Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask2Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask2Byte ), ErrorExit );
-    require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask2Byte ), ErrorExit );
-    require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
-    require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( MULTIPLE_COUNT, kSCSICmdFieldMask3Bit ), ErrorExit );
+    __Require ( IsParameterValid ( PROTOCOL, kSCSICmdFieldMask4Bit ), ErrorExit );
+    __Require ( IsParameterValid ( EXTEND, kSCSICmdFieldMask1Bit ), ErrorExit );
+    __Require ( IsParameterValid ( OFF_LINE, kSCSICmdFieldMask2Bit ), ErrorExit );
+    __Require ( IsParameterValid ( CK_COND, kSCSICmdFieldMask1Bit ), ErrorExit );
+    __Require ( IsParameterValid ( T_DIR, kSCSICmdFieldMask1Bit ), ErrorExit );
+    __Require ( IsParameterValid ( BYT_BLOK, kSCSICmdFieldMask1Bit ), ErrorExit );
+    __Require ( IsParameterValid ( T_LENGTH, kSCSICmdFieldMask2Bit ), ErrorExit );
+    __Require ( IsParameterValid ( FEATURES, kSCSICmdFieldMask2Byte ), ErrorExit );
+    __Require ( IsParameterValid ( SECTOR_COUNT, kSCSICmdFieldMask2Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_LOW, kSCSICmdFieldMask2Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_MID, kSCSICmdFieldMask2Byte ), ErrorExit );
+    __Require ( IsParameterValid ( LBA_HIGH, kSCSICmdFieldMask2Byte ), ErrorExit );
+    __Require ( IsParameterValid ( DEVICE, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( COMMAND, kSCSICmdFieldMask1Byte ), ErrorExit );
+    __Require ( IsParameterValid ( CONTROL, kSCSICmdFieldMask1Byte ), ErrorExit );
     
     // This is a 16-byte command: fill out the CDB appropriately
     SetCommandDescriptorBlock ( request,
@@ -1925,24 +1925,24 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
     int direction = kSCSIDataTransfer_NoDataTransfer;
     int transferCount = 0;
     
-    require ( ( request != NULL ), ErrorExit );
+    __Require ( ( request != NULL ), ErrorExit );
     
     switch (PROTOCOL) {
         case kIOSATProtocolHardReset:     // Hard Reset
         case kIOSATProtocolSRST:     // SRST
         case kIOSATProtocolDEVICERESET:     // DEVICE RESET
         case kIOSATProtocolNonData:     // Non-data
-            require (!dataBuffer, ErrorExit);
+            __Require (!dataBuffer, ErrorExit);
             break;
         case kIOSATProtocolPIODataIn:     // PIO Data-In
         case kIOSATProtocolUDMADataIn:     // UDMA Data In
-            require (T_DIR == kIOSATTDirectionFromDevice, ErrorExit);
-            require (dataBuffer, ErrorExit);
+            __Require (T_DIR == kIOSATTDirectionFromDevice, ErrorExit);
+            __Require (dataBuffer, ErrorExit);
             break;
         case kIOSATProtocolPIODataOut:     // PIO Data-Out
         case kIOSATProtocolUDMADataOut:     // UDMA Data Out
-            require (T_DIR == kIOSATTDirectionToDevice, ErrorExit);
-            require (dataBuffer, ErrorExit);
+            __Require (T_DIR == kIOSATTDirectionToDevice, ErrorExit);
+            __Require (dataBuffer, ErrorExit);
             break;
         case kIOSATProtocolDMA:     // DMA
         case kIOSATProtocolDMAQueued:     // DMA Queued
@@ -1952,7 +1952,7 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
             break;
     }
     if (dataBuffer) {
-        require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
+        __Require ( IsMemoryDescriptorValid ( dataBuffer, dataBuffer->getLength() ), ErrorExit );
         transferCount = (int) dataBuffer->getLength();
         if (T_DIR == kIOSATTDirectionFromDevice) {
             direction = kSCSIDataTransfer_FromTargetToInitiator;
@@ -1992,7 +1992,7 @@ fi_dungeon_driver_IOSATDriver::PASS_THROUGH_12or16 (
                                  DEVICE, COMMAND, CONTROL);
     }
     
-    require (result, ErrorExit );
+    __Require (result, ErrorExit );
     
     SetTimeoutDuration ( request, 0 );
     SetDataTransferDirection ( request, direction);
@@ -2017,14 +2017,14 @@ fi_dungeon_driver_IOSATDriver::SendBuiltInINQUIRY ( void )
     
     DEBUG_LOG("%s[%p]::%s\n", getClassName(), this, __FUNCTION__);
     buffer = IOBufferMemoryDescriptor::withCapacity ( sizeof ( SCSICmd_INQUIRY_StandardDataAll ), kIODirectionIn, false );
-    require ( ( buffer != NULL ), ErrorExit );
+    __Require ( ( buffer != NULL ), ErrorExit );
     
     ptr = ( UInt8 * ) buffer->getBytesNoCopy ( );
     bzero ( ptr, buffer->getLength ( ) );
     
     request = GetSCSITask ( );
-    require ( ( request != NULL ), ReleaseBuffer );
-    require ( ( buffer->prepare ( ) == kIOReturnSuccess ), ReleaseTask );
+    __Require ( ( request != NULL ), ReleaseBuffer );
+    __Require ( ( buffer->prepare ( ) == kIOReturnSuccess ), ReleaseTask );
     
     if ( INQUIRY (  request,
                   buffer,
@@ -2051,12 +2051,12 @@ fi_dungeon_driver_IOSATDriver::SendBuiltInINQUIRY ( void )
     buffer->complete ( );
     
 ReleaseTask:
-    require_quiet ( ( request != NULL ), ReleaseBuffer );
+    __Require_Quiet ( ( request != NULL ), ReleaseBuffer );
     ReleaseSCSITask ( request );
     request = NULL;
     
 ReleaseBuffer:
-    require_quiet ( ( buffer != NULL ), ErrorExit );
+    __Require_Quiet ( ( buffer != NULL ), ErrorExit );
     buffer->release ( );
     buffer = NULL;
     

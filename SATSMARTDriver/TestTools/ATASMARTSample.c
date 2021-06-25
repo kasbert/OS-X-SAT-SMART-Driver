@@ -244,7 +244,7 @@ main ( int argc, const char * argv[] )
     int selector        = 0;
     
     result = ValidateArguments ( argc, argv, &selector );
-    require_noerr_action ( result, ErrorExit, PrintUsage ( ) );
+    __Require_noErr_Action ( result, ErrorExit, PrintUsage ( ) );
     
     printf ( "\n" );
     
@@ -253,12 +253,12 @@ main ( int argc, const char * argv[] )
             
         case kAllDevices:
             result = PrintSMARTDataForAllDrives ( );
-            require_action ( ( result == kIOReturnSuccess ), ErrorExit, result = -1 );
+            __Require_Action ( ( result == kIOReturnSuccess ), ErrorExit, result = -1 );
             break;
             
         case kSpecificDevice:
             result = PrintSMARTDataForBSDNode ( argv[argc - 1] );
-            require_action ( ( result == kIOReturnSuccess ), ErrorExit, result = -1 );
+            __Require_Action ( ( result == kIOReturnSuccess ), ErrorExit, result = -1 );
             break;
             
         default:
@@ -285,13 +285,13 @@ ValidateArguments ( int argc, const char * argv[], int * selector )
     
     IOReturn result = kIOReturnError;
     
-    require ( ( argc > 1 ), ErrorExit );
-    require ( ( argc < 4 ), ErrorExit );
+    __Require ( ( argc > 1 ), ErrorExit );
+    __Require ( ( argc < 4 ), ErrorExit );
     
     if ( argc == 2 )
     {
         
-        require ( ( strcmp ( argv[1], "-a" ) == 0 ), ErrorExit );
+        __Require ( ( strcmp ( argv[1], "-a" ) == 0 ), ErrorExit );
         *selector = kAllDevices;
         
     }
@@ -299,7 +299,7 @@ ValidateArguments ( int argc, const char * argv[], int * selector )
     else if ( argc == 3 )
     {
         
-        require ( ( strcmp ( argv[1], "-d" ) == 0 ), ErrorExit );
+        __Require ( ( strcmp ( argv[1], "-d" ) == 0 ), ErrorExit );
         *selector = kSpecificDevice;
         
     }
@@ -387,25 +387,25 @@ PrintSMARTDataForDevice ( io_object_t ataDevice )
                                              kCFAllocatorDefault,
                                              kNilOptions );
     
-    require ( ( err == kIOReturnSuccess ), ErrorExit );
+    __Require ( ( err == kIOReturnSuccess ), ErrorExit );
     
     result = CFDictionaryGetValueIfPresent ( dict,
                                             CFSTR ( kIOPropertyDeviceCharacteristicsKey ),
                                             ( const void ** ) &deviceDict );
     
-    require_action ( result, ReleaseProperties, err = kIOReturnError );
+    __Require_Action ( result, ReleaseProperties, err = kIOReturnError );
     
 #if 0
     result = CFDictionaryGetValueIfPresent ( deviceDict,
                                             CFSTR ( "ATA Features" ),
                                             ( const void ** ) &features );
     
-    require_action ( result, ReleaseProperties, err = kIOReturnError );
+    __Require_Action ( result, ReleaseProperties, err = kIOReturnError );
     
     result = CFNumberGetValue ( features, kCFNumberLongType, &value );
-    require_action ( result, ReleaseProperties, err = kIOReturnError );
+    __Require_Action ( result, ReleaseProperties, err = kIOReturnError );
     
-    require_action ( ( value & kIOATAFeatureSMART ), ReleaseProperties, err = kIOReturnError );
+    __Require_Action ( ( value & kIOATAFeatureSMART ), ReleaseProperties, err = kIOReturnError );
 #endif
     
     err = PrintSMARTData ( ataDevice );
@@ -414,7 +414,7 @@ PrintSMARTDataForDevice ( io_object_t ataDevice )
 ReleaseProperties:
     
     
-    require_quiet ( ( dict != NULL ), ErrorExit );
+    __Require_Quiet ( ( dict != NULL ), ErrorExit );
     CFRelease ( dict );
     dict = NULL;
     
@@ -468,12 +468,12 @@ PrintSMARTDataForBSDNode ( const char * bsdNode )
         
     }
     
-    require_action ( ( strncmp ( bsdName, "disk", 4 ) == 0 ), ErrorExit, PrintUsage ( ) );
+    __Require_Action ( ( strncmp ( bsdName, "disk", 4 ) == 0 ), ErrorExit, PrintUsage ( ) );
     
     object = IOServiceGetMatchingService (  kIOMasterPortDefault,
                                           IOBSDNameMatching ( kIOMasterPortDefault, 0, bsdName ) );
     
-    require ( ( object != MACH_PORT_NULL ), ErrorExit );
+    __Require ( ( object != MACH_PORT_NULL ), ErrorExit );
     
     parent = object;
     while ( IOObjectConformsTo ( object, kIOATABlockStorageDeviceClass ) == false )
@@ -489,8 +489,8 @@ PrintSMARTDataForBSDNode ( const char * bsdNode )
 #endif
         
         error = IORegistryEntryGetParentEntry ( object, kIOServicePlane, &parent );
-        require ( ( error == kIOReturnSuccess ), ReleaseObject );
-        require ( ( parent != MACH_PORT_NULL ), ReleaseObject );
+        __Require ( ( error == kIOReturnSuccess ), ReleaseObject );
+        __Require ( ( parent != MACH_PORT_NULL ), ReleaseObject );
         
         IOObjectRelease ( object );
         object = parent;
@@ -509,7 +509,7 @@ PrintSMARTDataForBSDNode ( const char * bsdNode )
 ReleaseObject:
     
     
-    require ( ( object != MACH_PORT_NULL ), ErrorExit );
+    __Require ( ( object != MACH_PORT_NULL ), ErrorExit );
     IOObjectRelease ( object );
     object = MACH_PORT_NULL;
     
@@ -552,16 +552,16 @@ PrintSMARTData ( io_service_t service )
                                              &cfPlugInInterface,
                                              &score );
     
-    require_string ( ( err == kIOReturnSuccess ), ErrorExit, "IOCreatePlugInInterfaceForService" );
+    __Require_String ( ( err == kIOReturnSuccess ), ErrorExit, "IOCreatePlugInInterfaceForService" );
     herr = ( *cfPlugInInterface )->QueryInterface (
                                                    cfPlugInInterface,
                                                    CFUUIDGetUUIDBytes ( kIOATASMARTInterfaceID ),
                                                    ( LPVOID ) &smartInterface );
     
-    require_string ( ( herr == S_OK ), ReleasePlugIn, "QueryInterface" );
+    __Require_String ( ( herr == S_OK ), ReleasePlugIn, "QueryInterface" );
     
     
-    require_string ( ( smartInterface != NULL ), ReleasePlugIn, "smartInterface" );
+    __Require_String ( ( smartInterface != NULL ), ReleasePlugIn, "smartInterface" );
     
     description = GetDriveDescription ( service );
     printf ( "SAT Drive: " );
@@ -570,13 +570,13 @@ PrintSMARTData ( io_service_t service )
     CFRelease ( description );
     
     err = ( *smartInterface )->SMARTEnableDisableOperations ( smartInterface, true );
-    require_string ( ( err == kIOReturnSuccess ), ReleaseInterface, "SMARTEnableDisableOperations" );
+    __Require_String ( ( err == kIOReturnSuccess ), ReleaseInterface, "SMARTEnableDisableOperations" );
     
     err = ( *smartInterface )->SMARTEnableDisableAutosave ( smartInterface, true );
-    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+    __Require ( ( err == kIOReturnSuccess ), ReleaseInterface );
     
     err = ( *smartInterface )->SMARTReturnStatus ( smartInterface, &conditionExceeded );
-    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+    __Require ( ( err == kIOReturnSuccess ), ReleaseInterface );
     
     if ( conditionExceeded )
     {
@@ -590,13 +590,13 @@ PrintSMARTData ( io_service_t service )
     
     err = ( *smartInterface )->GetATAIdentifyData (smartInterface, &buffer, sizeof buffer, &bytesRead );
     swapbytes((UInt16*)buffer, bytesRead);
-    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
-    require ( ( bytesRead == sizeof buffer ), ReleaseInterface );
+    __Require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+    __Require ( ( bytesRead == sizeof buffer ), ReleaseInterface );
     buffer[2 * kATAIdentifyModelNumber + 40 ] = 0;
     printf ( "Model: '%s'\n", buffer + 2 * kATAIdentifyModelNumber ); // FIXME not null terminated
     
     err = ( *smartInterface )->SMARTReadLogDirectory (smartInterface, &logData );
-    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+    __Require ( ( err == kIOReturnSuccess ), ReleaseInterface );
 #if 0
     for (int i = 0; i < 255; i++) {
         if (logData.entries[i].numberOfSectors > 0)
@@ -606,7 +606,7 @@ PrintSMARTData ( io_service_t service )
                                                       224,
                                                       buffer,
                                                       sizeof buffer);
-    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+    __Require ( ( err == kIOReturnSuccess ), ReleaseInterface );
     for (int i = 0; i < -512; i++) {
         if (buffer[i])
             printf ( "buffer[%d]: %d\n", i, buffer[i]);
@@ -615,7 +615,7 @@ PrintSMARTData ( io_service_t service )
                                                        224,
                                                        buffer,
                                                        sizeof buffer);
-    require ( ( err == kIOReturnSuccess ), ReleaseInterface );
+    __Require ( ( err == kIOReturnSuccess ), ReleaseInterface );
 #endif
     
 ReleaseInterface:
@@ -630,7 +630,7 @@ ReleasePlugIn:
     
     
     err = IODestroyPlugInInterface ( cfPlugInInterface );
-    require ( ( err == kIOReturnSuccess ), ErrorExit );
+    __Require ( ( err == kIOReturnSuccess ), ErrorExit );
     
     
 ErrorExit:
@@ -654,21 +654,21 @@ GetDriveDescription ( io_object_t service )
     CFMutableDictionaryRef dict            = NULL;
     IOReturn err                     = kIOReturnSuccess;
     
-    require ( ( service != MACH_PORT_NULL ), Exit );
+    __Require ( ( service != MACH_PORT_NULL ), Exit );
     
     err = IORegistryEntryCreateCFProperties (       service,
                                              &dict,
                                              kCFAllocatorDefault,
                                              0 );
-    check ( err == kIOReturnSuccess );
+    __Check ( err == kIOReturnSuccess );
     
     deviceDict = ( CFDictionaryRef ) CFDictionaryGetValue ( dict, CFSTR ( kIOPropertyDeviceCharacteristicsKey ) );
-    require ( ( deviceDict != 0 ), Exit );
+    __Require ( ( deviceDict != 0 ), Exit );
     
     product = ( CFStringRef ) CFDictionaryGetValue ( deviceDict, CFSTR ( kIOPropertyProductNameKey ) );
     
     description = CFStringCreateMutableCopy ( kCFAllocatorDefault, 0L, product );
-    require ( ( description != NULL ), Exit );
+    __Require ( ( description != NULL ), Exit );
     
     
 Exit:
